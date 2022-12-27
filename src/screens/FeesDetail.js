@@ -168,8 +168,8 @@ export default function FeesDetail() {
 
   const handleMonthChange = (e) => {
     const feesPerMonth = student.net_fees / 12;
-    const selectedFeesTotal = feesPerMonth * Number(e.target.value)
-
+    const selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value))
+    
     if(selectedFeesTotal > student.pending_amount){
       setErrors((prevData) => {
         return {

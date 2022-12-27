@@ -6,24 +6,35 @@ import { AiFillEye } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import { NavLink } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useGetMonthlyReport, useGetReport } from "../hooks/usePost";
+import { useGetReport } from "../hooks/usePost";
 import { useState } from "react";
 import StudentChart from "./StudentChart";
 import { IoMdInformationCircle } from "react-icons/io";
 import ReactPaginate from "react-paginate";
 import "./Pagination.css";
+import { NasirContext } from "../NasirContext";
+import exportFromJSON from "export-from-json";
 
 const Studenthearder = () => {
+  const { section } = React.useContext(NasirContext);
+
+  const sectionRequest = section === "primary" ? 1 : 0;
+
   const [data, setData] = useState([]);
-  const [date, setDate] = useState("");
-  const reportData = useQuery("reports", useGetReport);
+  const [date, setDate] = useState(() => {
+    new Date()?.toISOString().slice(0, 10).split("-").reverse().join("-");
+  });
+  const [nextDate, setNextDate] = useState("");
+  const reportData = useQuery(["Reports", sectionRequest], useGetReport);
+
   const componentRef = useRef();
   const [isPrint, setIsPrint] = useState(false);
   const [currentItems, setcurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [Serialno, setserialno] = useState(1);
-  const itemsPerPage = 12;
+  const [transaction, setTransaction] = useState("?");
+  const itemsPerPage = 4;
 
   function handleDataFilter(filterDate) {
     const preDate = new Date(`${filterDate},23:59:00`);
@@ -36,19 +47,65 @@ const Studenthearder = () => {
 
   function handle_data(e) {
     const [previous, post] = handleDataFilter(e.target.value);
-
     setDate(e.target.value);
+
+    if (nextDate) {
+      handleNextDate(nextDate);
+    } else {
+      const newData = reportData.data.data.filter(
+        (recipet) =>
+          new Date(recipet.date).getTime() > previous &&
+          new Date(recipet.date).getTime() < post
+      );
+      setData(() => newData);
+    }
+    setTransaction("?");
+  }
+
+  function handleNextDate(e) {
+    const [_, post] = handleDataFilter(e);
+    const dateData = handleDataFilter(date);
+
+    setNextDate(() => e);
+    console.log(dateData);
+
     const newData = reportData.data.data.filter(
       (recipet) =>
-        new Date(recipet.date).getTime() > previous &&
+        new Date(recipet.date).getTime() > dateData[0] &&
         new Date(recipet.date).getTime() < post
     );
+    setData(() => newData.reverse());
+    setTransaction("?");
+  }
 
-    setData(() => newData);
+  function handleExportClick() {
+    let filterData = [];
+    filterData = data.map((m) => {
+      return {
+        recipt_id: m.fees_receipt_id,
+        date: new Date(m.date)
+          ?.toISOString()
+          .slice(0, 10)
+          .split("-")
+          .reverse()
+          .join("-"),
+        name: m.fees[0].academics[0].students[0].basic_info[0].full_name,
+        class_name: m?.fees[0].academics[0].class[0].class_name,
+        amount: m.transaction[0].amount,
+        discount: m.discount,
+        admin: m.admin[0]?.username,
+      };
+    });
+    console.log(data);
+
+    console.log(filterData);
+    const fileName = date ? `feesReport${date}` : "feesreport";
+    const exportType = exportFromJSON.types.csv;
+    exportFromJSON({ data: filterData, fileName, exportType });
   }
 
   React.useEffect(() => {
-    setData(reportData?.data?.data);
+    setData(() => reportData?.data?.data);
   }, [reportData.isSuccess]);
 
   // -------------------------------
@@ -59,6 +116,17 @@ const Studenthearder = () => {
     setcurrentItems(data?.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(data?.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, data]);
+
+  function calcaulateTotal() {
+    let total = 0;
+    data?.map((d) => {
+      total += d.transaction[0].amount;
+    });
+
+    console.log(total);
+    setTransaction(total);
+    return total;
+  }
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % data.length;
@@ -86,29 +154,39 @@ const Studenthearder = () => {
               onChange={(e) => handle_data(e)}
               className="outline-none bg-white border rounded-md p-2 cursor-pointer"
             />
+
+            <input
+              id=""
+              value={nextDate}
+              type="Date"
+              onChange={(e) => handleNextDate(e.target.value)}
+              disabled={date ? false : true}
+              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+            />
             <button
               id=""
               className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
               onClick={(e) => {
                 setData(reportData?.data?.data);
+                setDate("");
+                setNextDate("");
               }}
             >
               Clear Filter
             </button>
             {currentItems?.length > 0 ? (
-              <Tooltip
-                content="Print"
-                placement="bottom-end"
-                className="text-white bg-black rounded p-2"
-              >
-                <span
-                  href="#"
-                  className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer"
+              <>
+                <Tooltip
+                  content="Print"
+                  placement="bottom-end"
+                  className="text-white bg-black rounded p-2"
                 >
-                  <ReactToPrint
-                      trigger={() => (
-                          <MdLocalPrintshop />
-                      )}
+                  <span
+                    href="#"
+                    className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer"
+                  >
+                    <ReactToPrint
+                      trigger={() => <MdLocalPrintshop />}
                       content={() => componentRef.current}
                       onBeforeGetContent={() => {
                         return new Promise((resolve) => {
@@ -118,13 +196,38 @@ const Studenthearder = () => {
                       }}
                       onAfterPrint={() => setIsPrint(false)}
                     />
-                </span>
-              </Tooltip>
+                  </span>
+                </Tooltip>
+                <button
+                  id=""
+                  className=" flex items-center border outline-none bg-gray-300  px-4 xl:px-4 xl:py-1 shadow-lg hover:shadow rounded-md  space-x-1 "
+                  onClick={handleExportClick}
+                >
+                  Export
+                </button>
+              </>
             ) : null}
+            <div className="flex w-2/5  items-center justify-end ">
+              {" "}
+              <div className="flex flex-col items-center p-1 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
+                <span className="font-semibold"> Total : {transaction} </span>
+                <span className="italic">
+                  {" "}
+                  Transaction :{transaction === "?" ? "?" : data?.length}{" "}
+                </span>
+              </div>
+              <button
+                onClick={calcaulateTotal}
+                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+              >
+                {" "}
+                Calculate Total{" "}
+              </button>
+            </div>
           </div>
           <div className="p-5 pt-3 pb-0">
             <div className="overflow-x-auto">
-              <table ref={componentRef} className="w-full whitespace-nowrap" >
+              <table ref={componentRef} className="w-full whitespace-nowrap">
                 <thead>
                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
                     <th className="font-normal text-left pl-10">Date</th>
@@ -134,9 +237,7 @@ const Studenthearder = () => {
                     <th className="font-normal text-left px-2 xl:px-0">
                       Student Name
                     </th>
-                    <th className="font-normal text-left px-2 xl:px-0">
-                      Paid
-                    </th>
+                    <th className="font-normal text-left px-2 xl:px-0">Paid</th>
                     <th className="font-normal text-left px-2 xl:px-0">
                       Discount
                     </th>
@@ -146,22 +247,16 @@ const Studenthearder = () => {
                     <th className="font-normal text-left px-2 xl:px-0">
                       Admin
                     </th>
-                    {
-                      !isPrint
-                      ?
-                        <th className="font-normal text-left px-2 xl:px-0">
-                          Detail
-                        </th>
-                      :
-                        null
-                    }
+                    {!isPrint ? (
+                      <th className="font-normal text-left px-2 xl:px-0">
+                        Detail
+                      </th>
+                    ) : null}
                   </tr>
                 </thead>
                 <tbody className="w-full">
-                  {
-                    reportData.isLoading 
-                    ? 
-                      <tr className="h-20 blur-sm text-sm leading-none text-gray-800 border-b border-gray-100">
+                  {reportData.isLoading ? (
+                    <tr className="h-20 blur-sm text-sm leading-none text-gray-800 border-b border-gray-100">
                       <td className="pl-8">.........</td>
                       <td className=" px-2 font-bold xl:px-0">..</td>
                       <td className="px-2 xl:px-0">.....</td>
@@ -188,103 +283,118 @@ const Studenthearder = () => {
                       <td className="px-5  ">
                         <span>........</span>
                       </td>
-                      </tr>
-                    : 
-                        
-                      isPrint
-                      ?
-                        data?.map((m, key) => {
-                          return (
-                            <tr
-                              key={key}
-                              className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
-                            >
-                              <td className="pl-8">
-                                {new Date(m.date)?.toISOString().slice(0, 10).split('-').reverse().join('-')}
-                              </td>
-                              <td className=" px-2 font-bold xl:px-0">
-                                {m.fees_receipt_id}
-                              </td>
-                              <td className="px-2 xl:px-0 capitalize">
-                                {
-                                  m.fees[0].academics[0].students[0].basic_info[0]
-                                    .full_name
-                                }
-                              </td>
-                              <td className="font-medium px-2 xl:px-0">
-                                <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
-                                  {m.transaction[0].amount}
-                                </span>
-                              </td>
-                              <td className="px-2 xl:px-0">
-                                <p className="">
-                                  <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
-                                    {m.discount}
-                                  </span>
-                                </p>
-                              </td>
-                              <td>
-                                <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                                  {m.transaction[0]?.amount + m.discount}
-                                </span>
-                              </td>
-                              <td>
-                                <span>{m.admin[0]?.username}</span>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      :
-                        currentItems?.map((m, key) => {
-                          return (
-                            <tr
-                              key={key}
-                              className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
-                            >
-                              <td className="pl-8">
-                                {new Date(m.date)?.toISOString().slice(0, 10).split('-').reverse().join('-')}
-                              </td>
-                              <td className=" px-2 font-bold xl:px-0">
-                                {m.fees_receipt_id}
-                              </td>
-                              <td className="px-2 xl:px-0 capitalize">
-                                {
-                                  m.fees[0].academics[0].students[0].basic_info[0]
-                                    .full_name
-                                }
-                              </td>
-                              <td className="font-medium px-2 xl:px-0">
-                                <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
-                                  {m.transaction[0].amount}
-                                </span>
-                              </td>
-                              <td className="px-2 xl:px-0">
-                                <p className="">
-                                  <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
-                                    {m.discount}
-                                  </span>
-                                </p>
-                              </td>
-                              <td>
-                                <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                                  {m.transaction[0]?.amount + m.discount}
-                                </span>
-                              </td>
-                              <td>
-                                <span>{m.admin[0]?.username}</span>
-                              </td>
-                              <td className="px-5  ">
-                                <span>
-                                  <NavLink to={"/receipt/receipt"} state={{is_cancelled: m.fees[0].academics[0].students[0].basic_info[0]
-                                    .is_cancelled, isStaff: false, fees_receipt_id: m.fees_receipt_id}}>
-                                    <AiFillEye className="text-xl cursor-pointer" />
-                                  </NavLink>
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })
-                  }
+                    </tr>
+                  ) : isPrint ? (
+                    data?.map((m, key) => {
+                      return (
+                        <tr
+                          key={key}
+                          className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
+                        >
+                          <td className="pl-8">
+                            {new Date(m.date)
+                              ?.toISOString()
+                              .slice(0, 10)
+                              .split("-")
+                              .reverse()
+                              .join("-")}
+                          </td>
+                          <td className=" px-2 font-bold xl:px-0">
+                            {m.fees_receipt_id}
+                          </td>
+                          <td className="px-2 xl:px-0 capitalize">
+                            {
+                              m.fees[0].academics[0].students[0].basic_info[0]
+                                .full_name
+                            }
+                          </td>
+                          <td className="font-medium px-2 xl:px-0">
+                            <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
+                              {m.transaction[0].amount}
+                            </span>
+                          </td>
+                          <td className="px-2 xl:px-0">
+                            <p className="">
+                              <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
+                                {m.discount}
+                              </span>
+                            </p>
+                          </td>
+                          <td>
+                            <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
+                              {m.transaction[0]?.amount + m.discount}
+                            </span>
+                          </td>
+                          <td>
+                            <span>{m.admin[0]?.username}</span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    currentItems?.map((m, key) => {
+                      return (
+                        <tr
+                          key={key}
+                          className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
+                        >
+                          <td className="pl-8">
+                            {new Date(m.date)
+                              ?.toISOString()
+                              .slice(0, 10)
+                              .split("-")
+                              .reverse()
+                              .join("-")}
+                          </td>
+                          <td className=" px-2 font-bold xl:px-0">
+                            {m.fees_receipt_id}
+                          </td>
+                          <td className="px-2 xl:px-0 capitalize">
+                            {
+                              m.fees[0].academics[0].students[0].basic_info[0]
+                                .full_name
+                            }
+                          </td>
+                          <td className="font-medium px-2 xl:px-0">
+                            <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
+                              {m.transaction[0].amount}
+                            </span>
+                          </td>
+                          <td className="px-2 xl:px-0">
+                            <p className="">
+                              <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
+                                {m.discount}
+                              </span>
+                            </p>
+                          </td>
+                          <td>
+                            <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
+                              {m.transaction[0]?.amount + m.discount}
+                            </span>
+                          </td>
+                          <td>
+                            <span>{m.admin[0]?.username}</span>
+                          </td>
+                          <td className="px-5  ">
+                            <span>
+                              <NavLink
+                                to={"/receipt/receipt"}
+                                state={{
+                                  is_cancelled:
+                                    m.fees[0].academics[0].students[0]
+                                      .basic_info[0].is_cancelled,
+                                  isStaff: false,
+                                  fees_receipt_id: m.fees_receipt_id,
+                                }}
+                              >
+                                <AiFillEye className="text-xl cursor-pointer" />
+                              </NavLink>
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
               {currentItems?.length < 1 ? (

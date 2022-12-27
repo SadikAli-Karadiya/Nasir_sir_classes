@@ -189,9 +189,8 @@ export default function UpdateStudentReceipt() {
   }
 
   const handleMonthChange = (e) => {
-    console.log(e.target.value)
     const feesPerMonth = student.net_fees / 12;
-    const selectedFeesTotal = feesPerMonth * Number(e.target.value)
+    const selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value))
 
     if(selectedFeesTotal > student.pending_amount){
       setErrors((prevData) => {

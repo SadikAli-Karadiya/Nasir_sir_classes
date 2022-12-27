@@ -6,22 +6,10 @@ import {NasirContext} from '../NasirContext'
 function Receipt_student({receiptDetails, forOffice}) {
   const {section} = React.useContext(NasirContext);
 
-  const Months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-  let monthsToPrint=[];
+  const Months = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   const receiptBgColor = "bg-red-600";
   const receiptTextColor = "text-red-600";
-
-  console.log(receiptDetails.from_month, receiptDetails.to_month)
-  if(section == 'primary'){
-    for(let i = (receiptDetails.from_month - 1)%12; i > -1; i++) {
-      monthsToPrint.push(Months[i]);
-      if(Months[receiptDetails.to_month - 1] == Months[i]){
-        break;
-      }
-    }
-  }
 
   return (
     <ReceiptMainDiv
@@ -50,11 +38,11 @@ function Receipt_student({receiptDetails, forOffice}) {
               <div className={`border-2 border-red-600 w-26 rounded-md flex justify-center items-center`}>
                 <p className="text-red-600 font-semibold px-4 py-0.5">
                   {
-                    monthsToPrint.length == 1 
+                    receiptDetails.from_month == receiptDetails.to_month 
                     ?
-                      <span>{monthsToPrint[0]}</span>
+                      <span>{Months[receiptDetails.from_month]}</span>
                     :
-                      <span className="">{monthsToPrint[0]}-{monthsToPrint[monthsToPrint.length - 1]}</span>
+                      <span className="">{Months[receiptDetails.from_month]}-{Months[receiptDetails.to_month]}</span>
                   }
                 </p>
               </div>

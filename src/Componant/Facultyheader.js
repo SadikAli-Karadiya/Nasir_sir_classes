@@ -15,7 +15,11 @@ import "./Pagination.css";
 const Facultyheader = () => {
   const salaryReport = useQuery("salary", useGetSalaryReport);
   const [data, setData] = React.useState([]);
+  const [nextDate, setNextDate] = React.useState("");
   const [date, setDate] = React.useState("");
+
+  const [transaction, setTransaction] = React.useState("?");
+
   const [itemOffset, setItemOffset] = React.useState(0);
   const [Serialno, setserialno] = React.useState(1);
   const [currentItems, setcurrentItems] = React.useState([]);
@@ -24,6 +28,18 @@ const Facultyheader = () => {
   const itemsPerPage = 12;
 
   const componentRef = useRef();
+
+  console.log(salaryReport);
+  function calcaulateTotal() {
+    let total = 0;
+    data?.map((d) => {
+      total += d.transaction[0].amount;
+    });
+
+    console.log(total);
+    setTransaction(total);
+    return total;
+  }
 
   function handleDataFilter(filterDate) {
     const preDate = new Date(`${filterDate},23:59:00`);
@@ -37,13 +53,34 @@ const Facultyheader = () => {
   function handleDate(e) {
     const [previous, post] = handleDataFilter(e.target.value);
     setDate(e.target.value);
+
+    if (nextDate) {
+      handleNextDate(nextDate);
+    } else {
+      const newData = salaryReport.data.data.filter(
+        (recipet) =>
+          new Date(recipet.date).getTime() > previous &&
+          new Date(recipet.date).getTime() < post
+      );
+      setData(() => newData);
+    }
+    setTransaction("?");
+  }
+
+  function handleNextDate(e) {
+    const [_, post] = handleDataFilter(e);
+    const dateData = handleDataFilter(date);
+
+    setNextDate(() => e);
+    console.log(dateData);
+
     const newData = salaryReport.data.data.filter(
       (recipet) =>
-        new Date(recipet.date).getTime() > previous &&
+        new Date(recipet.date).getTime() > dateData[0] &&
         new Date(recipet.date).getTime() < post
     );
-
-    setData(() => newData);
+    setData(() => newData.reverse());
+    setTransaction("?");
   }
 
   React.useEffect(() => {
@@ -84,18 +121,27 @@ const Facultyheader = () => {
               onChange={(e) => handleDate(e)}
               className="outline-none bg-white border rounded-md p-2 cursor-pointer"
             />
+            <input
+              id=""
+              value={nextDate}
+              type="Date"
+              onChange={(e) => handleNextDate(e.target.value)}
+              disabled={date ? false : true}
+              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+            />
             <button
               id=""
               className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
               onClick={(e) => {
                 setDate("");
+                setNextDate("");
                 setData(salaryReport?.data?.data);
               }}
             >
               Clear Filter
             </button>
             {currentItems.length > 0 ? (
-               <Tooltip
+              <Tooltip
                 content="Print"
                 placement="bottom-end"
                 className="text-white bg-black rounded p-2"
@@ -105,61 +151,56 @@ const Facultyheader = () => {
                   className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer"
                 >
                   <ReactToPrint
-                      trigger={() => (
-                          <MdLocalPrintshop />
-                      )}
-                      content={() => componentRef.current}
-                      onBeforeGetContent={() => {
-                        return new Promise((resolve) => {
-                          setIsPrint(true);
-                          resolve();
-                        });
-                      }}
-                      onAfterPrint={() => setIsPrint(false)}
-                    />
+                    trigger={() => <MdLocalPrintshop />}
+                    content={() => componentRef.current}
+                    onBeforeGetContent={() => {
+                      return new Promise((resolve) => {
+                        setIsPrint(true);
+                        resolve();
+                      });
+                    }}
+                    onAfterPrint={() => setIsPrint(false)}
+                  />
                 </span>
               </Tooltip>
             ) : null}
+            <div className="flex w-2/5  items-center justify-end ">
+              {" "}
+              <div className="flex flex-col items-center p-1 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
+                <span className="font-semibold"> Total : {transaction} </span>
+                <span className="italic">
+                  {" "}
+                  Transaction :{transaction === "?" ? "?" : data?.length}{" "}
+                </span>
+              </div>
+              <button
+                onClick={calcaulateTotal}
+                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+              >
+                {" "}
+                Calculate Total{" "}
+              </button>
+            </div>
           </div>
           <div ref={componentRef} className="p-5 pt-3 pb-0">
             <div className="overflow-x-auto">
               <table className="w-full whitespace-nowrap">
                 <thead>
                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
-                    <th className="font-normal text-center px-2">
-                      ID
-                    </th>
-                    <th className="font-normal text-center px-2 ">
-                      Name
-                    </th>
-                    <th className="font-normal text-center px-2">
-                      ROLE
-                    </th>
-                    <th className="font-normal text-center px-2">
-                      DATE
-                    </th>
-                    <th className="font-normal text-center px-2">
-                      LASTPAID
-                    </th>
-                    <th className="font-normal text-center px-2">
-                      Admin
-                    </th>
-                    {
-                      !isPrint
-                      ?
-                        <th className="font-normal text-center px-2">
-                          Action
-                        </th>
-                      :
-                        null
-                    }
+                    <th className="font-normal text-center px-2">ID</th>
+                    <th className="font-normal text-center px-2 ">Name</th>
+                    <th className="font-normal text-center px-2">ROLE</th>
+                    <th className="font-normal text-center px-2">DATE</th>
+                    <th className="font-normal text-center px-2">LASTPAID</th>
+                    <th className="font-normal text-center px-2">Admin</th>
+                    {!isPrint ? (
+                      <th className="font-normal text-center px-2">Action</th>
+                    ) : null}
                   </tr>
                 </thead>
                 <tbody className="w-full">
-                  {
-                    isPrint
-                    ?
-                      data.map((report, key) => {
+                  {isPrint
+                    ? data.map((report, key) => {
                         return (
                           <tr
                             key={key}
@@ -172,11 +213,18 @@ const Facultyheader = () => {
                               {report?.staff[0]?.basic_info[0]?.full_name}
                             </td>
                             <td className="font-medium px-2 xl:px-0">
-                              <p className="text-center">{report?.staff[0].role}</p>
+                              <p className="text-center">
+                                {report?.staff[0].role}
+                              </p>
                             </td>
                             <td className="px-2 xl:px-0">
                               <p className="text-center">
-                                {new Date(report.date)?.toISOString().slice(0, 10).split('-').reverse().join('-')}
+                                {new Date(report.date)
+                                  ?.toISOString()
+                                  .slice(0, 10)
+                                  .split("-")
+                                  .reverse()
+                                  .join("-")}
                               </p>
                             </td>
                             <td>
@@ -191,26 +239,25 @@ const Facultyheader = () => {
                                 {report?.admin[0].username}
                               </span>
                             </td>
-                            {
-                              !isPrint
-                              ?
-                                <td className="px-5  ">
-                                  <span className="flex justify-center">
-                                    <NavLink  
-                                      to={`/Staffhistory/Receipt_teacher/${report?.salary_receipt_id}`} 
-                                      state={{ isStaff: true, isSalaried: report?.is_hourly }}>
-                                      <AiFillEye className="text-xl cursor-pointer" />
-                                    </NavLink>
-                                  </span>
-                                </td>
-                              :
-                                null
-                            }
+                            {!isPrint ? (
+                              <td className="px-5  ">
+                                <span className="flex justify-center">
+                                  <NavLink
+                                    to={`/Staffhistory/Receipt_teacher/${report?.salary_receipt_id}`}
+                                    state={{
+                                      isStaff: true,
+                                      isSalaried: report?.is_hourly,
+                                    }}
+                                  >
+                                    <AiFillEye className="text-xl cursor-pointer" />
+                                  </NavLink>
+                                </span>
+                              </td>
+                            ) : null}
                           </tr>
                         );
                       })
-                    :
-                      currentItems.map((report, key) => {
+                    : currentItems.map((report, key) => {
                         return (
                           <tr
                             key={key}
@@ -223,11 +270,18 @@ const Facultyheader = () => {
                               {report?.staff[0]?.basic_info[0]?.full_name}
                             </td>
                             <td className="font-medium px-2 xl:px-0">
-                              <p className="text-center">{report?.staff[0].role}</p>
+                              <p className="text-center">
+                                {report?.staff[0].role}
+                              </p>
                             </td>
                             <td className="px-2 xl:px-0">
                               <p className="text-center">
-                                {new Date(report.date)?.toISOString().slice(0, 10).split('-').reverse().join('-')}
+                                {new Date(report.date)
+                                  ?.toISOString()
+                                  .slice(0, 10)
+                                  .split("-")
+                                  .reverse()
+                                  .join("-")}
                               </p>
                             </td>
                             <td>
@@ -242,25 +296,24 @@ const Facultyheader = () => {
                                 {report?.admin[0].username}
                               </span>
                             </td>
-                            {
-                              !isPrint
-                              ?
-                                <td className="px-5  ">
-                                  <span className="flex justify-center">
-                                    <NavLink  
-                                      to={`/Staffhistory/Receipt_teacher/${report?.salary_receipt_id}`} 
-                                      state={{ isStaff: true, isSalaried: report?.is_hourly }}>
-                                      <AiFillEye className="text-xl cursor-pointer" />
-                                    </NavLink>
-                                  </span>
-                                </td>
-                              :
-                                null
-                            }
+                            {!isPrint ? (
+                              <td className="px-5  ">
+                                <span className="flex justify-center">
+                                  <NavLink
+                                    to={`/Staffhistory/Receipt_teacher/${report?.salary_receipt_id}`}
+                                    state={{
+                                      isStaff: true,
+                                      isSalaried: report?.is_hourly,
+                                    }}
+                                  >
+                                    <AiFillEye className="text-xl cursor-pointer" />
+                                  </NavLink>
+                                </span>
+                              </td>
+                            ) : null}
                           </tr>
                         );
-                      })
-                  }
+                      })}
                 </tbody>
               </table>
               {currentItems?.length < 1 ? (

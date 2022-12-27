@@ -11,7 +11,7 @@ export const axiosInstance = axios.create({
     Authorization: token,
   },
 });
-const SERVER = "http://localhost:4000";
+const SERVER = "http://localhost:4250";
 
 //-----------------------------------------------------------------------
 //--------------------------------- ADMIN -----------------------------
@@ -403,8 +403,10 @@ export const Alloverstudent = async (section) => {
 };
 
 // Report API
-export async function useGetReport() {
-  return await axiosInstance.get(`${SERVER}/report`).then((res) => res.data);
+export async function useGetReport(sectionRequest) {
+  return await axiosInstance
+    .get(`${SERVER}/report/fees/${sectionRequest.queryKey[1]}`)
+    .then((res) => res.data);
 }
 
 export async function useGetSalaryReport() {
