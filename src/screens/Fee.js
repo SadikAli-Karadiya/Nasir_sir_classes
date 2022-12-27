@@ -7,8 +7,10 @@ import {getStudentDetails} from '../hooks/usePost';
 import LoaderSmall from '../Componant/LoaderSmall';
 import Toaster from '../hooks/showToaster';
 import {AxiosError} from 'axios';
+import {NasirContext} from '../NasirContext'
 
 export default function Fess() {
+  const {admin, section} = React.useContext(NasirContext);
   const [data, setdata] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -20,7 +22,7 @@ export default function Fess() {
         return;
       }
       setLoading(true);
-      const res = await getStudentDetails(searchValue)
+      const res = await getStudentDetails(searchValue, section == 'primary' ? 1 : 0)
       setLoading(false);
       setdata(res?.data?.data?.students_detail?.length > 0 ? res?.data?.data?.students_detail : null);
       setShowNotFound(1)
@@ -29,7 +31,7 @@ export default function Fess() {
         setLoading(false);
         if(err instanceof AxiosError){
           if(err.response){
-            Toaster("error",err.response.data.message);
+            Toaster("error",err?.response?.data?.message);
           }
           else{
             Toaster("error",err.message);
@@ -85,7 +87,7 @@ export default function Fess() {
               ? (
                 <div className="p-4 bg-whrounded">
                   <h1 className="font-bold text-2xl text-darkblue-500"> </h1>
-                  {/* Recipet table  */}
+                  {/* Receipt table  */}
                   <div>
                     <div className=" bg-white rounded-lg shadow">
                       <div className="border rounded-lg border-gray-100">
@@ -217,6 +219,9 @@ export default function Fess() {
                                             full_name: m.personal.basic_info_id.full_name,
                                             class_name: m.academic.class_id.class_name,
                                             medium: m.academic.class_id.medium,
+                                            paid_upto: m.fees.paid_upto,
+                                            net_fees: m.fees.net_fees,
+                                            pending_amount: m.fees.pending_amount,
                                             stream: m.academic.class_id.stream,
                                             batch: `${m.academic.class_id.batch_start_year}-${m.academic.class_id.batch_end_year}`
                                           }} >

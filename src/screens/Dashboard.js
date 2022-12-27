@@ -107,8 +107,9 @@ export default function Dashboard() {
   const sendNotification = async (e) =>{
     e.preventDefault();
     const res = await sendPendingFeesNotification(allStudent);
+    console.log(res)
 
-    if(res.data.success){
+    if(res?.data.success){
       Toaster('success', 'Message sent successfully');
     }
     else{
@@ -277,9 +278,11 @@ export default function Dashboard() {
                 {
                   isloading
                   ?
-                    <td colSpan={10}>
-                      <LoaderSmall />
-                    </td>
+                    <tr>
+                      <td colSpan={10}>
+                        <LoaderSmall />
+                      </td>
+                    </tr>
                   :
                     isPrint
                     ? 
@@ -394,8 +397,10 @@ export default function Dashboard() {
                                   state={{
                                     rollno: item.student_id,
                                     full_name: item.basic_info[0].full_name,
-                                    class_name:
-                                      item.academics[0].class[0].class_name,
+                                    class_name: item.academics[0].class[0].class_name,
+                                    paid_upto: item.academics[0].fees[0].paid_upto,
+                                    net_fees: item.academics[0].fees[0].net_fees,
+                                    pending_amount: item.academics[0].fees[0].pending_amount,
                                     medium: item.academics[0].class[0].medium,
                                     stream: item.academics[0].class[0].stream,
                                     batch: `${item.academics[0].class[0].batch_start_year}-${item.academics[0].class[0].batch_end_year}`,

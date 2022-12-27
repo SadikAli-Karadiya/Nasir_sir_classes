@@ -38,7 +38,6 @@ const Facultytable = () => {
       setIsLoading(false)
       if (res) {
         setFacultyData(res.staffData)
-        setcall(() => !call)
       }
     }
     fatchallstaff();
@@ -139,9 +138,11 @@ const Facultytable = () => {
                   {
                     isLoading
                     ?
-                      <td colSpan={6}>
-                        <LoaderSmall />
-                      </td>
+                      <tr>
+                        <td colSpan={6}>
+                          <LoaderSmall />
+                        </td>
+                      </tr>
                     :
                       currentItems.length > 0
                       ?

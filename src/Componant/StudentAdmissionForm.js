@@ -62,17 +62,17 @@ const StudentAdmissionForm = () => {
                                     <div className="std flex mb-2">
                                         <label className="w-20 font-bold">Std</label>
                                         <span className="font-bold">:</span>
-                                        <p className="ml-2 pl-2 border-2 border-black w-24">{studentDetails.class}</p>
+                                        <p className="ml-2 pl-2 border-2 border-black w-24 capitalize">{studentDetails.class}</p>
                                     </div>
                                     <div className="stream flex mb-2">
                                         <label className="w-20 font-bold">Stream</label>
                                         <span className="font-bold">:</span>
-                                        <p className="ml-2 pl-2 border-2 border-black w-24">{studentDetails.stream}</p>
+                                        <p className="ml-2 pl-2 border-2 border-black w-24 capitalize">{studentDetails.stream}</p>
                                     </div>
                                     <div className="medium flex mb-2">
                                         <label className="w-20 font-bold">Medium</label>
                                         <span className="font-bold">:</span>
-                                        <p className="ml-2 pl-2 border-2 border-black w-24">{studentDetails.medium}</p>
+                                        <p className="ml-2 pl-2 border-2 border-black w-24 capitalize">{studentDetails.medium}</p>
                                     </div>
                                 </div>
                                 <div className="middle ml-[-20px] w-40">
@@ -111,16 +111,16 @@ const StudentAdmissionForm = () => {
                         <div className="student-info my-3  p-1 border-2 border-black">
                             <div className="name flex my-5 mx-5">
                                 <label>Name:</label>
-                                <input type="text" disabled defaultValue={studentDetails.fullName} className="ml-2 border-b-2 border-black w-full"/>
+                                <input type="text" disabled defaultValue={studentDetails.fullName} className="ml-2 border-b-2 border-black w-full capitalize"/>
                             </div>
                             <div className="occupation-mother's name grid grid-cols-2 my-5 mx-5">
                                 <div className="occupation flex">
                                     <label>Occupation:</label>
-                                    <input type="text" disabled defaultValue={studentDetails.fatherOccupation} className="ml-2 border-b-2 border-black w-screen"/>
+                                    <input type="text" disabled defaultValue={studentDetails.fatherOccupation} className="ml-2 border-b-2 border-black w-screen capitalize"/>
                                 </div>
                                 <div className="mother's name flex ml-3">
                                     <label className="">Mother's Name:</label>
-                                    <input type="text" disabled defaultValue={studentDetails.motherName} className="ml-2 border-b-2 border-black w-[215px]"/>
+                                    <input type="text" disabled defaultValue={studentDetails.motherName} className="ml-2 border-b-2 border-black w-[215px] capitalize"/>
                                 </div>
                             </div>
                             <div className="Resident's Address flex my-5 mx-5">
@@ -174,7 +174,7 @@ const StudentAdmissionForm = () => {
                             </div>
                             <div className="name of school flex my-5 mx-5">
                                 <label>Name of School:</label>
-                                <input type="text" disabled defaultValue={studentDetails.schoolName} className="ml-2 border-b-2 border-black w-[82%]"/>
+                                <input type="text" disabled defaultValue={studentDetails.schoolName} className="ml-2 border-b-2 border-black w-[82%] capitalize"/>
                             </div>
                             <div className="note and total fess grid grid-cols-2 my-5 mx-5 gap-10">
                                 <div className="grid grid-rows-2">

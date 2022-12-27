@@ -33,6 +33,7 @@ import AdminList from "./screens/AdminList";
 import CancelAdmission from "./screens/CancelAdmission";
 import Salarydetails from "./Componant/Salarydetails";
 import UpdateStudentReceipt from "./screens/UpdateStudentReceipt";
+import Notification from "./screens/Notification";
 import ErrorBoundary from "./Componant/ErrorBound";
 import StudentAdmissionForm from "./Componant/StudentAdmissionForm";
 import { handleLogout } from "./AuthProvider";
@@ -41,7 +42,8 @@ function DashboardMenu() {
   const { setAdmin, login } = React.useContext(NasirContext);
   const adminData = useQuery("admin", usegetAdmin);
   const { logout, changeSection } = React.useContext(NasirContext);
-
+  const [toggle, SetToggle] = React.useState(false);
+  
   useEffect(() => {
     login();
     if (adminData.isSuccess) {
@@ -62,10 +64,13 @@ function DashboardMenu() {
       <div className="w-12 h-12 bg-black rounded-full animate-bounce"></div>
     </div>
   ) : (
-    <div className="bg-[#f5f7ff] min-h-screen flex">
+    <div className="relative bg-[#f5f7ff] min-h-screen flex">
+      <div className={`${toggle ? '' : 'hidden'} opacity-70 absolute top-0 w-full h-full z-[101]`} onClick={()=> {SetToggle(false)}}>
+
+      </div>
       {<Sidebar />}
       <div className="w-full">
-        {<Searchbar />}
+        {<Searchbar SetToggle={SetToggle} toggle={toggle} />}
         <div className="relative" style={{ minHeight: "calc(100% - 70px)" }}>
           <ErrorBoundary>
             <Routes>
@@ -74,6 +79,11 @@ function DashboardMenu() {
                 exact
                 path="/dashboardsection"
                 element={<Dashboardsection />}
+              />
+              <Route
+                exact
+                path="/notifications"
+                element={<Notification />}
               />
               <Route
                 exact

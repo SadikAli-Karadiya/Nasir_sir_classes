@@ -18,7 +18,7 @@ const Faculty = () => {
   const form = useRef()
   const [isLoadingOnSubmit, setIsLoadingOnSubmit] = useState(false);
   const defaultImage = "images/user_default@123.png"
-  const [data, setData] = useState();
+  const [data, setData] = useState(0);
   const Toaster = () => { toast.success('New Staff Registered successfully') }
   const errtoast = () => { toast.error("Something went wrong") }
   const [img, setImg] = useState(defaultImage);

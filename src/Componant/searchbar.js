@@ -10,12 +10,10 @@ import { NavLink } from "react-router-dom";
 import { NasirContext } from "../NasirContext";
 import { handleLogout } from "../AuthProvider";
 
-export default function Searchbar() {
+export default function Searchbar({toggle, SetToggle}) {
   const { admin, section } = React.useContext(NasirContext);
   const { logout, changeSection } = React.useContext(NasirContext);
   const myData = admin;
-
-  const [toggle, SetToggle] = useState(false);
 
   function handleLogoutButton() {
     handleLogout();
@@ -31,7 +29,7 @@ export default function Searchbar() {
     changeSection();
   }
   return (
-    <div className="w-full z-[100] sticky top-0 bg-white h-[70px] flex flex-row items-center justify-between shadow-[0_10px_10px_-15px_rgba(0,0,0,0.3)]">
+    <div className="w-full z-[101] sticky top-0 bg-white h-[70px] flex flex-row items-center justify-between shadow-[0_10px_10px_-15px_rgba(0,0,0,0.3)]">
       <div className="left pl-5 w-1/4">
         {/* This sectione empty for searchbar */}
       </div>
@@ -69,7 +67,7 @@ export default function Searchbar() {
         </div>
         {toggle && (
           <div
-            className={` bottom absolute top-20 right-3 bg-white drop-shadow-xl rounded-xl xl:w-1/4 2xl:w-1/5`}
+            className={`bottom absolute top-20 right-3 bg-white drop-shadow-xl rounded-xl xl:w-1/4 2xl:w-1/5`} style={{zIndex: '999'}}
             id="profileTable"
           >
             <div className="">

@@ -3,10 +3,11 @@ import { RiDashboardFill } from "react-icons/ri";
 import { FaUsers } from "react-icons/fa";
 import { BiRupee } from "react-icons/bi";
 import { FaWpforms } from "react-icons/fa";
-import { BsReceipt } from "react-icons/bs";
+import { MdReceipt } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 import { GiTeacher } from "react-icons/gi";
-import { IoMdInformationCircle, IoMdHelpCircle } from "react-icons/io";
+import { IoMdHelpCircle } from "react-icons/io";
+import { IoNotifications } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar({ data }) {
@@ -70,7 +71,7 @@ export default function Sidebar({ data }) {
             <div className="mb-3">
             <NavLink className="nav-link" activeclassname="active" to="receipt">
               <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
-                <BsReceipt className="xl:w-5 xl:h-5 xl:mr-2" />
+                <MdReceipt className="xl:w-5 xl:h-5 xl:mr-2" />
                 <h1 className="text-base hidden  xl:block  "> Receipt</h1>
               </li>
             </NavLink>
@@ -114,6 +115,20 @@ export default function Sidebar({ data }) {
                 </li>
               </NavLink>
             </div>
+
+            <div className="mb-3">
+              <NavLink
+                className="nav-link"
+                activeclassname="active"
+                to="notifications"
+              >
+                <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
+                  <IoNotifications className="xl:w-5 xl:h-5 xl:mr-2" />
+                  <h1 className="text-base hidden  xl:block  ">Notification</h1>
+                </li>
+              </NavLink>
+            </div>
+
             <div className="mb-3">
               <NavLink
                 className="nav-link"
@@ -121,7 +136,7 @@ export default function Sidebar({ data }) {
                 to="help"
               >
                 <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
-                  <IoMdHelpCircle className="xl:w-6 xl:h-6 xl:mr-2" />
+                  <IoMdHelpCircle className="xl:w-[22px] xl:h-[22px] xl:mr-2" />
                   <h1 className="text-base hidden  xl:block  ">Help</h1>
                 </li>
               </NavLink>

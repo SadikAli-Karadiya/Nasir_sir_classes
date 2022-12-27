@@ -13,6 +13,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { AxiosError } from 'axios';
 import Validator from '../hooks/validator';
 import { useParams } from "react-router-dom";
+import { NasirContext } from "../NasirContext";
 
 const valid = new Validator();
 valid.register({
@@ -72,12 +73,17 @@ valid.register({
     note: {
         required: [false],
         pattern: [/^[A-Za-z ]+$/, "Please enter only characters"]
+    },
+    father_occupation: {
+        required: [false],
+        pattern: [/^[A-Za-z ]+$/, "Please enter only characters"]
     }
 })
 
 const Profilestudent = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { section } = React.useContext(NasirContext);
     const params = useParams();
     const form = useRef(null);
     const defaultImage = "images/user_default@123.png";
@@ -104,6 +110,7 @@ const Profilestudent = () => {
         email: '',
         reference: '',
         school_name: '',
+        father_occupation: '',
         note: ''
     })
 
@@ -129,7 +136,6 @@ const Profilestudent = () => {
 
     const setStudentDetails = () => {
         student_details = student_details.data.data.students_detail[0];
-        console.log(student_details);
         setStudDetails(student_details);
         let dob = new Date(student_details.personal.basic_info_id.dob);
         dob = `${dob.getFullYear()}-${dob.getMonth() + 1 < 10 ? "0" + (dob.getMonth() + 1) : dob.getMonth() + 1}-${dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate()}`
@@ -142,6 +148,7 @@ const Profilestudent = () => {
         const reference = student_details.personal.reference;
         const note = student_details.personal.note;
         const school_name = student_details.academic.school_name;
+        const father_occupation = student_details.personal.father_occupation
 
         const stud_data = {
             photo: student_details.personal.basic_info_id.photo,
@@ -161,7 +168,8 @@ const Profilestudent = () => {
             email: email == '' ? '--' : email,
             reference: reference == '' ? '--' : reference,
             note: note == '' ? '--' : note,
-            school_name: school_name == '' ? '--' : school_name
+            school_name: school_name == '' ? '--' : school_name,
+            father_occupation: father_occupation == '' ? '--' : father_occupation
         }
 
         const photo = student_details.personal.basic_info_id.photo;
@@ -184,14 +192,15 @@ const Profilestudent = () => {
             email: stud_data.email ?? stud_data.email,
             reference: stud_data.reference ?? stud_data.reference,
             note: stud_data.note ?? stud_data.note,
-            school_name: stud_data.school_name ?? stud_data.school_name
+            school_name: stud_data.school_name ?? stud_data.school_name,
+            father_occupation: stud_data.father_occupation ?? stud_data.father_occupation
         }
     }
     //Loading initial student details
     useEffect(() => {
         async function studentApi() {
             try {
-                student_details = await getStudentDetails(student_id)
+                student_details = await getStudentDetails(student_id, section == 'primary' ? 1 : 0)
                 if(!student_details.data.success){
                     Toaster('error', student_details.data.message)
                     return navigate(-1);
@@ -399,7 +408,7 @@ const Profilestudent = () => {
                         photo: photo,
                         fullName: studDetails.personal.basic_info_id.full_name,
                         motherName: studDetails.personal.mother_name,
-                        fatherOccupation: '',
+                        fatherOccupation: studDetails.personal.father_occupation,
                         address: studDetails.personal.contact_info_id.address,
                         year: academicYear,
                         class: studDetails.academic.class_id.class_name,
@@ -446,7 +455,7 @@ const Profilestudent = () => {
                                         <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Class Selection</h1>
                                     </div>
                                     <div className="select-clas flex flex-col justify-center items-center px-10 pt-10">
-                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
+                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12 capitalize' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
                                             <option value="">Select</option>
                                             {
                                                 classes.map((classes, index) => {
@@ -503,390 +512,410 @@ const Profilestudent = () => {
                     </div>
                     <div className={`bg-white overflow-x-auto relative  sm:rounded-lg  shadow-xl space-y-5 w-full`}>
                         <form ref={form} className="flex justify-center items-center" onSubmit={(e) => setState(valid.handleSubmit(e, onSubmit))} >
-                            <div className="w-11/12 grid grid-cols-2 rounded-lg  truncate bg-white p-5">
-                                <div className="left flex flex-col items-center gap-5">
-                                    <div className='profile_img_div flex justify-center items-center border-2 border-gray-500 shadow-lg'>
-                                        <img src={img != '' ? img : defaultImage} name="photo_name" width="100%" height="100%" alt="student profile" />
-                                        {
-                                            !isEnable
-                                                ?
-                                                <div className='profile_img_overlay flex flex-col justify-center items-center'>
-                                                    <input type='file' id="file" name="photo" className="rounded-md w-16" onChange={onImageChange} accept=".png, .jpg, .jpeg" />
-                                                    {
-                                                        img != ''
-                                                            ?
-                                                            <button
-                                                                className='bg-red-600 px-1 rounded text-white hover:bg-red-400 mt-5 flex items-center justify-center gap-3' onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    setImg('');
-                                                                    document.getElementById('file').value = ''
-                                                                }}>
-                                                                <span> Remove</span>
-                                                            </button>
-                                                            :
-                                                            null
-                                                    }
-                                                </div>
-                                                :
-                                                null
-                                        }
-                                    </div>
-                                    <div className="flex lg:flex-row md:flex-col gap-4 mt-5">
-                                        <div className="fullname">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Full Name *
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="full_name"
-                                                    placeholder="First Name, Middle Name, Last Name"
-                                                    value={studentInputController.full_name}
-                                                    disabled={isEnable}
-                                                    className={`2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.full_name != '' && 'border-red-600'}`}
-                                                    onChange={handleChange}
-                                                />
-                                                {valid.errors?.full_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.full_name}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="mothername">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Mother Name *
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="mother_name"
-                                                    placeholder="Enter Your Mother Name"
-                                                    value={studentInputController.mother_name}
-                                                    disabled={isEnable}
-                                                    className={`2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.mother_name != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                    }}
-                                                />
-                                                {valid.errors?.mother_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.mother_name}</small> : null}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="whatsappno">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    WhatsApp No *
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="whatsapp_no"
-                                                    placeholder="Enter Your WhatsApp No"
-                                                    value={studentInputController.whatsapp_no}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.whatsapp_no != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                    }}
-                                                />
-                                                {valid.errors?.whatsapp_no != '' ? <small className="text-red-600 mt-3">*{valid.errors?.whatsapp_no}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="mobileno">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Mobile No
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="alternate_no"
-                                                    placeholder="Enter Your Mobile No"
-                                                    value={studentInputController.alternate_no != '' || studentInputController.alternate_no != '--' ? studentInputController.alternate_no : '--'}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.alternate_no != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                    }}
-                                                />
-                                                {valid.errors?.alternate_no != '' ? <small className="text-red-600 mt-3">*{valid.errors?.alternate_no}</small> : null}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="dateofbirth">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Date Of Birth *
-                                                </span>
-                                                <input
-                                                    type="date"
-                                                    id="dob"
-                                                    name="dob"
-                                                    disabled={isEnable}
-                                                    value={studentInputController.dob}
-                                                    className={` 2xl:w-60 hover:cursor-pointer mt-1 block w-[185px] px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.dob != '' && 'border-red-600'}`}
-
-                                                    onChange={handleChange} />
-                                                {valid.errors?.dob != '' ? <small className="text-red-600 mt-3">*{valid.errors?.dob}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="gender  2xl:w-60 w-[185px]">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Gender
-                                                </span>
-                                                <div className={` border border-slate-300 mt-1 rounded-md h-10 flex justify-center items-center space-x-5 ${valid.errors?.gender != '' && 'border-red-600'} `}>
-                                                    <div className="male ">
-
-                                                        <label htmlFor="gender" className="m-2">
-                                                            Male
-                                                        </label>
-                                                        <input
-                                                            type="radio"
-                                                            id="male"
-                                                            name="gender"
-                                                            value="male"
-                                                            checked={studentInputController?.gender?.toLowerCase() == 'male'}
-                                                            disabled={isEnable}
-                                                            className="  hover:cursor-pointer"
-
-                                                            onChange={handleChange}
-                                                        />
+                            <div className=" w-11/12 rounded-lg  truncate bg-white p-5 2xl:p-10 content-center">
+                                <div className="grid grid-cols-2">
+                                    <div className="left flex flex-col items-center gap-5">
+                                        <div className='profile_img_div flex justify-center items-center border-2 border-gray-500 shadow-lg'>
+                                            <img src={img != '' ? img : defaultImage} name="photo_name" width="100%" height="100%" alt="student profile" />
+                                            {
+                                                !isEnable
+                                                    ?
+                                                    <div className='profile_img_overlay flex flex-col justify-center items-center'>
+                                                        <input type='file' id="file" name="photo" className="rounded-md w-16" onChange={onImageChange} accept=".png, .jpg, .jpeg" />
+                                                        {
+                                                            img != ''
+                                                                ?
+                                                                <button
+                                                                    className='bg-red-600 px-1 rounded text-white hover:bg-red-400 mt-5 flex items-center justify-center gap-3' onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        setImg('');
+                                                                        document.getElementById('file').value = ''
+                                                                    }}>
+                                                                    <span> Remove</span>
+                                                                </button>
+                                                                :
+                                                                null
+                                                        }
                                                     </div>
-                                                    <div className="female">
-                                                        <label htmlFor="gender" className="m-2">
-                                                            Female
-                                                        </label>
-                                                        <input
-                                                            type="radio"
-                                                            id="female"
-                                                            name="gender"
-                                                            value="female"
-                                                            checked={studentInputController?.gender?.toLowerCase() == 'female'}
-                                                            disabled={isEnable}
-                                                            className="   hover:cursor-pointer"
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                        <div className="flex lg:flex-row md:flex-col gap-4 mt-5">
+                                            <div className="fullname">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Full Name *
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="full_name"
+                                                        placeholder="First Name, Middle Name, Last Name"
+                                                        value={studentInputController.full_name}
+                                                        disabled={isEnable}
+                                                        className={`2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.full_name != '' && 'border-red-600'}`}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {valid.errors?.full_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.full_name}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="mothername">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Mother Name *
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="mother_name"
+                                                        placeholder="Enter Mother Name"
+                                                        value={studentInputController.mother_name}
+                                                        disabled={isEnable}
+                                                        className={`2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.mother_name != '' && 'border-red-600'}`}
 
-                                                            onChange={handleChange}
-                                                        />
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                        }}
+                                                    />
+                                                    {valid.errors?.mother_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.mother_name}</small> : null}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="whatsappno">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        WhatsApp No *
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="whatsapp_no"
+                                                        placeholder="Enter WhatsApp No"
+                                                        value={studentInputController.whatsapp_no}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.whatsapp_no != '' && 'border-red-600'}`}
+
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                        }}
+                                                    />
+                                                    {valid.errors?.whatsapp_no != '' ? <small className="text-red-600 mt-3">*{valid.errors?.whatsapp_no}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="mobileno">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Mobile No
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="alternate_no"
+                                                        placeholder="Enter Mobile No"
+                                                        value={studentInputController.alternate_no != '' || studentInputController.alternate_no != '--' ? studentInputController.alternate_no : '--'}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.alternate_no != '' && 'border-red-600'}`}
+
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                        }}
+                                                    />
+                                                    {valid.errors?.alternate_no != '' ? <small className="text-red-600 mt-3">*{valid.errors?.alternate_no}</small> : null}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="dateofbirth">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Date Of Birth *
+                                                    </span>
+                                                    <input
+                                                        type="date"
+                                                        id="dob"
+                                                        name="dob"
+                                                        disabled={isEnable}
+                                                        value={studentInputController.dob}
+                                                        className={` 2xl:w-60 hover:cursor-pointer mt-1 block w-[185px] px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.dob != '' && 'border-red-600'}`}
+
+                                                        onChange={handleChange} />
+                                                    {valid.errors?.dob != '' ? <small className="text-red-600 mt-3">*{valid.errors?.dob}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="gender  2xl:w-60 w-[185px]">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Gender
+                                                    </span>
+                                                    <div className={` border border-slate-300 mt-1 rounded-md h-10 flex justify-center items-center space-x-5 ${valid.errors?.gender != '' && 'border-red-600'} `}>
+                                                        <div className="male ">
+
+                                                            <label htmlFor="gender" className="m-2">
+                                                                Male
+                                                            </label>
+                                                            <input
+                                                                type="radio"
+                                                                id="male"
+                                                                name="gender"
+                                                                value="male"
+                                                                checked={studentInputController?.gender?.toLowerCase() == 'male'}
+                                                                disabled={isEnable}
+                                                                className="  hover:cursor-pointer"
+
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                        <div className="female">
+                                                            <label htmlFor="gender" className="m-2">
+                                                                Female
+                                                            </label>
+                                                            <input
+                                                                type="radio"
+                                                                id="female"
+                                                                name="gender"
+                                                                value="female"
+                                                                checked={studentInputController?.gender?.toLowerCase() == 'female'}
+                                                                disabled={isEnable}
+                                                                className="   hover:cursor-pointer"
+
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </label>
-                                            {valid.errors?.gender != '' ? <small className="text-red-600 mt-3">*{valid.errors?.gender}</small> : null}
+                                                </label>
+                                                {valid.errors?.gender != '' ? <small className="text-red-600 mt-3">*{valid.errors?.gender}</small> : null}
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-1 2xl:w-full">
+                                            <div className="Addresss 2xl:w-full xl:w-96 lg:w-96 w-52 md:px-3 lg:px-0 2xl:px-2">
+                                                <label className="flex flex-col">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Address *
+                                                    </span>
+                                                    <textarea name="address"
+                                                        value={studentInputController.address}
+                                                        disabled={isEnable} className={`2xl:w-full xl:w-96 lg:w-96 mt-1 rounded-md px-3 py-2 outline-none border  border-slate-300 text-sm shadow-sm placeholder-slate-400 ${valid.errors?.address != '' && 'border-red-600'}`} placeholder="Enter Address" id=""
+                                                        onChange={handleChange} cols="71" rows="2"></textarea>
+                                                    {valid.errors?.address != '' ? <small className="text-red-600 mt-3">*{valid.errors?.address}</small> : null}
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-1 2xl:w-full px-6">
-                                        <div className="Addresss 2xl:w-full xl:w-96 lg:w-96">
+                                    <div className="right flex flex-col justify-center items-center gap-5">
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="selectstd">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Class *
+                                                    </span>
+                                                    <select
+                                                        name="class_name"
+                                                        disabled={true}
+                                                        className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none`}
+                                                    >
+                                                        <option value="">{studentInputController.class_name}</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <div className="selectstream">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Stream
+                                                    </span>
+                                                    <select
+                                                        name="stream"
+                                                        disabled={true}
+                                                        className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none capitalize`}
+                                                    >
+                                                        <option value="">{studentInputController.stream}</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <div className="selectmedium">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Medium
+                                                    </span>
+                                                    <select
+                                                        name="medium"
+                                                        disabled={true}
+                                                        className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none capitalize`}
+                                                    >
+                                                        <option value="">{studentInputController.medium}</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="admissiondate">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Admission Date *
+                                                    </span>
+                                                    <input
+                                                        type="date"
+                                                        id="admission_date"
+                                                        name="admission_date"
+                                                        value={studentInputController.admission_date}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.admission_date != '' && 'border-red-600'}`}
+
+                                                        onChange={handleChange}
+                                                    />
+                                                    {valid.errors?.admission_date != '' ? <small className="text-red-600 mt-3">*{valid.errors?.admission_date}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="totalfee">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Total Fee
+                                                    </span>
+                                                    <input
+                                                        type="text" id='totalfee'
+                                                        name="total_fees"
+                                                        disabled={true}
+                                                        value={studentInputController.total_fees}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.total_fees != '' && 'border-red-600'}`}
+
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                            totalDis()
+                                                        }}
+                                                    />
+                                                    {valid.errors?.total_fees != '' ? <small className="text-red-600 mt-3">*{valid.errors?.total_fees}</small> : null}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="email">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Email
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="email"
+                                                        placeholder="Enter Email"
+                                                        value={studentInputController.email != '' || studentInputController.email != '--' ? studentInputController.email : "--"}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.email != '' && 'border-red-600'}`}
+
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                        }}
+                                                    />
+                                                    {valid.errors?.email != '' ? <small className="text-red-600 mt-3">*{valid.errors?.email}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="discount">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Discount
+                                                    </span>
+                                                    <input
+                                                        type="text" id='discount'
+                                                        name="discount"
+                                                        placeholder="Enter Discount"
+                                                        value={studentInputController.discount}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.discount != '' && 'border-red-600'}`}
+
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                            totalDis()
+                                                        }}
+                                                    />
+                                                    {valid.errors?.discount != '' ? <small className="text-red-600 mt-3">*{valid.errors?.discount}</small> : null}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="reference">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Reference
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="reference"
+                                                        placeholder="Enter Reference"
+                                                        value={studentInputController.reference != '' || studentInputController.reference != '--' ? studentInputController.reference : "--"}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.reference != '' && 'border-red-600'} `}
+
+                                                        onChange={handleChange}
+                                                    />
+                                                    {valid.errors?.reference != '' ? <small className="text-red-600 mt-3">*{valid.errors?.reference}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="netpayable">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Net Payable
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="net_fees"
+                                                        value={studentInputController.net_fees ? studentInputController.net_fees : studentInputController.total_fees - studentInputController.discount}
+                                                        disabled={true}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none`}
+                                                        onChange={handleChange}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex lg:flex-row md:flex-col gap-4">
+                                            <div className="schoolname">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        School Name
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="school_name"
+                                                        placeholder="Enter School Name"
+                                                        value={studentInputController.school_name != '' || studentInputController.school_name != '--' ? studentInputController.school_name : "--"}
+                                                        disabled={isEnable}
+                                                        className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.school_name != '' && 'border-red-600'}`}
+
+                                                        onChange={handleChange}
+                                                    />
+                                                    {valid.errors?.school_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.school_name}</small> : null}
+                                                </label>
+                                            </div>
+                                            <div className="father_occupation">
+                                                <label className="block">
+                                                    <span className="block text-sm font-medium text-slate-700">
+                                                        Father Occupation
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        name="father_occupation"
+                                                        value={studentInputController.father_occupation != '' || studentInputController.father_occupation != '--' ? studentInputController.father_occupation : "--"}
+                                                        disabled={isEnable}
+                                                        placeholder="Enter Father's Occupation"
+                                                        className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors.father_occupation != '' && 'border-red-600'}`}
+                                                        onChange={(e) => {
+                                                            handleChange(e)
+                                                        }}
+                                                    />
+                                                    {valid.errors?.father_occupation != '' ? <small className="text-red-600 mt-3">*{valid.errors?.father_occupation}</small> : null}
+
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="note 2xl:w-full xl:w-96 lg:w-96 2xl:px-2">
                                             <label className="flex flex-col">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Address *
-                                                </span>
-                                                <textarea name="address"
-                                                    value={studentInputController.address}
-                                                    disabled={isEnable} className={`mt-1 rounded-md px-3 py-2 outline-none border  border-slate-300 text-sm shadow-sm placeholder-slate-400 ${valid.errors?.address != '' && 'border-red-600'}`} placeholder="Enter Address" id=""
-                                                    onChange={handleChange} cols="71" rows="2"></textarea>
-                                                {valid.errors?.address != '' ? <small className="text-red-600 mt-3">*{valid.errors?.address}</small> : null}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="right flex flex-col justify-center items-center gap-5">
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="selectstd">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Class *
-                                                </span>
-                                                <select
-                                                    name="class_name"
-                                                    disabled={true}
-                                                    className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none`}
-                                                >
-                                                    <option value="">{studentInputController.class_name}</option>
-                                                </select>
-                                            </label>
-                                        </div>
-                                        <div className="selectstream">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Stream
-                                                </span>
-                                                <select
-                                                    name="stream"
-                                                    disabled={true}
-                                                    className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none`}
-                                                >
-                                                    <option value="">{studentInputController.stream}</option>
-                                                </select>
-                                            </label>
-                                        </div>
-                                        <div className="selectmedium">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Medium
-                                                </span>
-                                                <select
-                                                    name="medium"
-                                                    disabled={true}
-                                                    className={`2xl:w-[155px] w-[120px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none `}
-                                                >
-                                                    <option value="">{studentInputController.medium}</option>
-                                                </select>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="admissiondate">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Admission Date *
-                                                </span>
-                                                <input
-                                                    type="date"
-                                                    id="admission_date"
-                                                    name="admission_date"
-                                                    value={studentInputController.admission_date}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.admission_date != '' && 'border-red-600'}`}
-
-                                                    onChange={handleChange}
-                                                />
-                                                {valid.errors?.admission_date != '' ? <small className="text-red-600 mt-3">*{valid.errors?.admission_date}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="totalfee">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Total Fee
-                                                </span>
-                                                <input
-                                                    type="text" id='totalfee'
-                                                    name="total_fees"
-                                                    placeholder="Enter Your Total Fee"
-                                                    disabled={true}
-                                                    value={studentInputController.total_fees}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.total_fees != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                        totalDis()
-                                                    }}
-                                                />
-                                                {valid.errors?.total_fees != '' ? <small className="text-red-600 mt-3">*{valid.errors?.total_fees}</small> : null}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="email">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Email
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="email"
-                                                    placeholder="Enter Your Email"
-                                                    value={studentInputController.email != '' || studentInputController.email != '--' ? studentInputController.email : "--"}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.email != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                    }}
-                                                />
-                                                {valid.errors?.email != '' ? <small className="text-red-600 mt-3">*{valid.errors?.email}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="discount">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Discount
-                                                </span>
-                                                <input
-                                                    type="text" id='discount'
-                                                    name="discount"
-                                                    placeholder="Enter Your Discount"
-                                                    value={studentInputController.discount}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.discount != '' && 'border-red-600'}`}
-
-                                                    onChange={(e) => {
-                                                        handleChange(e)
-                                                        totalDis()
-                                                    }}
-                                                />
-                                                {valid.errors?.discount != '' ? <small className="text-red-600 mt-3">*{valid.errors?.discount}</small> : null}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="reference">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Reference
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="reference"
-                                                    placeholder="Enter Your Refeence"
-                                                    value={studentInputController.reference != '' || studentInputController.reference != '--' ? studentInputController.reference : "--"}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.reference != '' && 'border-red-600'} `}
-
-                                                    onChange={handleChange}
-                                                />
-                                                {valid.errors?.reference != '' ? <small className="text-red-600 mt-3">*{valid.errors?.reference}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="netpayable">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    Net Payable
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="net_fees"
-                                                    value={studentInputController.net_fees ? studentInputController.net_fees : studentInputController.total_fees - studentInputController.discount}
-                                                    placeholder="Enter Your Net Payable"
-                                                    disabled={true}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none`}
-                                                    onChange={handleChange}
-                                                />
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex lg:flex-row md:flex-col gap-4">
-                                        <div className="schoolname">
-                                            <label className="block">
-                                                <span className="block text-sm font-medium text-slate-700">
-                                                    School Name
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    name="school_name"
-                                                    placeholder="Enter Your School Name"
-                                                    value={studentInputController.school_name != '' || studentInputController.school_name != '--' ? studentInputController.school_name : "--"}
-                                                    disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.school_name != '' && 'border-red-600'}`}
-
-                                                    onChange={handleChange}
-                                                />
-                                                {valid.errors?.school_name != '' ? <small className="text-red-600 mt-3">*{valid.errors?.school_name}</small> : null}
-                                            </label>
-                                        </div>
-                                        <div className="note">
-                                            <label className="block">
                                                 <span className="block text-sm font-medium text-slate-700">
                                                     Note
                                                 </span>
-                                                <input
+                                                <textarea
                                                     type="text"
                                                     name="note"
-                                                    placeholder="Enter Your Note"
+                                                    placeholder="Enter Note"
                                                     value={studentInputController.note != '' || studentInputController.note != '--' ? studentInputController.note : "--"}
                                                     disabled={isEnable}
-                                                    className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.note != '' && 'border-red-600'}`}
+                                                    className={`2xl:w-full xl:w-96 lg:w-96 mt-1 rounded-md px-3 py-2 outline-none border  border-slate-300 text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.note != '' && 'border-red-600'}`}
 
                                                     onChange={(e) => {
                                                         handleChange(e)
@@ -895,91 +924,92 @@ const Profilestudent = () => {
                                                 {valid.errors?.note != '' ? <small className="text-red-600 mt-3">*{valid.errors?.note}</small> : null}
                                             </label>
                                         </div>
+
                                     </div>
+                                </div>
+                                <div className="flex justify-center 2xl:justify-end items-center h-20 w-full mt-5">
+                                    <button className={`border rounded-md w-24 h-11 bg-darkblue-500 
+                                        ${!showUpdateButton ? null : "hidden"}
+                                        drop-shadow-lg text-white hover:bg-white 
+                                        border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            printAdmissionForm();
+                                        }} >
+                                        Print
+                                    </button>
+                                    <button className={`border rounded-md w-24 h-11 ml-2 bg-darkblue-500 
+                                        ${!showUpdateButton ? null : "hidden"}
+                                        drop-shadow-lg text-white hover:bg-white 
+                                        border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            setClassSelectionModel(true);
+                                        }} >
+                                        Transfer
+                                    </button>
+                                    {
+                                        studDetails?.personal.is_cancelled == 0
+                                            ?
+                                            <>
+                                                <button className={`border rounded-md ml-2 mr-2 w-36 h-11 bg-darkblue-500 ${!showUpdateButton ? null : "hidden"} drop-shadow-lg text-white border-2 hover:bg-white hover:border-darkblue-500 hover:text-darkblue-500`} onClick={handleAdmissionCancel}>
+                                                    Cancel Admission
+                                                </button>
 
-                                    <div className="flex w-full justify-end pr-2 pt-7">
-                                        <button className={`border rounded-md w-24 h-11 bg-darkblue-500 
-                                            ${!showUpdateButton ? null : "hidden"}
-                                            drop-shadow-lg text-white hover:bg-white 
-                                            border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                printAdmissionForm();
-                                            }} >
-                                            Print
-                                        </button>
-                                        <button className={`border rounded-md w-24 h-11 ml-2 bg-darkblue-500 
-                                            ${!showUpdateButton ? null : "hidden"}
-                                            drop-shadow-lg text-white hover:bg-white 
-                                            border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                setClassSelectionModel(true);
-                                            }} >
-                                            Transfer
-                                        </button>
-                                        {
-                                            studDetails?.personal.is_cancelled == 0
-                                                ?
-                                                <>
-                                                    <button className={`border rounded-md ml-2 mr-2 w-36 h-11 bg-darkblue-500 ${!showUpdateButton ? null : "hidden"} drop-shadow-lg text-white border-2 hover:bg-white hover:border-darkblue-500 hover:text-darkblue-500`} onClick={handleAdmissionCancel}>
-                                                        Cancel Admission
-                                                    </button>
+                                                <button type="button" className={`${showUpdateButton ? "hidden" : null} py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            setIsEnable(false);
+                                                            setShowUpdateButton(true);
+                                                            setStudentInputController((prevData) => {
+                                                                return {
+                                                                    ...prevData,
+                                                                    alternate_no: studentInputController.alternate_no == '--' ? '' : studentInputController.alternate_no,
+                                                                    email: studentInputController.email == '--' ? '' : studentInputController.email,
+                                                                    reference: studentInputController.reference == '--' ? '' : studentInputController.reference,
+                                                                    school_name: studentInputController.school_name == '--' ? '' : studentInputController.school_name,
+                                                                    note: studentInputController.note == '--' ? '' : studentInputController.note,
+                                                                    father_occupation: studentInputController.father_occupation == '--' ? '' : studentInputController.father_occupation
+                                                                }
+                                                            })
+                                                        }
+                                                    }>
+                                                    <FaUserEdit className="text-xl" />Edit
+                                                </button>
 
-                                                    <button type="button" className={`${showUpdateButton ? "hidden" : null} py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}
-                                                        onClick={
-                                                            (e) => {
-                                                                e.preventDefault();
-                                                                setIsEnable(false);
-                                                                setShowUpdateButton(true);
-                                                                setStudentInputController((prevData) => {
-                                                                    return {
-                                                                        ...prevData,
-                                                                        alternate_no: studentInputController.alternate_no == '--' ? '' : studentInputController.alternate_no,
-                                                                        email: studentInputController.email == '--' ? '' : studentInputController.email,
-                                                                        reference: studentInputController.reference == '--' ? '' : studentInputController.reference,
-                                                                        school_name: studentInputController.school_name == '--' ? '' : studentInputController.school_name,
-                                                                        note: studentInputController.note == '--' ? '' : studentInputController.note
-                                                                    }
-                                                                })
-                                                            }
-                                                        }>
-                                                        <FaUserEdit className="text-xl" />Edit
-                                                    </button>
+                                                <button type="button" className={`${showUpdateButton ? null : "hidden"} py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            setIsEnable(true);
+                                                            setShowUpdateButton(false)
+                                                            setState(valid.clearErrors())
+                                                            setStudentInputController((prevData) => {
+                                                                return {
+                                                                    ...prevData,
+                                                                    alternate_no: studentInputController.alternate_no == '' ? '--' : studentInputController.alternate_no,
+                                                                    email: studentInputController.email == '' ? '--' : studentInputController.email,
+                                                                    reference: studentInputController.reference == '' ? '--' : studentInputController.reference,
+                                                                    school_name: studentInputController.school_name == '' ? '--' : studentInputController.school_name,
+                                                                    note: studentInputController.note == '' ? '--' : studentInputController.note,
+                                                                    father_occupation: studentInputController.father_occupation == '' ? '--' : studentInputController.father_occupation
+                                                                }
+                                                            })
+                                                            setStudentInputController(oldStudentDetails);
+                                                        }
+                                                    }>
+                                                    <FaUserEdit className="text-xl" />Cancel
+                                                </button>
 
-                                                    <button type="button" className={`${showUpdateButton ? null : "hidden"} py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}
-                                                        onClick={
-                                                            (e) => {
-                                                                e.preventDefault();
-                                                                setIsEnable(true);
-                                                                setShowUpdateButton(false)
-                                                                setState(valid.clearErrors())
-                                                                setStudentInputController((prevData) => {
-                                                                    return {
-                                                                        ...prevData,
-                                                                        alternate_no: studentInputController.alternate_no == '' ? '--' : studentInputController.alternate_no,
-                                                                        email: studentInputController.email == '' ? '--' : studentInputController.email,
-                                                                        reference: studentInputController.reference == '' ? '--' : studentInputController.reference,
-                                                                        school_name: studentInputController.school_name == '' ? '--' : studentInputController.school_name,
-                                                                        note: studentInputController.note == '' ? '--' : studentInputController.note
-                                                                    }
-                                                                })
-                                                                setStudentInputController(oldStudentDetails);
-                                                            }
-                                                        }>
-                                                        <FaUserEdit className="text-xl" />Cancel
-                                                    </button>
-
-                                                    <button type="submit" disabled={isProcessing} className={`${showUpdateButton ? null : "hidden"} ${isProcessing ? 'bg-darkblue-300' : 'bg-darkblue-500'} py-2 px-8 gap-2  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}>
-                                                        <FaUserEdit className="text-xl" />
-                                                        {isProcessing ? 'Loading...' : 'Update'}
-                                                    </button>
-                                                </>
-                                                :
-                                                null
-                                        }
-                                    </div>
-
+                                                <button type="submit" disabled={isProcessing} className={`${showUpdateButton ? null : "hidden"} ${isProcessing ? 'bg-darkblue-300' : 'bg-darkblue-500'} py-2 px-8 gap-2  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}>
+                                                    <FaUserEdit className="text-xl" />
+                                                    {isProcessing ? 'Loading...' : 'Update'}
+                                                </button>
+                                            </>
+                                            :
+                                            null
+                                    }
                                 </div>
                             </div>
                         </form>

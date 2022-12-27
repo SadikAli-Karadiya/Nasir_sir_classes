@@ -40,7 +40,7 @@ const Reciept = () => {
   const [error, setError] = React.useState('');
   const [receiptDetails, setReceiptDetails] = React.useState({});
   const [loading, setLoading] = React.useState(true);
-  const { admin } = React.useContext(NasirContext);
+  const { admin, section } = React.useContext(NasirContext);
 
   const onSubmit = async (data, e) => {
     e.preventDefault();
@@ -89,11 +89,11 @@ const Reciept = () => {
       }
       else{
         try{
-          let receipt_details = await searchReceipt(location.state.fees_receipt_id);
+          let receipt_details = await searchReceipt(location.state.fees_receipt_id, section == 'primary' ? 1 : 0);
           receipt_details = receipt_details.data.student_receipts[0]
           setReceiptDetails(()=>{
-            let date = new Date(receipt_details?.academics[0].fees[0].fees_receipt[0].date).toLocaleString()
-            date = date.split(',')[0]
+            let date = new Date(receipt_details?.academics[0].fees[0].fees_receipt[0].date);
+            date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
   
             let amountInWords = inWords(receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount)
             return {
@@ -111,9 +111,16 @@ const Reciept = () => {
               is_by_cheque: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cheque,
               upi_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].upi_no,
               cheque_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_no,
+              cheque_date: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_date,
               amount: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount,
               discount: receipt_details?.academics[0].fees[0].fees_receipt[0].discount,
-              admin: receipt_details?.academics[0].fees[0].fees_receipt[0].admin[0].username
+              admin: receipt_details?.academics[0].fees[0].fees_receipt[0].admin[0].username,
+              is_edited: receipt_details?.academics[0].fees[0].fees_receipt[0].is_edited,
+              from_month: receipt_details?.academics[0].fees[0].fees_receipt[0].from_month,
+              to_month: receipt_details?.academics[0].fees[0].fees_receipt[0].to_month,
+              net_fees: receipt_details?.academics[0].fees[0].net_fees,
+              pending_amount: receipt_details?.academics[0].fees[0].pending_amount,
+              paid_upto: receipt_details?.academics[0].fees[0].paid_upto,
             }
           });
           setLoading(false);
@@ -267,14 +274,14 @@ const Reciept = () => {
       </div>
      
       <div ref={printRef}>
-        {isStaff ? <Receipt_teacher isSalaried={isSalaried}/> : <Receipt_student receiptDetails={receiptDetails}/>}
+        {isStaff ? <Receipt_teacher isSalaried={isSalaried}/> : <Receipt_student receiptDetails={receiptDetails} forOffice=''/>}
         { print 
           ? 
             isStaff 
             ? 
               <Receipt_teacher isSalaried={isSalaried}/> 
             : 
-              <Receipt_student receiptDetails={receiptDetails}/>
+              <Receipt_student receiptDetails={receiptDetails} forOffice='(OFFICE)' />
           : 
           null
         }

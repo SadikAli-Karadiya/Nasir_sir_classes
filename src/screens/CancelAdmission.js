@@ -17,7 +17,7 @@ import {NasirContext} from '../NasirContext'
 function CancelAdmission() {
     const location = useLocation();
     const navigate = useNavigate();
-    const {admin} = React.useContext(NasirContext);
+    const {admin, section} = React.useContext(NasirContext);
     
     location.state == null ?? navigate('/')
 
@@ -57,7 +57,7 @@ function CancelAdmission() {
                 return;
             }
             setLoading(true);
-            const res = await getStudentDetails(searchValue)
+            const res = await getStudentDetails(searchValue, section == 'primary' ? 1 : 0)
        
             setLoading(false);
             setdata(
@@ -262,7 +262,7 @@ function CancelAdmission() {
     useEffect(() =>{
         //Fetching new student details
         async function fetchStudentDetails(){
-            let studentDetails = await getStudentDetails(student_id);
+            let studentDetails = await getStudentDetails(student_id, section == 'primary' ? 1 : 0);
             studentDetails = studentDetails.data.data.students_detail[0]
 
             setStudentDetails({

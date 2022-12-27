@@ -6,11 +6,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {updateStudentReceipt} from '../hooks/usePost';
 import { AxiosError } from "axios";
 import Toaster from '../hooks/showToaster';
+import { Tooltip } from "@material-tailwind/react";
 import { NasirContext } from "../NasirContext";
 
 export default function UpdateStudentReceipt() {
+  const { admin, section } = React.useContext(NasirContext);
+
   const location = useLocation();
 
+    let cheque_date = new Date(location.state.receiptDetails.cheque_date);
+        cheque_date = `${cheque_date.getFullYear()}-${cheque_date.getMonth() + 1 < 10 ? "0" + (cheque_date.getMonth() + 1) : cheque_date.getMonth() + 1}-${cheque_date.getDate() < 10 ? "0" + cheque_date.getDate() : cheque_date.getDate()}`
     const student = {
         name: location.state.receiptDetails.full_name,
         fees: location.state.receiptDetails.amount,
@@ -26,19 +31,25 @@ export default function UpdateStudentReceipt() {
         is_by_cheque: location.state.receiptDetails.is_by_cheque,
         is_by_upi: location.state.receiptDetails.is_by_upi,
         upi_no: location.state.receiptDetails.upi_no,
-        cheque_no: location.state.receiptDetails.cheque_no
+        cheque_no: location.state.receiptDetails.cheque_no,
+        cheque_date,
+        from_month: location.state.receiptDetails.from_month,
+        to_month: location.state.receiptDetails.to_month,
+        paid_upto: location.state.receiptDetails.paid_upto,
+        net_fees: location.state.receiptDetails.net_fees,
+        pending_amount: location.state.receiptDetails.pending_amount,
     };
-  const { admin } = React.useContext(NasirContext);
 
   const [fee, setFee] = React.useState(student?.amount);
   const [discount, setDiscount] = React.useState(student?.discount == 0 ? '' : student?.discount);
   const [chequeNo, setChequeNo] = React.useState(student?.cheque_no == -1 ? '' : student?.cheque_no);
+  const [chequeDate, setChequeDate] = React.useState(student?.cheque_date == '' ? '' : student?.cheque_date);
   const [upiNo, setUpiNo] = React.useState(student?.upi_no == "-1" ? '' : student?.upi_no);
   const [payment, setPayment] = React.useState("cash");
   const [toggleCheque, setToggleCheque] = React.useState(student?.is_by_cheque);
   const [toggleUpi, setToggleUpi] = React.useState(student?.is_by_upi);
   const [toggleCash, setToggleCash] = React.useState(student?.is_by_cash);
-
+  const [totalMonths, setTotalMonths] = React.useState('');
   const [deduction, setDeduction] = React.useState(student?.discount);
   const [discountAppliedMsg, setDiscountAppliedMsg] = React.useState(student?.discount > 0 ? false : true);
   const [model, setModel] = React.useState(false);
@@ -49,7 +60,9 @@ export default function UpdateStudentReceipt() {
       discount: '',
       upi: '',
       cheque: '',
-      invalid_pin: '' 
+      chequeDate: '',
+      invalid_pin: '',
+      month: ''
   });
 
 
@@ -66,7 +79,7 @@ export default function UpdateStudentReceipt() {
         setErrors((prevData)=>{
             return{
                 ...prevData,
-                discount: '*Please enter discount'
+                discount: '*First enter discount then apply'
             }
         })
         return;
@@ -97,17 +110,14 @@ export default function UpdateStudentReceipt() {
   function handlePaymentMethod(e) {
     setUpiNo('')
     setChequeNo('')
+    setChequeDate('')
     setErrors((prevData) => {
-        return {
+      return {
         ...prevData,
-        upi: ''
-        }
-    })
-    setErrors((prevData) => {
-        return {
-        ...prevData,
-        cheque: ''
-        }
+        upi: '',
+        cheque: '',
+        chequeDate: ''
+      }
     })
       if(e.target.value == 1){
         setPayment(e.target.value);
@@ -133,7 +143,16 @@ export default function UpdateStudentReceipt() {
       const regex = new RegExp(/^[0-9]+$/)
 
       let err = 0;
-    if(regex.test(e.target.value)){
+    if(e.target.value == ''){
+      err++;
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              amount: '*Please enter amount'
+          }
+      })
+    }
+    else if(regex.test(e.target.value)){
         err++;
         setErrors((prevData) => {
             return {
@@ -167,6 +186,31 @@ export default function UpdateStudentReceipt() {
     }
     setDeduction(0);
     setDiscountAppliedMsg(true);
+  }
+
+  const handleMonthChange = (e) => {
+    console.log(e.target.value)
+    const feesPerMonth = student.net_fees / 12;
+    const selectedFeesTotal = feesPerMonth * Number(e.target.value)
+
+    if(selectedFeesTotal > student.pending_amount){
+      setErrors((prevData) => {
+        return {
+          ...prevData,
+          month: '*Pending fees is lesser than no. of months'
+        }
+      })
+    }
+    else{
+      setFee(Math.round(selectedFeesTotal))
+      setErrors((prevData) => {
+          return {
+            ...prevData,
+            month: ''
+          }
+      })
+    }
+    setTotalMonths(e.target.value);
   }
 
   const handleDiscountValidation = (e)=>{
@@ -255,7 +299,7 @@ export default function UpdateStudentReceipt() {
 
   const onSubmit = () =>{
       let err = 0;
-      if(fee == ''){
+      if(section == 'secondary' && fee == ''){
           err++;
           setErrors((prevData) => {
               return {
@@ -263,6 +307,15 @@ export default function UpdateStudentReceipt() {
                 amount: '*Please enter amount'
               }
           })
+      }
+      if(section == 'primary' && totalMonths == ''){
+        err++;
+        setErrors((prevData) => {
+            return {
+              ...prevData,
+              month: '*Please select no. of months'
+            }
+        })
       }
       if(toggleUpi && upiNo == ''){
          err++;
@@ -282,7 +335,18 @@ export default function UpdateStudentReceipt() {
             }
           })
       }
-      if((errors.amount != '' && errors.amount != undefined) || (errors.upi != '' && errors.upi != undefined) || (errors.cheque != '' && errors.cheque != undefined)){
+      if(toggleCheque && chequeDate == '')
+      {
+        err++;
+        setErrors((prevData) =>{
+          return {
+              ...prevData,
+              chequeDate: '*Please select cheque date'
+          }
+        })
+      }
+
+      if((errors.amount != '' && errors.amount != undefined) || (errors.upi != '' && errors.upi != undefined) || (errors.cheque != '' && errors.cheque != undefined) || (errors.chequeDate != '' && errors.chequeDate != undefined) || (errors.month != '' && errors.month != undefined)){
           err++;
         }
       
@@ -306,6 +370,44 @@ export default function UpdateStudentReceipt() {
 
   }
 
+  function isSameDay(selectedDate){
+    const date = new Date(selectedDate);
+    const currentDate = new Date();
+
+    return date.getFullYear() === currentDate.getFullYear()
+        && date.getDate() === currentDate.getDate()
+        && date.getMonth() === currentDate.getMonth();
+
+  }
+
+  const handleChequeDate = (e) =>{
+    if(e.target.value == ''){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: '*Please select cheque date'
+          }
+      })
+    }
+    else if(isSameDay(e.target.value)){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: ''
+          }
+      })
+    }
+    else if(new Date(e.target.value).getTime() < new Date().getTime()){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: '*Cheque date should be greater than today\'s date'
+          }
+      })
+    }
+    setChequeDate(e.target.value)
+  }
+
 
   const navigate = useNavigate();
   async function handlePINsubmit() {
@@ -316,12 +418,15 @@ export default function UpdateStudentReceipt() {
             is_by_cheque: toggleCheque ? 1 : 0,
             is_by_upi: toggleUpi ? 1 : 0,
             cheque_no: chequeNo,
+            cheque_date: chequeDate,
             upi_no: upiNo,
             amount: Number(fee) + Number(deduction),
             discount: deduction,
             method: payment,
-            admin_id: admin._id,
-            security_pin: pin
+            admin_id: admin?._id,
+            security_pin: pin,
+            last_paid: student.from_month,
+            total_months: Number(totalMonths),
         };
 
         setIsAuthenticating(true)
@@ -385,11 +490,12 @@ export default function UpdateStudentReceipt() {
               <div className="flex  justify-between px-7 py-3">
                 <div>
                     <h1 className="font-bold">NAME : {student.name.toUpperCase()}</h1>
-                    <h2 className="text-sm"> Class: {student.class_name}
-                        <span className="ml-5">Medium: {student.medium}</span>
-                        <span className="ml-5">Stream: {student.stream}</span>
+                    <h2 className="text-sm capitalize"> Class: {student.class_name}
+                        <span className="ml-5 capitalize">Medium: {student.medium}</span>
+                        <span className="ml-5 capitalize">Stream: {student.stream}</span>
                     </h2>
                     <h2 className="text-sm">Roll no : {student.rollno} </h2>
+                    <h3 className="text-sm">Net Fees: {student.net_fees}</h3>
                 </div>
                 <div className="text-sm">
                   <h4>Date : {date}</h4>
@@ -422,7 +528,7 @@ export default function UpdateStudentReceipt() {
                         :
                             null
                 }
-                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin.username}</span></h3>
+                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin?.username}</span></h3>
               </div>
 
               <div className="border-2 mx-8 mt-6 h-8 rounded  w-fit flex items-center border-darkblue-500">
@@ -475,11 +581,12 @@ export default function UpdateStudentReceipt() {
                     <p className="text-md text-white font-bold text-center font-mono tracking-wide">Receipt No: {student.receipt_no}</p>
                 </div>
                 <h2 className="font-bold text-lg tracking-wide">NAME : {student.name.toUpperCase()}</h2>
-                <h2 className="text-[16px] tracking-wide"> Class: {student.class_name}
-                    <span className="ml-5">Medium: {student.medium}</span>
-                    <span className="ml-5">Stream: {student.stream}</span>
+                <h2 className="text-[16px] tracking-wide capitalize"> Class: {student.class_name}
+                    <span className="ml-5 capitalize">Medium: {student.medium}</span>
+                    <span className="ml-5 capitalize">Stream: {student.stream}</span>
                 </h2>
                 <h3 className="text-[16px] tracking-wide">Roll no: {student.rollno}</h3>
+                <h3 className="text-[16px] tracking-wide">Net Fees: {student.net_fees}</h3>
             </div>
             <div className="px-7 font-mono">
                 <h3 className=""> Date : {date}</h3>
@@ -488,56 +595,85 @@ export default function UpdateStudentReceipt() {
           </div>
 
           <div className="flex px-6 justify-between items-center">
-            <div className="flex flex-col">
-              <div className="flex items-center border-2 shadow-2xl border-darkblue-500 w-fit  rounded-3xl">
-                <span className="py-2 bg-darkblue-500 text-white ml-[-1px] mr-4 font-bold border-2 border-darkblue-500 rounded-full p-2">
-                  <FaRupeeSign />
-                </span>
-                <input
-                  type="text"
-                  className="px-2 mr-4 text-xl font-bold outline-none w-32"
-                  placeholder="Enter fees"
-                  value={fee}
-                 
-                  onChange={handleFeesValidation}
-                />
+            <div className="flex">
+              <div className="flex flex-col justify-end">
+                <div className="flex items-center border-2 border-darkblue-500 w-fit  rounded-3xl">
+                  <span className="py-2 bg-darkblue-500 text-white ml-[-1px] mr-4 font-bold border-2 border-darkblue-500 rounded-full p-2">
+                    <FaRupeeSign />
+                  </span>
+                  <input
+                    type="text"
+                    className="px-2 mr-4 text-xl font-bold outline-none w-32"
+                    placeholder={`${section == 'secondary' ? 'Enter fees' : ''}`}
+                    disabled={section == 'primary'}
+                    value={fee}
+                  
+                    onChange={handleFeesValidation}
+                  />
+                </div>
+                {errors.amount != '' ? (<small className="text-red-700 mt-2">{errors.amount}</small>) : null}
               </div>
-              {errors.amount != '' ? (<small className="text-red-700 mt-2">{errors.amount}</small>) : null}
-            </div>
-            <div className=" items-center ml-24">
-              <h1 className="font-bold  text-xl">
-                Discount : <span> {deduction}</span>
-              </h1>
-              {discountAppliedMsg ? (
-                <div className="flex flex-col">
-                  <div className="flex rounded-l-md border-2 mr-2 my-2 h-8 rounded-r-lg border-darkblue-500 items-center">
-                    <input
-                      placeholder="Enter Discount "
-                      className="outline-none px-2 py-0 w-32 rounded-l-md "
-                      value={discount}
-                      onChange={handleDiscountValidation}
-                    />
-                    <button
-                      className=" text-white py-1  px-4 bg-darkblue-500 rounded-r-md"
-                      onClick={handleDiscount}
-                    >
-                      Apply
+              {
+                section == 'primary'
+                ?
+                  <div className="ml-10 flex flex-col">
+                      <h2 className="text-[14px]">No. of Months</h2>
+                    <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
+                      <option value="" className="text-gray-400">select</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                      {errors.month != '' ? (<small className="text-red-700 mt-2">{errors.month}</small>) : null}
+                  </div>
+                :
+                  null
+              }
+              </div>
+              <div className=" items-center ml-24">
+                <h1 className="font-bold  text-xl">
+                  Discount : <span> {deduction}</span>
+                </h1>
+                {discountAppliedMsg ? (
+                  <div className="flex flex-col">
+                    <div className="w-48 flex rounded-l-md border-2 mr-2 my-2 h-8 rounded-r-lg border-darkblue-500 items-center">
+                      <input
+                        placeholder="Enter Discount "
+                        className="outline-non capitalizee px-2 py-0 w-32 rounded-l-md "
+                        value={discount}
+                        onChange={handleDiscountValidation}
+                      />
+                      <button
+                        className=" text-white py-1  px-4 bg-darkblue-500 rounded-r-md"
+                        onClick={handleDiscount}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {errors.discount != '' ? (<small className="text-red-700">{errors.discount}</small>) : null}
+                  </div>
+                ) 
+                : 
+                  <div className="flex flex-col items-end">
+                    <h1 className="text-green-800 font-bold">
+                      Discount Applied Successfully !
+                    </h1>
+                    <button className="text-center hover:bg-red-300 text-white bg-red-400 rounded-md px-3 py-2 mt-2" onClick={()=> handleRemoveDiscount()}>
+                      Remove Discount
                     </button>
                   </div>
-                  {errors.discount != '' ? (<small className="text-red-700">{errors.discount}</small>) : null}
-                </div>
-              ) 
-              : 
-                <div className="flex flex-col items-end">
-                  <h1 className="text-green-800 font-bold">
-                    Discount Applied Successfully !
-                  </h1>
-                  <button className="text-center hover:bg-red-300 text-white bg-red-400 rounded-md px-3 py-2 mt-2" onClick={()=> handleRemoveDiscount()}>
-                    Remove Discount
-                  </button>
-                </div>
-              }
-            </div>
+                }
+              </div>
+
           </div>
           <div className="flex flex-col py-4 px-6">
             <div className="flex items-center space-x-2">
@@ -577,17 +713,34 @@ export default function UpdateStudentReceipt() {
           {
             toggleCheque
             ? 
-              <div className="flex flex-col mx-6">
-                <div className="flex border-2 border-darkblue-500 w-fit ">
-                  <input
-                    type="text"
-                    placeholder="Enter Cheque Number"
-                    className="placeholder-black p-1"
-                    value={chequeNo}
-                    onChange={handleChequeNo}
-                  />
+              <div className="flex">
+                <div className="flex flex-col mx-6">
+                  <div className="flex border-2 border-darkblue-500 w-fit rounded-md">
+                    <input
+                      type="text"
+                      placeholder="Enter Cheque Number"
+                      className="placeholder-black p-1 outline-none rounded-md"
+                      value={chequeNo}
+                      onChange={handleChequeNo}
+                    />
+                  </div>
+                  {errors.cheque != '' ? (<small className="text-red-700 mt-2">{errors.cheque}</small>) : null}
                 </div>
-                {errors.cheque != '' ? (<small className="text-red-700 mt-2">{errors.cheque}</small>) : null}
+                <div className="flex flex-col mx-2">
+                    <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
+                      <Tooltip content="Cheque date" placement="bottom-end" className='text-white bg-black rounded p-2'>
+                        <span>
+                          <input
+                            type="date"
+                            className="placeholder-black p-1 rounded-md outline-none"
+                            value={chequeDate}
+                            onChange={handleChequeDate}
+                          />
+                        </span>
+                      </Tooltip>
+                    </div>
+                    {errors.chequeDate != '' ? (<small className="text-red-700 mt-2">{errors.chequeDate}</small>) : null}
+                  </div>
               </div>
             : 
               null
@@ -596,11 +749,11 @@ export default function UpdateStudentReceipt() {
             toggleUpi 
             ? 
               <div className="flex flex-col mx-6">
-                <div className="flex border-2 border-darkblue-500 w-fit">
+                <div className="flex border-2 border-darkblue-500 w-fit rounded-md">
                   <input
                     type="text"
                     placeholder="Enter Upi Number/id"
-                    className=" placeholder-black p-1"
+                    className=" placeholder-black p-1 outline-none rounded-md"
                     value={upiNo}
                     onChange={handleUpiNo}
                   />
@@ -613,7 +766,7 @@ export default function UpdateStudentReceipt() {
 
           <div></div>
           <div className="text-sm flex justify-between items-center uppercase font-bold font-mono tracking-wide mt-4 ">
-            <h1 className="px-6"> admin : {admin.username}</h1>
+            <h1 className="px-6"> admin : {admin?.username}</h1>
             <button
               className="px-7  mx-7 py-2 text-base tracking-widest
            font-semibold uppercase bg-darkblue-500

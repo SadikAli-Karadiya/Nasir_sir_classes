@@ -182,9 +182,9 @@ export async function registerStudent(data) {
   });
 }
 
-export async function getStudentDetails(student_id) {
+export async function getStudentDetails(student_id, is_primary) {
   return axios
-    .get(`${SERVER}/students/details/${student_id}`)
+    .get(`${SERVER}/students/details/${student_id}/${is_primary}`)
     .then((res) => res);
 }
 
@@ -199,8 +199,8 @@ export async function studentFeesHistory(academic_id) {
 export async function updateStudent(student_id, formdata) {
   return await axios.put(`${SERVER}/students/update/${student_id}`, formdata);
 }
-export async function searchReceipt(fees_receipt_id) {
-  return await axios.get(`${SERVER}/receipt/search/${fees_receipt_id}`);
+export async function searchReceipt(fees_receipt_id, is_primary) {
+  return await axios.get(`${SERVER}/receipt/search/${fees_receipt_id}/${is_primary}`);
 }
 
 export async function generateStudentReceipt(data) {
@@ -420,4 +420,16 @@ export async function useGetMonthlyReport(sectionRequest) {
 //Send notification to pendig student API
 export async function sendPendingFeesNotification(data) {
   return await axiosInstance.post(`${SERVER}/mail/pendingStudent`, data);
+}
+
+
+//-------------------------------------------------------
+//------------------Notification API---------------------
+//-------------------------------------------------------
+
+export async function getChequeNotifications(){
+  return  await axios.get(`${SERVER}/notifications/cheque`);
+}
+export async function markAsReadNotification(notification_id){
+  return  await axios.get(`${SERVER}/notifications/cheque/mark-as-deposited/${notification_id}`);
 }

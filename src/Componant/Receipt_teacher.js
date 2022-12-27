@@ -53,13 +53,8 @@ function Receipt_teacher() {
   // --------------------------------
   // ---------   Date    ----------
   // -------------------------------
-  var today = new Date(facultyhistory?.date);
-  var date =
-    today.getDate() +
-    " / " +
-    (today.getMonth() + 1) +
-    " / " +
-    today.getFullYear();
+  let date = new Date(facultyhistory?.date);
+  date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
 
   //   // --------------------------------
   //   // ----  Number To Word  ----------
@@ -258,12 +253,12 @@ function Receipt_teacher() {
                       <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
                       <div className={`${receiptTextColor} w-48 font-bold`}>
                         <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad.</p>
-                        <p className="pt-2">Mobile: 8747382919</p>
+                        <p className="pt-2">Mobile: 9173603705</p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-5">
                       <div className={`${receiptBgColor} w-26 rounded-md flex justify-center items-center`}>
-                        <p className="text-sm text-white py-1 px-2 ">TEACHER RECEIPT</p>
+                        <p className="text-sm text-white py-1 px-2 ">TEACHER PAYMENT RECEIPT</p>
                       </div>
                       <div>
                         <p className={`${receiptTextColor} font-bold`}>Receipt No: <span className="text-black">{facultyhistory.salary_receipt_id}</span></p>
@@ -331,7 +326,15 @@ function Receipt_teacher() {
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <div className="">
-                        <p className={`${receiptTextColor} font-bold text-sm ml-1 `}>Admin: <span className="text-black">{admin.username}</span></p>
+                        <p className={`${receiptTextColor} font-bold text-sm ml-1 `}>
+                          {
+                            facultyhistory.is_edited
+                            ?
+                              <span className={`${receiptBgColor} text-white font-semibold italic rounded-md px-2 py-1 mr-1`}>Edited By</span>
+                            :
+                              null
+                          }
+                          Admin: <span className="text-black">{admin.username}</span></p>
                       </div>
                       <div>
 
@@ -341,7 +344,7 @@ function Receipt_teacher() {
                   </div>
                 </ReceiptMainDiv>
                 {print && 
-                <ReceiptMainDiv className={`border-4 rounded-3xl border-red-600 mx-auto mt-4`} >
+                <ReceiptMainDiv className={`border-4 rounded-3xl border-red-600 mx-auto mt-10`} >
                   <div className="p-5">
                     <div className="flex justify-between">
                       <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
@@ -352,7 +355,7 @@ function Receipt_teacher() {
                     </div>
                     <div className="flex justify-between items-center mt-5">
                       <div className={`${receiptBgColor} w-26 rounded-md flex justify-center items-center`}>
-                        <p className="text-sm text-white py-1 px-2 ">TEACHER RECEIPT</p>
+                        <p className="text-sm text-white py-1 px-2 ">TEACHER PAYMENT RECEIPT (OFFICE)</p>
                       </div>
                       <div>
                         <p className={`${receiptTextColor} font-bold`}>Receipt No: <span className="text-black">{facultyhistory?.salary_receipt_id}</span></p>
@@ -424,7 +427,15 @@ function Receipt_teacher() {
                     </div>
                     <div className="flex justify-between items-center mt-6">
                       <div className="">
-                        <p className={`${receiptTextColor} font-bold text-sm ml-1 `}>Admin: <span className="text-black">{facultyhistory.admin_id?.username}</span></p>
+                        <p className={`${receiptTextColor} font-bold text-sm ml-1 `}>
+                          {
+                            facultyhistory.is_edited
+                            ?
+                              <span className={`${receiptBgColor} text-white font-semibold italic rounded-md px-2 py-1 mr-1`}>Edited By</span>
+                            :
+                              null
+                          }
+                          Admin: <span className="text-black">{facultyhistory.admin_id?.username}</span></p>
                       </div>
                       <div>
 

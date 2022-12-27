@@ -6,6 +6,7 @@ import { Facultyreciept, Update_faculty_reciept, usegetAdmin } from "../hooks/us
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from './Loader';
+import { Tooltip } from "@material-tailwind/react";
 import { NasirContext } from "../NasirContext";
 import { IoIosArrowBack } from "react-icons/io";
 
@@ -24,11 +25,13 @@ export default function Salarydetails() {
     const [upi, setupi] = React.useState(false);
     const [chaque, setchaque] = React.useState(false);
     const [chaque_no, setchaqueno] = React.useState('');
+    const [chequeDate, setChequeDate] = React.useState('');
     const [upi_no, setupino] = React.useState('');
     const [payment, setPayment] = React.useState("");
     const [amount, setamount] = React.useState(false);
     const [upierror, setupierror] = React.useState(false);
     const [chaqueerror, setchaqueerror] = React.useState(false);
+    const [chequeDateError, setChequeDateError] = React.useState(false);
     const [amounterror, setamounterror] = React.useState(false);
     const [toggle, setToggle] = React.useState(false);
     const [model, setModel] = React.useState(false);
@@ -49,25 +52,34 @@ export default function Salarydetails() {
     React.useEffect(() => {
         async function fetchfacultdata() {
             const res = await Facultyreciept(params.id);
+
+            let cheque_date = new Date(res.data.data.receipt_details.getdetails.transaction_id.cheque_date);
+            cheque_date = `${cheque_date.getFullYear()}-${cheque_date.getMonth() + 1 < 10 ? "0" + (cheque_date.getMonth() + 1) : cheque_date.getMonth() + 1}-${cheque_date.getDate() < 10 ? "0" + cheque_date.getDate() : cheque_date.getDate()}`
+
+            const is_by_upi = res.data.data.receipt_details.getdetails.transaction_id.is_by_upi;
+            const is_by_cash = res.data.data.receipt_details.getdetails.transaction_id.is_by_cash;
+            const is_by_cheque = res.data.data.receipt_details.getdetails.transaction_id.is_by_cheque;
+
             setfaculty(() => res.data.data.receipt_details.getdetails)
             setsalary(() => res.data.data.receipt_details.hourlysalary)
             setishourly(() => res.data.data.receipt_details.getdetails.is_hourly)
             setsalaryamount(() => res.data.data.receipt_details.getdetails.transaction_id.amount)
-            setcash(() => res.data.data.receipt_details.getdetails.transaction_id.is_by_cash)
-            setupi(() => res.data.data.receipt_details.getdetails.transaction_id.is_by_upi)
-            setchaque(() => res.data.data.receipt_details.getdetails.transaction_id.is_by_cheque)
+            setcash(() => is_by_cash)
+            setupi(() => is_by_upi)
+            setchaque(() => is_by_cheque)
             setchaqueno(() => res.data.data.receipt_details.getdetails.transaction_id.cheque_no)
+            setChequeDate(()=> cheque_date)
             setupino(() => res.data.data.receipt_details.getdetails.transaction_id.upi_no)
             setSalaryData({
                 amount: res.data.data.receipt_details.hourlysalary?.rate_per_hour ? res.data.data.receipt_details.hourlysalary.rate_per_hour : "",
                 hour: res.data.data.receipt_details.hourlysalary?.rate_per_hour ? res.data.data.receipt_details.hourlysalary.total_hours : "",
             })
             setPayment(
-                upi
+                is_by_upi
                     ?
                     '2'
                     :
-                    chaque
+                    is_by_cheque
                         ?
                         "3"
                         :
@@ -110,13 +122,12 @@ export default function Salarydetails() {
         " / " +
         today.getFullYear();
 
-    const location = useLocation
-
     // ------------------------
     // ----- Payment_type ------
     // ------------------------
     function handleCash(e) {
         setchaqueerror(false)
+        setChequeDateError(false);
         setupierror(false)
         setPayment(e.target.value)
         setcash(true)
@@ -124,19 +135,23 @@ export default function Salarydetails() {
         setchaque(false)
         setupino("")
         setchaqueno("")
+        setChequeDate('');
 
     }
     function handleUpi(e) {
         setchaqueerror(false)
+        setChequeDateError(false);
         setPayment(e.target.value);
         setcash(false)
         setupi(true)
         setchaque(false)
         setchaqueno("")
+        setChequeDate('');
         setupino("")
     }
     function handleCheque(e) {
         setchaqueerror(false)
+        setChequeDateError(false);
         setupierror(false)
         setPayment(e.target.value);
         setcash(false)
@@ -144,6 +159,7 @@ export default function Salarydetails() {
         setchaque(true)
         setupino("")
         setchaqueno("")
+        setChequeDate('');
     }
 
     // ------------------------
@@ -168,6 +184,32 @@ export default function Salarydetails() {
         setamounterror(false)
     }
 
+    function isSameDay(selectedDate){
+        const date = new Date(selectedDate);
+        const currentDate = new Date();
+
+        return date.getFullYear() === currentDate.getFullYear()
+            && date.getDate() === currentDate.getDate()
+            && date.getMonth() === currentDate.getMonth();
+
+    }
+
+    const handleChequeDate = (e) =>{
+        if(e.target.value == ''){
+            setChequeDateError(true);
+        }
+        else if(isSameDay(e.target.value)){
+            setChequeDateError(false);
+        }
+        else if(new Date(e.target.value).getTime() < new Date().getTime()){
+            setChequeDateError(true);
+        }
+        else{
+            setChequeDateError(false);
+        }
+        setChequeDate(e.target.value)
+    }
+
     // ------------------------------------
     // ----- Chaque_number Validation ------
     // ------------------------------------
@@ -185,13 +227,17 @@ export default function Salarydetails() {
             return setupierror(true)
         }
         if (chaque && chaque_no == "") {
-            return setchaqueerror(true)
+            error++;
+            setchaqueerror(true)
+        }
+        if (chaque && chequeDate == "") {
+            error++;
+            setChequeDateError(true)
         }
         if (error > 0) {
             return;
         } else {
             setModel(true);
-
         }
     }
 
@@ -209,6 +255,7 @@ export default function Salarydetails() {
             is_by_upi: upi ? 1 : 0,
             is_by_cash: cash ? 1 : 0,
             cheque_no: payment == 3 ? chaque_no : "-1",
+            cheque_date: payment == 3 ? chequeDate : "",
             upi_no: payment == 2 ? upi_no : '-1',
             amount: salary_amount,
             total_amount: salary_amount,
@@ -297,9 +344,9 @@ export default function Salarydetails() {
 
                                 <div className="flex justify-between">
                                     <div className="px-6 py-3 font-bold text-darkblue-500 ">
-                                        <h2>* Paid by :  {payment == 1 ? 'cash' : payment == 2 ? 'UPI' : 'Cheque'}</h2>
+                                        <h2>* Paid by :  {payment == 1 ? 'Cash' : payment == 2 ? 'UPI' : 'Cheque'}</h2>
                                         {payment != 1 ? <h2>* {payment == 2 ? "UPI NO" : payment == 3 ? "Cheque No" : null} :  {payment == 2 ? upi_no : payment == 3 ? chaque_no : null}</h2> : null}
-                                        <h3 >* Recived by  : <span className="uppercase">{admin.username}</span></h3>
+                                        <h3 >* Received by  : <span className="uppercase">{admin.username}</span></h3>
                                     </div>
                                     <div>
 
@@ -320,8 +367,7 @@ export default function Salarydetails() {
                                         </div>
                                         {error && (
                                             <h1 className=" text-red-700  mx-7 text-sm px-1 my-1 font-bold">
-                                                {" "}
-                                                Please Enter Valid PIN
+                                                *Please Enter Valid PIN
                                             </h1>
                                         )}
                                     </div>
@@ -427,7 +473,6 @@ export default function Salarydetails() {
                                                     }}
                                                 />
 
-
                                                 {
                                                     <button
                                                         className="bg-darkblue-500 font-bold text-white px-5"
@@ -441,7 +486,7 @@ export default function Salarydetails() {
                                                 hourRateError 
                                                 ?
                                                 <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                                                    Please enter only numbers
+                                                    *Please enter only numbers
                                                 </h1>
                                                 :
                                                 null
@@ -458,8 +503,9 @@ export default function Salarydetails() {
                                             type="text"
                                             name="amount"
                                             id="amount"
+                                            placeholder="Enter amount"
                                             disabled={amount}
-                                            className="px-2  mr-4 text-xl font-bold outline-none w-28"
+                                            className="px-2 mr-4 text-xl rounded-r-full font-bold outline-none w-36 pr-2"
                                             value={salary_amount}
                                             onChange={(e) => { 
                                                 const regex = new RegExp(/^[0-9]+$/)
@@ -477,14 +523,13 @@ export default function Salarydetails() {
                                     </div>
                                 </div>{amounterror && (
                                     <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                                        {" "}
-                                        Please Enter Valid Amount
+                                        *Please Enter Valid Amount
                                     </h1>
                                 )}
                             </div>
 
                             <div className=" right payment_type mt-2">
-                                <div className="">
+                                <div className="flex flex-col items-end">
                                     <div className="flex items-center space-x-2 py-4 px-6">
                                         <strong className="text-xl">By : </strong>
                                         <input
@@ -522,12 +567,12 @@ export default function Salarydetails() {
                                     </div>
                                     {upi ? (
                                         <div>
-                                            <div className="flex border-2 mx-6 border-darkblue-500 w-fit ">
+                                            <div className="flex border-2 mx-6 border-darkblue-500 w-fit rounded-md">
                                                 <h1></h1>
                                                 <input
                                                     type="text"
                                                     placeholder="Enter UPI Number"
-                                                    className=" placeholder-black p-1"
+                                                    className=" placeholder-black p-1 outline-none rounded-md"
                                                     name="upi_no"
                                                     defaultValue={upi_no ? upi_no : ""}
                                                     onChange={(e) => { setupino(e.target.value); setupierror(false) }}
@@ -535,47 +580,68 @@ export default function Salarydetails() {
                                             </div>{upierror && (
                                                 <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
                                                     {" "}
-                                                    Please Enter UPI Number
+                                                    *Please Enter UPI Number
                                                 </h1>
                                             )}
                                         </div>
                                     ) : null}
                                     {chaque ? (
-                                        <div>
-                                            <div className="flex border-2 mx-6 border-darkblue-500 w-fit ">
-                                                <h1> </h1>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Enter Cheque Number"
-                                                    className=" placeholder-black p-1 active:outline-none"
-                                                    name="cheque_no"
-                                                    defaultValue={chaque_no ? chaque_no : ""}
-                                                    onChange={(e) => { 
-                                                        const regex = new RegExp(/^[0-9]+$/)
+                                        <div className="flex mx-4">
+                                            <div>
+                                                <div className="flex border-2 mx-6 border-darkblue-500 w-fit rounded-md">
+                                                    <h1> </h1>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Cheque Number"
+                                                        className=" placeholder-black p-1 outline-none rounded-md"
+                                                        name="cheque_no"
+                                                        defaultValue={chaque_no ? chaque_no : ""}
+                                                        onChange={(e) => { 
+                                                            const regex = new RegExp(/^[0-9]+$/)
 
-                                                        if(!regex.test(e.target.value)){
-                                                        setchaqueerror(true)
-                                                        }
-                                                        else{
-                                                        setchaqueerror(false) 
-                                                        }
-                                                        setchaqueno(e.target.value);
-                                                    }}
-                                                />
+                                                            if(!regex.test(e.target.value)){
+                                                            setchaqueerror(true)
+                                                            }
+                                                            else{
+                                                            setchaqueerror(false) 
+                                                            }
+                                                            setchaqueno(e.target.value);
+                                                        }}
+                                                    />
 
-                                            </div>{chaqueerror && (
-                                                <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                                                    {" "}
-                                                    Please Enter Valid Cheque Number
+                                                </div>{chaqueerror && (
+                                                    <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
+                                                        {" "}
+                                                        *Please Enter Valid Cheque Number
+                                                    </h1>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col items-end mx-2">
+                                                <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
+                                                <Tooltip content="Cheque date" placement="bottom-end" className='text-white bg-black rounded p-2'>
+                                                    <span>
+                                                    <input
+                                                        type="date"
+                                                        value={chequeDate}
+                                                        className="placeholder-black p-1 rounded-md outline-none"
+                                                        onChange={handleChequeDate}
+                                                    />
+                                                    </span>
+                                                </Tooltip>
+                                                </div>
+                                                {chequeDateError && (
+                                                <h1 className={`text-red-700 ml-auto ${!chequeDateError ? 'ml-6' : ''} text-xs px-1 my-1 font-bold`}>
+                                                    *Please Select Valid Cheque Date
                                                 </h1>
-                                            )}
+                                                )}
+                                            </div>
                                         </div>
                                     ) : null}
 
                                 </div>
                             </div>
                         </div>
-                        <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-4 ">
+                        <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-8 ">
                             <h1 className="px-6"> admin : {admin.username}</h1>
                             <button onClick={genreciept}
                                 className="px-7  mx-7 py-2 text-base tracking-widest font-semibold uppercase bg-darkblue-500 text-white 

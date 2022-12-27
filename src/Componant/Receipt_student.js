@@ -1,11 +1,27 @@
 import React from "react";
 import { TbCurrencyRupee } from "react-icons/tb";
 import styled from "styled-components";
+import {NasirContext} from '../NasirContext'
 
-function Receipt_student({receiptDetails}) {
-  
+function Receipt_student({receiptDetails, forOffice}) {
+  const {section} = React.useContext(NasirContext);
+
+  const Months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  let monthsToPrint=[];
+
   const receiptBgColor = "bg-red-600";
   const receiptTextColor = "text-red-600";
+
+  console.log(receiptDetails.from_month, receiptDetails.to_month)
+  if(section == 'primary'){
+    for(let i = (receiptDetails.from_month - 1)%12; i > -1; i++) {
+      monthsToPrint.push(Months[i]);
+      if(Months[receiptDetails.to_month - 1] == Months[i]){
+        break;
+      }
+    }
+  }
 
   return (
     <ReceiptMainDiv
@@ -19,15 +35,32 @@ function Receipt_student({receiptDetails}) {
               E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial,
               Ahmedabad.
             </p>
-            <p className="pt-2">Mobile: 8747382919</p>
+            <p className="pt-2">Mobile: 9173603705</p>
           </div>
         </div>
         <div className="flex justify-between items-center mt-5">
           <div
             className={`${receiptBgColor} w-26 rounded-md flex justify-center items-center`}
           >
-            <p className="text-sm text-white  py-1 px-2 ">STUDENT RECEIPT</p>
+            <p className="text-sm text-white  py-1 px-2 ">STUDENT FEES RECEIPT {forOffice}</p>
           </div>
+          {
+            section == 'primary'
+            ?
+              <div className={`border-2 border-red-600 w-26 rounded-md flex justify-center items-center`}>
+                <p className="text-red-600 font-semibold px-4 py-0.5">
+                  {
+                    monthsToPrint.length == 1 
+                    ?
+                      <span>{monthsToPrint[0]}</span>
+                    :
+                      <span className="">{monthsToPrint[0]}-{monthsToPrint[monthsToPrint.length - 1]}</span>
+                  }
+                </p>
+              </div>
+            :
+              null
+          }
           <div>
             <p className={`${receiptTextColor} font-bold`}>
               Receipt No: <span className="text-black">{receiptDetails?.receipt_no}</span>
@@ -49,7 +82,7 @@ function Receipt_student({receiptDetails}) {
         <div className="flex justify-between items-center mt-5">
           <div>
             <p className={`${receiptTextColor} font-bold italic`}>
-              Roll No: <span className="text-black">{receiptDetails?.roll_no}</span>
+              Student ID: <span className="text-black">{receiptDetails?.roll_no}</span>
             </p>
           </div>
           <div>
@@ -70,7 +103,7 @@ function Receipt_student({receiptDetails}) {
         </div>
         <div className="mt-5">
           <p className={`${receiptTextColor} font-bold italic`}>
-            The sum of Rupees:{" "}
+            The sum of Rupees:
             <span className="text-black">{receiptDetails?.amount_in_words}</span>
           </p>
         </div>
@@ -123,6 +156,13 @@ function Receipt_student({receiptDetails}) {
             </div>
             <div className="pt-2">
               <p className={`${receiptTextColor} font-bold text-sm ml-1 mt-3`}>
+                {
+                  receiptDetails.is_edited
+                  ?
+                    <span className={`${receiptBgColor} text-white font-semibold italic rounded-md px-2 py-1 mr-1`}>Edited By</span>
+                  :
+                    null
+                }
                 Admin: <span className="text-black">{receiptDetails?.admin?.toUpperCase()}</span>
               </p>
             </div>

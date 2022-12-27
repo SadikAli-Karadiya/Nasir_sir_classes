@@ -391,9 +391,11 @@ const Class = () => {
                   {
                     isLoading
                     ?
-                      <td colSpan={9}>
-                        <LoaderSmall />
-                      </td>
+                      <tr>
+                        <td colSpan={9}>
+                          <LoaderSmall />
+                        </td>
+                      </tr>
                     :
                       paginationData.length > 0 ? (
                         isPrint ? (
@@ -501,10 +503,11 @@ const Class = () => {
                                           to={"/receipt/FeesDetail"}
                                           state={{
                                             rollno: item.student_id.student_id,
-                                            full_name:
-                                              item.student_id.basic_info_id
-                                                .full_name,
+                                            full_name:item.student_id.basic_info_id.full_name,
                                             class_name: classDetails.class_name,
+                                            paid_upto: item.fees_id.paid_upto,
+                                            net_fees: item.fees_id.net_fees,
+                                            pending_amount: item.fees_id.pending_amount,
                                             medium: classDetails.medium,
                                             stream: classDetails.stream,
                                             batch: `${classDetails.batch_start_year}-${classDetails.batch_end_year}`,

@@ -29,8 +29,8 @@ const Myclass = () => {
   //----------API Work----------
   //----------------------------
   const notify = () => toast.success("Class created successfully");
-  const updateNotify = () => toast.success("Class update successfully");
-  const deleteNotify = () => toast.success("Class delete successfully");
+  const updateNotify = () => toast.success("Class updated successfully");
+  const deleteNotify = () => toast.success("Class deleted successfully");
 
   const [classes, setClasses] = React.useState([]);
   const [classesByYear, setClassesByYear] = React.useState([]);

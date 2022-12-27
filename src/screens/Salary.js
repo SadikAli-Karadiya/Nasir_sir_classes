@@ -6,17 +6,15 @@ import { Facultydetails, salarypay, usegetAdmin } from "../hooks/usePost"
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../Componant/Loader";
-
-
-
+import { Tooltip } from "@material-tailwind/react";
 
 export default function Salary() {
   const location = useLocation()
   // ------------------------
   // ----- All Usestate ------
   // ------------------------
-  const regtoast = () => { toast.success("Salary Reciept Genrate Successfully!!") }
-  const errtoast = () => { toast.success("Something Wrong") }
+  const regtoast = () => { toast.success("Salary Receipt Generated Successfully") }
+  const errtoast = () => { toast.success("Something Went Wrong") }
   const navigate = useNavigate();
   const [is_hourly, setishourly] = React.useState('0');
   const [isloading, setloading] = React.useState(true)
@@ -29,8 +27,10 @@ export default function Salary() {
   const [upi, setupi] = React.useState(false);
   const [chaque, setchaque] = React.useState(false);
   const [chaqueno, setchaqueno] = React.useState('');
+  const [chequeDate, setChequeDate] = React.useState('');
   const [upierror, setupierror] = React.useState(false);
   const [chaqueerror, setchaqueerror] = React.useState(false);
+  const [chequeDateError, setChequeDateError] = React.useState(false);
   const [amounterror, setamounterror] = React.useState(false);
   const [upino, setupino] = React.useState('');
   const [toggle, setToggle] = React.useState(false);
@@ -88,6 +88,7 @@ export default function Salary() {
   // ------------------------
   function handleCash(e) {
     setchaqueerror(false)
+    setChequeDateError(false)
     setupierror(false)
     setPayment(e.target.value)
     setcash(true)
@@ -95,17 +96,21 @@ export default function Salary() {
     setchaque(false)
     setupino("")
     setchaqueno("")
+    setChequeDate("")
   }
   function handleUpi(e) {
     setchaqueerror(false)
+    setChequeDateError(false);
     setPayment(e.target.value);
     setcash(false)
     setupi(true)
     setchaque(false)
     setchaqueno("")
+    setChequeDate("")
   }
   function handleCheque(e) {
     setchaqueerror(false)
+    setChequeDateError(false);
     setupierror(false)
     setPayment(e.target.value);
     setcash(false)
@@ -136,11 +141,38 @@ export default function Salary() {
     setamounterror(false)
   }
 
+  function isSameDay(selectedDate){
+    const date = new Date(selectedDate);
+    const currentDate = new Date();
+
+    return date.getFullYear() === currentDate.getFullYear()
+        && date.getDate() === currentDate.getDate()
+        && date.getMonth() === currentDate.getMonth();
+
+  }
+
+  const handleChequeDate = (e) =>{
+    if(e.target.value == ''){
+      setChequeDateError(true);
+    }
+    else if(isSameDay(e.target.value)){
+      setChequeDateError(false);
+    }
+    else if(new Date(e.target.value).getTime() < new Date().getTime()){
+      setChequeDateError(true);
+    }
+    else{
+      setChequeDateError(false);
+    }
+    setChequeDate(e.target.value)
+  }
+
   // ------------------------------------
   // ----- Chaque_number Validation ------
   // ------------------------------------
   function genreciept() {
     let error = 0
+    console.log(chequeDate)
     if (is_hourly == 0 && (amounterror || fee == '')) {
       error++;
       setamounterror(true)
@@ -153,7 +185,12 @@ export default function Salary() {
       return setupierror(true)
     }
     if (chaque && chaqueno == "") {
-      return setchaqueerror(true)
+      error++;
+      setchaqueerror(true)
+    }
+    if (chaque && chequeDate == "") {
+      error++;
+      setChequeDateError(true)
     }
     if (error > 0) {
       return;
@@ -188,6 +225,7 @@ export default function Salary() {
       is_by_upi: upi ? 1 : 0,
       is_by_cash: cash ? 1 : 0,
       cheque_no: payment == 3 ? chaqueno : -1,
+      cheque_date: payment == 3 ? chequeDate : '',
       upi_no: payment == 2 ? upino : '-1',
       amount: fee,
       total_amount: fee,
@@ -200,6 +238,7 @@ export default function Salary() {
       setIsLoadingOnSubmit(true)
       setError(false)
       const res = await salarypay(gen_reciept)
+      console.log(res)
       setIsLoadingOnSubmit(false)
       if (res.data.success == true) {
         const salary_receipt_id = res.data.data.salaryreceipt.salary_receipt_id
@@ -216,10 +255,6 @@ export default function Salary() {
     }
   }
 
-
-
-
-
   if (isloading) {
     return <Loader />
   }
@@ -228,7 +263,7 @@ export default function Salary() {
     <>
       <div className="relative bg-student-100 py-6">
         {model && (
-          <div className="flex justify-center mt-4   bg-white ">
+          <div className="flex justify-center mt-4  bg-white ">
             <div className="absolute h-2/5 mx-auto  opacity-100 shadow-2xl rounded      bg-white w-2/3 z-50">
               <div className="flex justify-end">
                 <button
@@ -398,7 +433,7 @@ export default function Salary() {
                         hourRateError 
                         ?
                           <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                            Please enter only numbers
+                            *Please enter only numbers
                           </h1>
                         :
                           null
@@ -415,8 +450,9 @@ export default function Salary() {
                       type="text"
                       name="amount"
                       id="amount"
+                      placeholder="Enter amount"
                       disabled={amount}
-                      className=" text-xl font-bold outline-none w-28"
+                      className=" text-xl font-bold outline-none rounded-r-full w-36 pr-2"
                       value={fee}
                       onChange={(e) => {
                         const regex = new RegExp(/^[0-9]+$/)
@@ -434,13 +470,13 @@ export default function Salary() {
                   </div>
                 </div>{amounterror && (
                   <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                    Please Enter Valid Amount
+                    *Please Enter Valid Amount
                   </h1>
                 )}
               </div>
 
               <div className=" right payment_type mt-2">
-                <div className="">
+                <div className="flex flex-col items-end">
                   <div className="flex items-center space-x-2 py-4 px-6">
                     <strong className="text-xl">By : </strong>
                     <input
@@ -478,12 +514,12 @@ export default function Salary() {
                   </div>
                   {upi ? (
                     <div>
-                      <div className="flex border-2 mx-6 border-darkblue-500 w-fit ">
+                      <div className="flex border-2 mx-6 border-darkblue-500 w-fit  rounded-md">
                         <h1> </h1>
                         <input
                           type="text"
                           placeholder="Enter UPI Number"
-                          className=" placeholder-black p-1"
+                          className=" placeholder-black p-1 outline-none rounded-md"
                           name="upi_no"
                           value={upino}
                           onChange={(e) => { 
@@ -494,51 +530,70 @@ export default function Salary() {
                       </div>{upierror && (
                         <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
                           {" "}
-                          Please Enter UPI Number
+                          *Please Enter UPI Number
                         </h1>
                       )}
                     </div>
                   ) : null}
                   {chaque ? (
-                    <div>
-                      <div className="flex border-2 mx-6 border-darkblue-500 w-fit ">
-                        <h1> </h1>
-                        <input
-                          type="text"
-                          placeholder="Enter Cheque Number"
-                          className=" placeholder-black p-1 active:outline-none"
-                          name="cheque_no"
-                          value={chaqueno}
-                          onChange={(e) => { 
-                            const regex = new RegExp(/^[0-9]+$/)
+                    <div className="flex mx-4">
+                      <div>
+                        <div className="flex border-2 mx-6 border-darkblue-500 w-fit rounded-md ">
+                          <h1> </h1>
+                          <input
+                            type="text"
+                            placeholder="Enter Cheque Number"
+                            className=" placeholder-black p-1 outline-none rounded-md"
+                            name="cheque_no"
+                            value={chaqueno}
+                            onChange={(e) => { 
+                              const regex = new RegExp(/^[0-9]+$/)
 
-                            if(!regex.test(e.target.value)){
-                              setchaqueerror(true)
-                            }
-                            else{
-                              setchaqueerror(false) 
-                            }
-                            setchaqueno(e.target.value); 
-                          }}
-                        />
+                              if(!regex.test(e.target.value)){
+                                setchaqueerror(true)
+                              }
+                              else{
+                                setchaqueerror(false) 
+                              }
+                              setchaqueno(e.target.value); 
+                            }}
+                          />
 
-                      </div>{chaqueerror && (
-                        <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
-                          Please Enter Valid Chaque Number
-                        </h1>
-                      )}
+                        </div>
+                        {chaqueerror && (
+                          <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
+                            *Please Enter Valid Cheque Number
+                          </h1>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end mx-2">
+                        <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
+                          <Tooltip content="Cheque date" placement="bottom-end" className='text-white bg-black rounded p-2'>
+                            <span>
+                              <input
+                                type="date"
+                                className="placeholder-black p-1 rounded-md outline-none"
+                                onChange={handleChequeDate}
+                              />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        {chequeDateError && (
+                          <h1 className={`text-red-700 ml-auto ${!chequeDateError ? 'ml-6' : ''} text-xs px-1 my-1 font-bold`}>
+                            *Please Select Valid Cheque Date
+                          </h1>
+                        )}
+                      </div>
                     </div>
                   ) : null}
 
                 </div>
               </div>
             </div>
-            <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-4 ">
+            <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-8 ">
               <h1 className="px-6"> admin : {admin}</h1>
               <button
-                className="px-7  mx-7 py-2 text-base tracking-widest
-           font-semibold uppercase bg-darkblue-500 text-white 
-            transition duration-500 rounded-md hover:shadow-2xl"
+                className="px-7  mx-7 py-2 text-base tracking-widest font-semibold uppercase bg-darkblue-500 text-white transition duration-500 rounded-md hover:shadow-2xl"
                 onClick={genreciept}>
                 Generate
               </button>

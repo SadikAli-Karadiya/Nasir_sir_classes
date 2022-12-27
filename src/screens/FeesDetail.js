@@ -5,24 +5,27 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AxiosError } from "axios";
 import Toaster from '../hooks/showToaster';
+import { Tooltip } from "@material-tailwind/react";
 import {generateStudentReceipt} from '../hooks/usePost';
 import { NasirContext } from "../NasirContext";
 
 export default function FeesDetail() {
   const location = useLocation();
-  const { admin } = React.useContext(NasirContext);
+  const { admin, section } = React.useContext(NasirContext);
 
   const student = location?.state;
+  const Months = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  const [fee, setFee] = React.useState('');
+  const [fee, setFee] = React.useState(section == 'secondary' ? '' : '0');
   const [discount, setDiscount] = React.useState('');
   const [payment, setPayment] = React.useState("cash");
   const [chequeNo, setChequeNo] = React.useState('');
+  const [chequeDate, setChequeDate] = React.useState('');
   const [upiNo, setUpiNo] = React.useState('');
   const [toggleCheque, setToggleCheque] = React.useState(false);
   const [toggleUpi, setToggleUpi] = React.useState(false);
   const [toggleCash, setToggleCash] = React.useState(true);
-
+  const [totalMonths, setTotalMonths] = React.useState(0);
   const [deduction, setDeduction] = React.useState(0);
   const [discountAppliedMsg, setDiscountAppliedMsg] = React.useState(true);
   const [model, setModel] = React.useState(false);
@@ -34,8 +37,11 @@ export default function FeesDetail() {
       discount: '',
       upi: '',
       cheque: '',
-      invalid_pin: '' 
+      chequeDate: '',
+      invalid_pin: '',
+      month: '' 
   });
+
 
   var today = new Date();
   var date =
@@ -50,7 +56,7 @@ export default function FeesDetail() {
         setErrors((prevData)=>{
             return{
                 ...prevData,
-                discount: '*Please enter discount'
+                discount: '*First enter discount then apply'
             }
         })
         return;
@@ -81,18 +87,16 @@ export default function FeesDetail() {
   function handlePaymentMethod(e) {
     setUpiNo('')
     setChequeNo('')
+    setChequeDate('');
     setErrors((prevData) => {
         return {
-        ...prevData,
-        upi: ''
+          ...prevData,
+          upi: '',
+          cheque: '',
+          chequeDate: ''
         }
     })
-    setErrors((prevData) => {
-        return {
-        ...prevData,
-        cheque: ''
-        }
-    })
+
       if(e.target.value == 1){
         setPayment(e.target.value);
         setToggleCash(true);
@@ -117,7 +121,16 @@ export default function FeesDetail() {
       const regex = new RegExp(/^[0-9]+$/)
 
       let err = 0;
-    if(regex.test(e.target.value)){
+    if(e.target.value == ''){
+      err++;
+        setErrors((prevData) => {
+            return {
+                ...prevData,
+                amount: '*Please enter amount'
+            }
+        })
+    }
+    else if(regex.test(e.target.value)){
         err++;
         setErrors((prevData) => {
             return {
@@ -153,15 +166,39 @@ export default function FeesDetail() {
     setDiscountAppliedMsg(true);
   }
 
+  const handleMonthChange = (e) => {
+    const feesPerMonth = student.net_fees / 12;
+    const selectedFeesTotal = feesPerMonth * Number(e.target.value)
+
+    if(selectedFeesTotal > student.pending_amount){
+      setErrors((prevData) => {
+        return {
+          ...prevData,
+          month: '*Months are  more than pending fees'
+        }
+      })
+    }
+    else{
+      setFee(Math.round(selectedFeesTotal))
+      setErrors((prevData) => {
+          return {
+            ...prevData,
+            month: ''
+          }
+      })
+    }
+    setTotalMonths(e.target.value);
+  }
+
   const handleDiscountValidation = (e)=>{
       const regex = new RegExp(/^[0-9]+$/)
     if(e.target.value != ''){
         if(regex.test(e.target.value)){
             setErrors((prevData) => {
-                return {
+              return {
                 ...prevData,
                 discount: ''
-                }
+              }
             })
         }
         else{
@@ -236,10 +273,48 @@ export default function FeesDetail() {
       setChequeNo(e.target.value)
   }
 
+  function isSameDay(selectedDate){
+    const date = new Date(selectedDate);
+    const currentDate = new Date();
+
+    return date.getFullYear() === currentDate.getFullYear()
+        && date.getDate() === currentDate.getDate()
+        && date.getMonth() === currentDate.getMonth();
+
+  }
+
+  const handleChequeDate = (e) =>{
+    if(e.target.value == ''){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: '*Please select cheque date'
+          }
+      })
+    }
+    else if(isSameDay(e.target.value)){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: ''
+          }
+      })
+    }
+    else if(new Date(e.target.value).getTime() < new Date().getTime()){
+      setErrors((prevData) => {
+          return {
+              ...prevData,
+              chequeDate: '*Cheque date should be greater than today\'s date'
+          }
+      })
+    }
+    setChequeDate(e.target.value)
+  }
+
 
   const onSubmit = () =>{
       let err = 0;
-      if(fee == ''){
+      if(section == 'secondary' && fee == ''){
           err++;
           setErrors((prevData) => {
               return {
@@ -247,6 +322,15 @@ export default function FeesDetail() {
                 amount: '*Please enter amount'
               }
           })
+      }
+      if(section == 'primary' && totalMonths == ''){
+        err++;
+        setErrors((prevData) => {
+            return {
+              ...prevData,
+              month: '*Please select no. of months'
+            }
+        })
       }
       if(toggleUpi && upiNo == ''){
          err++;
@@ -262,11 +346,23 @@ export default function FeesDetail() {
           setErrors((prevData) =>{
             return {
                 ...prevData,
-                cheque: '*Please Enter Cheque Number'
+                cheque: '*Please enter cheque number'
             }
           })
       }
-      if((errors.amount != '' && errors.amount != undefined) || (errors.upi != '' && errors.upi != undefined) || (errors.cheque != '' && errors.cheque != undefined)){
+      
+      if(toggleCheque && chequeDate == '')
+      {
+        err++;
+        setErrors((prevData) =>{
+          return {
+              ...prevData,
+              chequeDate: '*Please select cheque date'
+          }
+        })
+      }
+
+      if((errors.amount != '' && errors.amount != undefined) || (errors.upi != '' && errors.upi != undefined) || (errors.cheque != '' && errors.cheque != undefined) || (errors.chequeDate != '' && errors.chequeDate != undefined) || (errors.month != '' && errors.month != undefined)){
           err++;
       }
       
@@ -285,7 +381,7 @@ export default function FeesDetail() {
         setModel(true);
       }
       else{
-          return;
+        return;
       }
 
   }
@@ -296,15 +392,18 @@ export default function FeesDetail() {
       const feesData = {
         is_by_cash: toggleCash ? 1 : 0,
         is_by_cheque: toggleCheque ? 1 : 0,
-            is_by_upi: toggleUpi ? 1 : 0,
-            cheque_no: chequeNo,
-            upi_no: upiNo,
-            amount: Number(fee) + Number(deduction),
-            discount: deduction,
-            admin_id: admin._id,
-            security_pin: pin,
-            student_id: student.rollno
-          };
+        is_by_upi: toggleUpi ? 1 : 0,
+        cheque_no: chequeNo,
+        cheque_date: chequeDate,
+        upi_no: upiNo,
+        amount: Number(fee) + Number(deduction),
+        discount: deduction,
+        admin_id: admin?._id,
+        security_pin: pin,
+        last_paid: student.paid_upto,
+        total_months: totalMonths,
+        student_id: student.rollno
+      };
         
         setIsSubmitting(true);
         
@@ -319,7 +418,7 @@ export default function FeesDetail() {
               state:{
                   isStaff: false,
                   is_cancelled: 0,
-                  fees_receipt_id: res.data.data.fees_receipt_details.fees_receipt_id, 
+                  fees_receipt_id: res.data.data.fees_receipt_details.fees_receipt_id,
                   prevPath: location.pathname
               }
             });
@@ -377,11 +476,27 @@ export default function FeesDetail() {
               <div className="flex  justify-between px-7 py-3">
                 <div>
                   <h1 className="font-bold">NAME : {student.full_name.toUpperCase()}</h1>
-                    <h2 className="text-sm"> Class: {student.class_name}
-                        <span className="ml-5">Medium: {student.medium}</span>
-                        <span className="ml-5">Stream: {student.stream}</span>
+                    <h2 className="text-sm capitalize"> Class: {student.class_name}
+                        <span className="ml-5 capitalize">Medium: {student.medium}</span>
+                        <span className="ml-5 capitalize">Stream: {student.stream}</span>
                     </h2>
                     <h2 className="text-sm">Roll no : {student.rollno} </h2>
+                    <h3 className="text-sm">Net Fees: {student.net_fees}</h3>
+                    {
+                      section == 'primary'
+                      ?
+                        <h2 className="text-sm">Last Paid Upto:  
+                          {
+                            student.paid_upto > 0 
+                            ?
+                              <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
+                            :
+                              <span class="text-[16px] ml-2 font-semibold">--</span>
+                          } 
+                        </h2>
+                      :
+                        null
+                    }
                 </div>
                 <div className="text-sm">
                   <h4>Date : {date}</h4>
@@ -414,7 +529,7 @@ export default function FeesDetail() {
                         :
                             null
                 }
-                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin.username}</span></h3>
+                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin?.username}</span></h3>
               </div>
 
               <div className="border-2 mx-8 mt-6 h-8 rounded  w-fit flex items-center border-darkblue-500">
@@ -464,11 +579,27 @@ export default function FeesDetail() {
           <div className="flex py-4  justify-between  relative">
             <div className="space-y-2 px-7 text-sm">
                <h2 className="font-bold text-lg tracking-wide">NAME : {student.full_name.toUpperCase()}</h2>
-                <h2 className="text-[16px] tracking-wide"> Class: {student.class_name}
-                    <span className="ml-5">Medium: {student.medium}</span>
-                    <span className="ml-5">Stream: {student.stream}</span>
+                <h2 className="text-[16px] tracking-wide capitalize"> Class: {student.class_name}
+                    <span className="ml-5 capitalize">Medium: {student.medium}</span>
+                    <span className="ml-5 capitalize">Stream: {student.stream}</span>
                 </h2>
                 <h3 className="text-[16px] tracking-wide">Roll no: {student.rollno}</h3>
+                <h3 className="text-[16px] tracking-wide">Net Fees: {student.net_fees}</h3>
+                {
+                  section == 'primary'
+                  ?
+                    <h2 className="text-[16px] tracking-wide">Last Paid Upto:  
+                      {
+                        student.paid_upto > 0 
+                        ?
+                          <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
+                        :
+                          <span class="text-[16px] ml-2 font-semibold">--</span>
+                      } 
+                    </h2>
+                  :
+                    null
+                }
             </div>
             <div className="px-7 font-mono">
                 <h3 className=""> Date : {date}</h3>
@@ -477,21 +608,48 @@ export default function FeesDetail() {
           </div>
 
           <div className="flex px-6 justify-between items-center">
-            <div className="flex flex-col">
-              <div className="flex items-center border-2 shadow-2xl border-darkblue-500 w-fit  rounded-3xl">
-                <span className="py-2 bg-darkblue-500 text-white ml-[-1px] mr-4 font-bold border-2 border-darkblue-500 rounded-full p-2">
-                  <FaRupeeSign />
-                </span>
-                <input
-                  type="text"
-                  className="px-2 mr-4 text-xl font-bold outline-none w-32"
-                  placeholder="Enter fees"
-                  value={fee}
-                 
-                  onChange={handleFeesValidation}
-                />
+            <div className="flex">
+              <div className="flex flex-col justify-end">
+                <div className="flex items-center border-2 border-darkblue-500 w-fit  rounded-3xl">
+                  <span className="py-2 bg-darkblue-500 text-white ml-[-1px] mr-4 font-bold border-2 border-darkblue-500 rounded-full p-2">
+                    <FaRupeeSign />
+                  </span>
+                  <input
+                    type="text"
+                    className="px-2 mr-4 text-xl font-bold outline-none w-32"
+                    placeholder={`${section == 'secondary' ? 'Enter fees' : ''}`}
+                    value={fee}
+                    disabled={section == 'primary'}
+                    onChange={handleFeesValidation}
+                  />
+                </div>
+                {errors.amount != '' ? (<small className="text-red-700 mt-2">{errors.amount}</small>) : null}
               </div>
-              {errors.amount != '' ? (<small className="text-red-700 mt-2">{errors.amount}</small>) : null}
+              {
+                section == 'primary'
+                ?
+                  <div className="ml-10 flex flex-col">
+                      <h2 className="text-[14px]">No. of Months</h2>
+                    <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
+                      <option value="" className="text-gray-400">select</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                      {errors.month != '' ? (<small className="text-red-700 mt-2">{errors.month}</small>) : null}
+                  </div>
+                :
+                  null
+              }
             </div>
             <div className=" items-center ml-24">
               <h1 className="font-bold  text-xl">
@@ -499,7 +657,7 @@ export default function FeesDetail() {
               </h1>
               {discountAppliedMsg ? (
                 <div className="flex flex-col">
-                  <div className="flex rounded-l-md border-2 mr-2 my-2 h-8 rounded-r-lg border-darkblue-500 items-center">
+                  <div className="w-48 flex rounded-l-md border-2 mr-2 my-2 h-8 rounded-r-lg border-darkblue-500 items-center">
                     <input
                       placeholder="Enter Discount "
                       className="outline-none px-2 py-0 w-32 rounded-l-md "
@@ -564,17 +722,33 @@ export default function FeesDetail() {
           {
             toggleCheque
             ? 
-              <div className="flex flex-col mx-6">
-                <div className="flex border-2 border-darkblue-500 w-fit ">
-                  <input
-                    type="text"
-                    placeholder="Enter Cheque Number"
-                    className="placeholder-black p-1"
-                    value={chequeNo}
-                    onChange={handleChequeNo}
-                  />
+              <div className="flex">
+                <div className="flex flex-col mx-6">
+                  <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
+                    <input
+                      type="text"
+                      placeholder="Enter Cheque Number"
+                      className="placeholder-black p-1 rounded-md outline-none placeholder-gray-400"
+                      value={chequeNo}
+                      onChange={handleChequeNo}
+                    />
+                  </div>
+                  {errors.cheque != '' ? (<small className="text-red-700 mt-2">{errors.cheque}</small>) : null}
                 </div>
-                {errors.cheque != '' ? (<small className="text-red-700 mt-2">{errors.cheque}</small>) : null}
+                <div className="flex flex-col mx-2">
+                  <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
+                    <Tooltip content="Cheque date" placement="bottom-end" className='text-white bg-black rounded p-2'>
+                      <span>
+                        <input
+                          type="date"
+                          className="placeholder-black p-1 rounded-md outline-none"
+                          onChange={handleChequeDate}
+                        />
+                      </span>
+                    </Tooltip>
+                  </div>
+                  {errors.chequeDate != '' ? (<small className="text-red-700 mt-2">{errors.chequeDate}</small>) : null}
+                </div>
               </div>
             : 
               null
@@ -583,11 +757,11 @@ export default function FeesDetail() {
             toggleUpi 
             ? 
               <div className="flex flex-col mx-6">
-                <div className="flex border-2 border-darkblue-500 w-fit">
+                <div className="flex border-2 border-darkblue-500 rounded-md w-fit">
                   <input
                     type="text"
                     placeholder="Enter Upi Number/id"
-                    className=" placeholder-black p-1"
+                    className=" placeholder-black p-1 rounded-md outline-none placeholder-gray-400"
                     value={upiNo}
                     onChange={handleUpiNo}
                   />
@@ -600,7 +774,7 @@ export default function FeesDetail() {
 
           <div></div>
           <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-4 ">
-            <h1 className="px-6"> admin : {admin.username}</h1>
+            <h1 className="px-6"> admin : {admin?.username}</h1>
             <button
               className="px-7  mx-7 py-2 text-base tracking-widest
            font-semibold uppercase bg-darkblue-500
