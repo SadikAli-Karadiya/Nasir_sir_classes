@@ -206,32 +206,38 @@ export default function Dashboard() {
                 :
                   null
               }
-              <Tooltip
-                content="Print"
-                placement="bottom-end"
-                className="text-white bg-black rounded p-2"
-              >
-                <span>
-                  <ReactToPrint
-                    trigger={() => (
-                      <button
-                        id="print"
-                        className="text-3xl bg-class2-50 rounded-md text-white p-1 mr-5"
-                      >
-                        <MdLocalPrintshop />
-                      </button>
-                    )}
-                    content={() => componentRef.current}
-                    onBeforeGetContent={(e) => {
-                      return new Promise((resolve) => {
-                        setIsPrint(true);
-                        resolve();
-                      });
-                    }}
-                    onAfterPrint={() => setIsPrint(false)}
-                  />
-                </span>
-              </Tooltip>
+              {
+                allStudent.length > 0
+                ?
+                  <Tooltip
+                    content="Print"
+                    placement="bottom-end"
+                    className="text-white bg-black rounded p-2"
+                  >
+                    <span>
+                      <ReactToPrint
+                        trigger={() => (
+                          <button
+                            id="print"
+                            className="text-3xl bg-class2-50 rounded-md text-white p-1 mr-5"
+                          >
+                            <MdLocalPrintshop />
+                          </button>
+                        )}
+                        content={() => componentRef.current}
+                        onBeforeGetContent={(e) => {
+                          return new Promise((resolve) => {
+                            setIsPrint(true);
+                            resolve();
+                          });
+                        }}
+                        onAfterPrint={() => setIsPrint(false)}
+                      />
+                    </span>
+                  </Tooltip>
+                :
+                  null
+              }
             </div>
           </div>
           <div ref={componentRef} className="p-5 pt-3 pb-0">
@@ -403,7 +409,7 @@ export default function Dashboard() {
                                     pending_amount: item.academics[0].fees[0].pending_amount,
                                     medium: item.academics[0].class[0].medium,
                                     stream: item.academics[0].class[0].stream,
-                                    batch: `${item.academics[0].class[0].batch_start_year}-${item.academics[0].class[0].batch_end_year}`,
+                                    batch: `${item.academics[0].class[0].batch_start_year}`,
                                   }}
                                 >
                                   <button

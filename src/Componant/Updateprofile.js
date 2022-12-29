@@ -164,7 +164,16 @@ const Updateprofile = () => {
     dob = `${dob.getFullYear()}-${
       dob.getMonth() + 1 < 10 ? "0" + (dob.getMonth() + 1) : dob.getMonth() + 1
     }-${dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate()}`;
-
+    
+    valid.fieldsValue = {
+      full_name: admin?.staff_id?.basic_info_id.full_name,
+      email: admin?.staff_id?.contact_info_id.email,
+      whatsapp_no: admin?.staff_id?.contact_info_id.whatsapp_no,
+      alternate_no: admin?.staff_id?.contact_info_id.alternate_no == '' ? '--' : admin?.staff_id?.contact_info_id.alternate_no,
+      security_pin: admin?.security_pin,
+      address: admin?.staff_id?.contact_info_id.address,
+      dob: dob,
+    };
     setadminInputController(() => {
       return {
         full_name: admin?.staff_id?.basic_info_id.full_name,

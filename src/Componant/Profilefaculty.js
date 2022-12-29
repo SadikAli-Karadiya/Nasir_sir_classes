@@ -24,7 +24,7 @@ valid.register({
     required: [false],
   },
   full_name: {
-    required: [true, 'Full name is required'],
+    required: [true, 'Full Name is required'],
     pattern: [/^[A-Za-z ]+$/, "Please enter only characters"]
   },
   email: {
@@ -32,7 +32,7 @@ valid.register({
     pattern: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, "Please enter valid email"]
   },
   whatsapp_no: {
-    required: [true, 'Whatsapp number is required'],
+    required: [true, 'Whatsapp no. is required'],
     pattern: [/^[0-9]*$/, "Please enter only numbers"],
     length: [10, "Number should be of 10 digits"]
   },
@@ -42,7 +42,7 @@ valid.register({
     length: [10, "Number should be of 10 digits"]
   },
   dob: {
-    required: [true, 'Date of birth is required']
+    required: [true, 'Date of Birth is required']
   },
   gender: {
     required: [false]
@@ -55,7 +55,7 @@ valid.register({
     required: [true, 'Address is required']
   },
   joining_date: {
-    required: [true, 'Joining date is required']
+    required: [true, 'Joining Date is required']
   },
 })
 
@@ -390,7 +390,7 @@ const Profilefaculty = () => {
                   <div className="email">
                     <label className="block">
                       <span className="block text-sm font-medium text-slate-700">
-                        Email *
+                        Email 
                       </span>
                       <input
                         type="text"
@@ -550,7 +550,7 @@ const Profilefaculty = () => {
                     <div className="joining_date">
                       <label className="block">
                         <span className="block text-sm font-medium text-slate-700">
-                          Date Of Joining :
+                          Date Of Joining 
                         </span>
                         <input
                           type="date"

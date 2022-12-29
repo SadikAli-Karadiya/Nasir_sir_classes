@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../Componant/Loader";
 import { Tooltip } from "@material-tailwind/react";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function Salary() {
   const location = useLocation()
@@ -41,6 +42,7 @@ export default function Salary() {
   const [admin_username, setadmin_username] = React.useState();
   const [PIN, setpin] = React.useState();
   const [hourRateError, setHourRateError] = React.useState(false);
+  const [hourRateEmptyError, setHourRateEmptyError] = React.useState(false);
   const [salaryData, setSalaryData] = React.useState({
     hour: "",
     amount: "",
@@ -130,6 +132,7 @@ export default function Salary() {
     setamounterror(false)
     setSalaryData({hour: '', amount: ''})
     setHourRateError(false)
+    setHourRateEmptyError(false);
   }
 
   function handleLecture(e) {
@@ -138,6 +141,7 @@ export default function Salary() {
     setamount(true)
     setFee("");
     setHourRateError(false)
+    setHourRateEmptyError(false);
     setamounterror(false)
   }
 
@@ -206,6 +210,10 @@ export default function Salary() {
     if(hourRateError){
       return;
     }
+    if(salaryData.hour == '' || salaryData.amount == ''){
+      setHourRateEmptyError(true);
+      return;
+    }
     setamounterror(false)
     setFee(salaryData.hour * salaryData.amount);
     setToggle(false);
@@ -261,13 +269,13 @@ export default function Salary() {
 
   return (
     <>
-      <div className="relative bg-student-100 py-6">
+      <div className="relative bg-student-100 py-6 h-full">
         {model && (
           <div className="flex justify-center mt-4  bg-white ">
             <div className="absolute h-2/5 mx-auto  opacity-100 shadow-2xl rounded      bg-white w-2/3 z-50">
               <div className="flex justify-end">
                 <button
-                  onClick={(e) => setModel(!model)}
+                  onClick={(e) => {setModel(!model); setError(false);}}
                   className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                 >
                   <AiFillCloseCircle />
@@ -326,7 +334,7 @@ export default function Salary() {
                     {error && (
                       <h1 className=" text-red-700  mx-7 text-sm px-1 my-1 font-bold">
                         {" "}
-                        Please Enter Valid PIN
+                        *Please Enter Valid PIN
                       </h1>
                     )}
                   </div>
@@ -337,12 +345,18 @@ export default function Salary() {
         )}
 
         <div
-          className={`mt-2 bg-student-100 min-h-screen px-12  py-6 ${model && "opacity-5"
+          className={`bg-student-100 h-full px-12  py-6 ${model && "opacity-5"
             } `}
         >
-          <h1 className="font-bold text-3xl text-darkblue-500 ">
-            Generate Salary Reciept
-          </h1>
+          <div className="flex justify-between items-center">
+            <h1 className="font-bold text-3xl text-darkblue-500 ">
+              Generate Salary Reciept
+            </h1>
+            <div className="group h-9 w-20 flex justify-center items-center gap-1 cursor-pointer" id="" onClick={() => navigate(-1)}>
+              <IoIosArrowBack className="text-2xl font-bold group-hover:text-blue-700 text-darkblue-500 mt-[3px]" />
+              <span className=" text-xl text-darkblue-500 font-semibold group-hover:text-blue-700">Back</span>
+            </div>
+          </div>
           <div className="bg-white px-1 py-5 mt-9 shadow-2xl rounded-2xl ">
             <div className="flex pt-4  justify-between  relative">
               <div className="space-y-2 px-7 text-sm ">
@@ -392,7 +406,8 @@ export default function Salary() {
                           onChange={(e) =>{
                             const regex = new RegExp(/^[0-9]+$/)
 
-                            if(!regex.test(e.target.value) || !regex.test(salaryData.amount)){
+                            setHourRateEmptyError(false);
+                            if(!regex.test(e.target.value)){
                               setHourRateError(true)
                             }
                             else{
@@ -409,8 +424,9 @@ export default function Salary() {
                           value={salaryData.amount}
                           onChange={(e) =>{
                             const regex = new RegExp(/^[0-9]+$/)
+                            setHourRateEmptyError(false);
 
-                            if(!regex.test(e.target.value) || !regex.test(salaryData.hour)){
+                            if(!regex.test(e.target.value)){
                               setHourRateError(true)
                             }
                             else{
@@ -438,6 +454,15 @@ export default function Salary() {
                         :
                           null
                       }
+                      {
+                        hourRateEmptyError 
+                        ?
+                        <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
+                            *Both fields are required
+                        </h1>
+                        :
+                        null
+                      } 
                     </div>
                   ) : null}
                 </div>
@@ -591,9 +616,9 @@ export default function Salary() {
               </div>
             </div>
             <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-8 ">
-              <h1 className="px-6"> admin : {admin}</h1>
+              <h1 className="px-6"> admin : {admin_username}</h1>
               <button
-                className="px-7  mx-7 py-2 text-base tracking-widest font-semibold uppercase bg-darkblue-500 text-white transition duration-500 rounded-md hover:shadow-2xl"
+                className="px-7  mx-7 py-2 text-base tracking-widest font-semibold uppercase bg-darkblue-500 text-white transition duratio`n-500 rounded-md hover:shadow-2xl"
                 onClick={genreciept}>
                 Generate
               </button>

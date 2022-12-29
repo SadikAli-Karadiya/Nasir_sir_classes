@@ -551,7 +551,7 @@ export default function UpdateStudentReceipt() {
               errors.invalid_pin != '' 
               ? 
                 <h1 className=" text-red-700  text-sm my-1 font-bold w-full pr-44  text-right">
-                    {errors.invalid_pin}
+                    *{errors.invalid_pin}
                 </h1>
               :
                 null

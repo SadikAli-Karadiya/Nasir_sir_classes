@@ -125,7 +125,7 @@ export async function getAllClassesByYear() {
     const { data } = await axios.get(`${SERVER}/classes/classesbyyear`);
     return data;
   } catch (error) {
-    throw Error("data is not fatched");
+    throw Error("Failed to fetch data");
   }
 }
 
@@ -134,6 +134,18 @@ export async function transferClasses(addnew) {
     const response = await axios.post(
       `${SERVER}/classes/transferclasses`,
       addnew
+    );
+    return response;
+  } catch (error) {
+    
+  }
+}
+
+export async function deactivateClasses(classes) {
+  try {
+    const response = await axios.post(
+      `${SERVER}/classes/deactivate-classes`,
+      classes
     );
     return response;
   } catch (error) {

@@ -21,24 +21,24 @@ valid.register({
         required: [false],
     },
     full_name: {
-        required: [true, 'Field is required'],
+        required: [true, 'Full Name is required'],
         pattern: [/^[A-Za-z ]+$/, "Please enter only characters"]
     },
     mother_name: {
-        required: [true, 'Field is required'],
+        required: [true, 'Mother Name is required'],
         pattern: [/^[A-Za-z ]+$/, "Please enter only characters"]
     },
     dob: {
-        required: [true, 'Field is required']
+        required: [true, 'Date of Birth is required']
     },
     whatsapp_no: {
-        required: [true, 'Field is required'],
+        required: [true, 'Whatsapp no. is required'],
         pattern: [/^[0-9]*$/, "Please enter only numbers"],
         length: [10, "Number should be of 10 digits"]
     },
     alternate_no: {
         required: [false],
-        pattern: [/^[0-9]*$/, "Please enter only numbers"],
+        pattern: [/^[0-9]*$/, "Mobile no. enter only numbers"],
         length: [10, "Number should be of 10 digits"]
 
     },
@@ -49,7 +49,7 @@ valid.register({
         required: [true, 'Address is required']
     },
     admission_date: {
-        required: [true, 'Field is required']
+        required: [true, 'Admission date is required']
     },
     total_fees: {
         required: [false],
@@ -545,7 +545,7 @@ const Profilestudent = () => {
                                             <div className="fullname">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Full Name *
+                                                        Full Name
                                                     </span>
                                                     <input
                                                         type="text"
@@ -562,7 +562,7 @@ const Profilestudent = () => {
                                             <div className="mothername">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Mother Name *
+                                                        Mother Name
                                                     </span>
                                                     <input
                                                         type="text"
@@ -584,7 +584,7 @@ const Profilestudent = () => {
                                             <div className="whatsappno">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        WhatsApp No *
+                                                        WhatsApp No
                                                     </span>
                                                     <input
                                                         type="text"
@@ -626,7 +626,7 @@ const Profilestudent = () => {
                                             <div className="dateofbirth">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Date Of Birth *
+                                                        Date Of Birth
                                                     </span>
                                                     <input
                                                         type="date"
@@ -688,7 +688,7 @@ const Profilestudent = () => {
                                             <div className="Addresss 2xl:w-full xl:w-96 lg:w-96 w-52 md:px-3 lg:px-0 2xl:px-2">
                                                 <label className="flex flex-col">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Address *
+                                                        Address
                                                     </span>
                                                     <textarea name="address"
                                                         value={studentInputController.address}
@@ -704,7 +704,7 @@ const Profilestudent = () => {
                                             <div className="selectstd">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Class *
+                                                        Class
                                                     </span>
                                                     <select
                                                         name="class_name"
@@ -749,7 +749,7 @@ const Profilestudent = () => {
                                             <div className="admissiondate">
                                                 <label className="block">
                                                     <span className="block text-sm font-medium text-slate-700">
-                                                        Admission Date *
+                                                        Admission Date
                                                     </span>
                                                     <input
                                                         type="date"
@@ -1039,7 +1039,7 @@ const Profilestudent = () => {
                                             academicDetails.map((academic, index) => {
                                                 return <tr key={index} className=" border-b">
                                                     <td scope="row" className="px-2 py-5">
-                                                        {academic.class_id.batch_start_year}-{academic.class_id.batch_end_year}
+                                                        {academic.class_id.batch_start_year}
                                                     </td>
                                                     <td className="px-2 py-5">{academic.class_id.class_name}</td>
                                                     <td className="px-2 py-5">{academic.fees_id.net_fees}</td>

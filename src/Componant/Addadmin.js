@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { useCreateAdmin } from "../hooks/usePost";
 import { toast } from "react-toastify";
@@ -9,10 +10,12 @@ import FormData from "form-data";
 export const Addadmin = () => {
   const [img, setImg] = useState("/images/user.png");
   const createPost = useCreateAdmin();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (createPost.isSuccess) {
       toast.success("Registration Successfull");
+      navigate('/Componant/AdminList')
     }
     if (createPost.isError) {
       toast.error(createPost.error.response.data.error);
@@ -55,7 +58,7 @@ export const Addadmin = () => {
                       <div className="username">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Username
+                            Username *
                           </span>
                           <input
                             type="text"
@@ -84,7 +87,7 @@ export const Addadmin = () => {
                       <div className="Password">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Password
+                            Password *
                           </span>
                           <input
                             type="password"
@@ -113,10 +116,10 @@ export const Addadmin = () => {
                       <div className="pin">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Security Pin
+                            Security Pin *
                           </span>
                           <input
-                            type="input"
+                            type="password"
                             placeholder="Enter Security Pin"
                             className={`xl:w-52 2xl:w-60 lg:w-48 w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                               errors.security_pin && "border-red-600"
@@ -149,7 +152,7 @@ export const Addadmin = () => {
                       <div className="fullname">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Full Name
+                            Full Name *
                           </span>
                           <input
                             type="text"
@@ -178,7 +181,7 @@ export const Addadmin = () => {
                       <div className="email">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Email
+                            Email *
                           </span>
                           <input
                             type="text"
@@ -208,7 +211,7 @@ export const Addadmin = () => {
                       <div className="whatsappno">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            WhatsApp No
+                            WhatsApp No *
                           </span>
                           <input
                             type="text"
@@ -283,7 +286,7 @@ export const Addadmin = () => {
                       <div className="dateofbirth">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Date Of Birth
+                            Date Of Birth *
                           </span>
                           <input
                             type="date"
@@ -305,7 +308,7 @@ export const Addadmin = () => {
                       <div className="gender">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Gender
+                            Gender *
                           </span>
                           <div
                             className={`xl:w-52 2xl:w-60 lg:w-48 w-60 border border-slate-300 mt-1  rounded-md h-10 flex justify-center items-center space-x-5 outline-none ${
@@ -355,7 +358,7 @@ export const Addadmin = () => {
                       <div className="qualification">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Qualification
+                            Qualification *
                           </span>
                           <input
                             type="text"
@@ -384,7 +387,7 @@ export const Addadmin = () => {
                       <div className="address">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Address
+                            Address *
                           </span>
                           <input
                             type="text"
@@ -413,7 +416,7 @@ export const Addadmin = () => {
                       <div className="dateofjoining">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
-                            Date Of Joining
+                            Date Of Joining *
                           </span>
                           <input
                             type="date"

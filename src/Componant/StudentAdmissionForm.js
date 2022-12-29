@@ -33,7 +33,7 @@ const StudentAdmissionForm = () => {
                                     </div>
                                 </div>
                                 <div className="bottom-content text-center font-bold border-t-2 border-black w-full">
-                                    <p className="">E-35, Sumel-8, Safal Market, Nr Ajit Mill Char Rasta, Rakhial, Ahmedabad</p>
+                                    <p className="">E-35, Sumel-8, Safal Market, Nr Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023</p>
                                 </div>
                             </div>
                             <div className='right-content w-1/5 '>

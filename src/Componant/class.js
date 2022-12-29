@@ -1,13 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { FaArrowRight } from "react-icons/fa";
-import { AiFillCloseCircle } from "react-icons/ai";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdPendingActions } from "react-icons/md";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import { AiFillEye } from "react-icons/ai";
-import { MdDelete } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
 import { MdLocalPrintshop } from "react-icons/md";
 import { IoMdInformationCircle } from "react-icons/io";
@@ -141,6 +139,9 @@ const Class = () => {
   };
 
   const Exportpendingstudent = () => {
+    if(allClassStudents.length == 0) {
+      return;
+    }
     const res = ExportAllPendingStudentsInClass(params.id);
     if (res) {
       ToasterPending();
@@ -289,62 +290,68 @@ const Class = () => {
                   <AiOutlineSearch className="text-3xl font-bold hover:scale-125  text-white transition duration-400" />
                 </button>
               </div>
-              <div className="right flex items-center space-x-3 pr-6">
-                <button
-                  id="year-btn"
-                  className=" flex items-center border bg-white p-2 xl:p-2 xl:py-1 rounded-lg shadow-2xl space-x-1 "
-                >
-                  <select
-                    onChange={handlePendingPaidUpClick}
-                    name=""
-                    id=""
-                    className="cursor-pointer text-darkblue-500 text-base outline-none"
-                  >
-                    <option value={0}>All</option>
-                    <option value={1}>Pending</option>
-                    <option value={2}>Paidup</option>
-                  </select>
-                </button>
-                <Tooltip
-                  content="Print"
-                  placement="bottom-end"
-                  className="text-white bg-black rounded p-2"
-                >
-                  <span>
-                    <ReactToPrint
-                      trigger={() => (
-                        <Link
-                          to="#"
-                          id="print"
-                          className="text-3xl bg-[#f8b26a] rounded-md text-white  w-10 h-8 flex justify-center  "
-                        >
-                          <MdLocalPrintshop />
-                        </Link>
-                      )}
-                      content={() => componentRef.current}
-                      onBeforeGetContent={() => {
-                        return new Promise((resolve) => {
-                          setIsPrint(true);
-                          resolve();
-                        });
-                      }}
-                      onAfterPrint={() => setIsPrint(false)}
-                    />
-                  </span>
-                </Tooltip>
-                <Tooltip
-                  content="Export To Excel"
-                  placement="bottom-end"
-                  className="text-white bg-black rounded p-2"
-                >
-                  <button
-                    onClick={Exportstudent}
-                    className="text-blue-500 bg-blue-200 font-semibold shadow-2xl  py-[7px] px-3 rounded-lg text-sm"
-                  >
-                    Export
-                  </button>
-                </Tooltip>
-              </div>
+              {
+                allClassStudents.length > 0
+                ?
+                  <div className="right flex items-center space-x-3 pr-6">
+                    <button
+                      id="year-btn"
+                      className=" flex items-center border bg-white p-2 xl:p-2 xl:py-1 rounded-lg shadow-2xl space-x-1 "
+                    >
+                      <select
+                        onChange={handlePendingPaidUpClick}
+                        name=""
+                        id=""
+                        className="cursor-pointer text-darkblue-500 text-base outline-none"
+                      >
+                        <option value={0}>All</option>
+                        <option value={1}>Pending</option>
+                        <option value={2}>Paidup</option>
+                      </select>
+                    </button>
+                    <Tooltip
+                      content="Print"
+                      placement="bottom-end"
+                      className="text-white bg-black rounded p-2"
+                    >
+                      <span>
+                        <ReactToPrint
+                          trigger={() => (
+                            <Link
+                              to="#"
+                              id="print"
+                              className="text-3xl bg-[#f8b26a] rounded-md text-white  w-10 h-8 flex justify-center  "
+                            >
+                              <MdLocalPrintshop />
+                            </Link>
+                          )}
+                          content={() => componentRef.current}
+                          onBeforeGetContent={() => {
+                            return new Promise((resolve) => {
+                              setIsPrint(true);
+                              resolve();
+                            });
+                          }}
+                          onAfterPrint={() => setIsPrint(false)}
+                        />
+                      </span>
+                    </Tooltip>
+                    <Tooltip
+                      content="Export To Excel"
+                      placement="bottom-end"
+                      className="text-white bg-black rounded p-2"
+                    >
+                      <button
+                        onClick={Exportstudent}
+                        className="text-blue-500 bg-blue-200 font-semibold shadow-2xl  py-[7px] px-3 rounded-lg text-sm"
+                      >
+                        Export
+                      </button>
+                    </Tooltip>
+                  </div>
+                :
+                  null
+              }
             </div>
 
             <div ref={componentRef} className="p-5 pt-3 pb-0">
@@ -510,7 +517,7 @@ const Class = () => {
                                             pending_amount: item.fees_id.pending_amount,
                                             medium: classDetails.medium,
                                             stream: classDetails.stream,
-                                            batch: `${classDetails.batch_start_year}-${classDetails.batch_end_year}`,
+                                            batch: `${classDetails.batch_start_year}`,
                                           }}
                                         >
                                           <button

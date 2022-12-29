@@ -106,7 +106,7 @@ const Faculty = () => {
 
                 </div>
                 <div className='mt-7'>
-                  <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Registration</h1>
+                  <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Staff Registration</h1>
 
                   <form ref={form} className="flex justify-center items-center " onSubmit={handleSubmit(onSubmit)}>
                     <div className=" w-full grid grid-cols-1 rounded-lg  bg-white pb-5 pt-10 ">
@@ -136,7 +136,7 @@ const Faculty = () => {
                           <div className="fullname">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Full Name
+                                Full Name *
                               </span>
                               <input
                                 type="text"
@@ -170,7 +170,7 @@ const Faculty = () => {
                           <div className="whatsappno">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                WhatsApp No
+                                WhatsApp No *
                               </span>
                               <input
                                 type="text"
@@ -207,7 +207,7 @@ const Faculty = () => {
                           <div className="dateofbirth">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Date Of Birth
+                                Date Of Birth *
                               </span>
                               <input
                                 type="date"
@@ -221,7 +221,7 @@ const Faculty = () => {
                           <div className="gender 2xl:w-60 w-[185px] ">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Gender
+                                Gender *
                               </span>
                               <div className={` border w-full 2xl:w-60 border-slate-300 mt-1 rounded-md h-10 flex justify-center items-center space-x-5 ${errors.gender && 'border-red-600'}`}>
                                 <div className="male ">
@@ -262,7 +262,7 @@ const Faculty = () => {
                           <div className="role">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Role
+                                Role *
                               </span>
                               <input
                                 type="text"
@@ -279,7 +279,7 @@ const Faculty = () => {
                           <div className="address">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Address
+                                Address *
                               </span>
                               <input
                                 type="text"
@@ -296,7 +296,7 @@ const Faculty = () => {
                           <div className="dateofjoining">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Date Of Joining
+                                Date Of Joining *
                               </span>
                               <input
                                 type="date"
@@ -364,7 +364,7 @@ const Faculty = () => {
                       >
                         <FaPlus className="text-2xl text-darkblue-500  " />
                         <span className="ml-3 text-lg text-darkblue-500 font-semibold">
-                          Add New Member
+                          Add New Staff
                         </span>
                       </div>
                     </div>

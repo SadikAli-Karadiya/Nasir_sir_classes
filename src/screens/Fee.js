@@ -223,7 +223,7 @@ export default function Fess() {
                                             net_fees: m.fees.net_fees,
                                             pending_amount: m.fees.pending_amount,
                                             stream: m.academic.class_id.stream,
-                                            batch: `${m.academic.class_id.batch_start_year}-${m.academic.class_id.batch_end_year}`
+                                            batch: `${m.academic.class_id.batch_start_year}`
                                           }} >
                                           <button className={`${m.fees.pending_amount <= 0 ? 'disabled:opacity-40' : 'bg-darkblue-500 hover:bg-blue-900'} bg-darkblue-500 rounded-lg  duration-200 transition text-white px-7 font-bold py-2`} disabled={m.fees.pending_amount <= 0 ? true : false}>
                                           Pay

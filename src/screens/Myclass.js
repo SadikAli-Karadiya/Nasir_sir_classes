@@ -43,6 +43,7 @@ const Myclass = () => {
   const [model, setModel] = React.useState(false);
   const [editClassModel, setEditClassModel] = React.useState(false);
   const [edit_class_id, setEdit_class_id] = React.useState();
+  const [isClassYearError, setIsClassYearError] = React.useState(false);
   const bgColors = [
     "#ffd6d6",
     "#bfdbfe",
@@ -105,14 +106,23 @@ const Myclass = () => {
       )
     setSelectYear(sortedClasses[0]?._id?.batch_start_year)
     setClassesByYear(sortedClasses);
+    return sortedClasses[0]?._id?.batch_start_year;
   }
 
   async function fetchClasses() {
+
     const res = await getAllClasses();
-    await fetchClassesByYear();
+    const currentYear = await fetchClassesByYear();
+
     setClasses(() =>
       res?.data?.filter((data) => {
-        return data.is_active == 1 && data.is_primary == is_primary;
+        return (
+          data.is_active != -1 &&
+          data.is_primary == is_primary &&
+          data.batch_start_year == currentYear &&
+          (stream != "" ? data.stream == stream : true) &&
+          (medium != "" ? data.medium == medium : true)
+        );
       })
     );
 
@@ -135,24 +145,12 @@ const Myclass = () => {
 
   const handleYearChange = (e) => {
     setSelectYear(e.target.value);
-    let flag = 0;
-    classesByYear.map((value, index) => {
-      if (value._id.batch_start_year == e.target.value && index == 0) {
-        flag = 1;
-        return;
-      }
-    });
-
-    if (flag) {
-      setIsCurrentYearSelected(true);
-    } else {
-      setIsCurrentYearSelected(false);
-    }
 
     setClasses(() =>
       fetchData.filter((data) => {
         return (
           data.batch_start_year == e.target.value &&
+          data.is_active != -1 &&
           (stream != "" ? data.stream == stream : true) &&
           (medium != "" ? data.medium == medium : true)
         );
@@ -245,29 +243,29 @@ const Myclass = () => {
     }
   };
 
-  const handleClick = () => {
+  const handleClear = () => {
     resetField("batch_start_year");
-    resetField("batch_end_year");
     resetField("class_name");
     resetField("medium");
     resetField("is_primary");
     resetField("fees");
     resetField("stream");
+    setIsClassYearError(false)
   };
 
   return (
-    <div className="relative p-5">
+    <div className="p-5">
       {/* Add New Class Model */}
       {model && (
-        <div className="absolute w-full h-full  z-30 ">
-          <div className="flex justify-center opacity-100 ">
+        <div className="absolute w-full h-full z-30 left-0 top-0">
+          <div className="w-full flex justify-center opacity-100 ">
             <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-10 2xl:mt-24  bg-white w-3/4 z-50">
               <div className="">
                 <div className="flex justify-end ">
                   <button
                     onClick={(e) => {
                       setModel(!model);
-                      handleClick();
+                      handleClear();
                     }}
                     className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                   >
@@ -289,7 +287,7 @@ const Myclass = () => {
                             <div className="class_name">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Class
+                                  Class *
                                 </span>
 
                                 <input
@@ -320,7 +318,7 @@ const Myclass = () => {
                             <div className="Batch">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Batch (Starting Year)
+                                  Batch Starting Year *
                                 </span>
                                 <div className=" mt-1 ">
                                   <div className="input flex items-center space-x-4">
@@ -329,13 +327,13 @@ const Myclass = () => {
                                         type="text"
                                         placeholder="Starting year"
                                         defaultValue={new Date().getFullYear()}
-                                        className={`w-36 2xl:w-44  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
+                                        className={`w-full 2xl:w-60  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
                                        ${
                                          errors.batch_start_year &&
                                          "border-red-600"
                                        }`}
                                         {...register("batch_start_year", {
-                                          required: "Starting year",
+                                          required: "Starting year is required",
                                           pattern: {
                                             value: /^[0-9]*$/,
                                             message:
@@ -352,7 +350,13 @@ const Myclass = () => {
                                               "Please enter four digits only",
                                           },
                                         })}
-                                        onKeyUp={() => {
+                                        onKeyUp={(e) => {
+                                          if(Number(e.target.value) > new Date().getFullYear()){
+                                            setIsClassYearError(true)
+                                          }
+                                          else{
+                                            setIsClassYearError(false)
+                                          }
                                           trigger("batch_start_year");
                                         }}
                                       />
@@ -361,63 +365,52 @@ const Myclass = () => {
                                           {errors.batch_start_year.message}
                                         </small>
                                       )}
+                                      {isClassYearError 
+                                        ?
+                                          <small className="text-red-700">
+                                            Not be greater than current year
+                                          </small>
+                                        :
+                                          null
+                                      }
                                     </div>
                                   </div>
                                 </div>
                               </label>
                             </div>
-                            <div className="Batch">
+                            <div className="Section">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Batch (Ending Year)
+                                  Section *
                                 </span>
-                                <div className=" mt-1 ">
-                                  <div className="input flex items-center space-x-4">
-                                    <div>
-                                      <input
-                                        type="text"
-                                        placeholder="Ending year"
-                                        className={`w-36 2xl:w-44 block  px-3 py-2 bg-white  rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
-                                       ${
-                                         errors.batch_end_year &&
-                                         "border-red-600"
-                                       }`}
-                                        {...register("batch_end_year", {
-                                          required: "End year ",
-                                          pattern: {
-                                            value: /^[0-9]*$/,
-                                            message:
-                                              "Please enter only numbers",
-                                          },
-                                          minLength: {
-                                            value: 4,
-                                            message:
-                                              "Please enter four digits only",
-                                          },
-                                          maxLength: {
-                                            value: 4,
-                                            message:
-                                              "Please enter four digits only",
-                                          },
-                                        })}
-                                        onKeyUp={() => {
-                                          trigger("batch_end_year");
-                                        }}
-                                      />
-                                      {errors.batch_end_year && (
-                                        <small className="text-red-700">
-                                          {errors.batch_end_year.message}
-                                        </small>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
+                                <select
+                                  className={`2xl:w-[240px] w-[180px]  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                    errors.is_primary && "border-red-600"
+                                  }`}
+                                  {...register("is_primary", {
+                                    required: "Section is required",
+                                  })}
+                                  onKeyUp={() => {
+                                    trigger("is_primary");
+                                  }}
+                                >
+                                  <option value="">Select</option>
+                                  <option value={1}>Primary</option>
+                                  <option value={0}>Secondary</option>
+                                </select>
+                                {errors.is_primary && (
+                                  <small className="text-red-700">
+                                    {errors.is_primary.message}
+                                  </small>
+                                )}
                               </label>
                             </div>
+                          </div>
+                          <div className="flex lg:flex-row md:flex-col gap-4 items-center">
                             <div className="Medium">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Medium
+                                  Medium *
                                 </span>
                                 <select
                                   className={`2xl:w-[240px] w-[180px] mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none 
@@ -443,39 +436,10 @@ const Myclass = () => {
                                 )}
                               </label>
                             </div>
-                          </div>
-                          <div className="flex lg:flex-row md:flex-col gap-4 items-center">
-                            <div className="Class">
-                              <label className="block">
-                                <span className="block text-sm font-medium text-slate-700">
-                                  Section
-                                </span>
-                                <select
-                                  className={`2xl:w-[240px] w-[180px]  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
-                                    errors.is_primary && "border-red-600"
-                                  }`}
-                                  {...register("is_primary", {
-                                    required: "Section is required",
-                                  })}
-                                  onKeyUp={() => {
-                                    trigger("is_primary");
-                                  }}
-                                >
-                                  <option value="">Select</option>
-                                  <option value={1}>Primary</option>
-                                  <option value={0}>Secondary</option>
-                                </select>
-                                {errors.is_primary && (
-                                  <small className="text-red-700">
-                                    {errors.is_primary.message}
-                                  </small>
-                                )}
-                              </label>
-                            </div>
                             <div className="Stream">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Stream
+                                  Stream *
                                 </span>
                                 <select
                                   className={`2xl:w-[240px] w-[180px]  mt-1 block px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
@@ -490,8 +454,8 @@ const Myclass = () => {
                                 >
                                   <option value="">Select</option>
                                   <option value="none">None</option>
-                                  <option value="commerce">Commerce</option>
                                   <option value="science">Science</option>
+                                  <option value="commerce">Commerce</option>
                                   <option value="arts">Arts</option>
                                 </select>
                                 {errors.stream && (
@@ -504,7 +468,7 @@ const Myclass = () => {
                             <div className="Fees">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Fees
+                                  Fees *
                                 </span>
                                 <input
                                   type="text"
@@ -535,7 +499,7 @@ const Myclass = () => {
                             <div className="btn mt-5 flex justify-center w-60 space-x-3">
                               <button
                                 type="button"
-                                onClick={handleClick}
+                                onClick={handleClear}
                                 className="bg-darkblue-500 uppercase  hover:bg-white  border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium h-11 w-28 rounded-md tracking-wider"
                               >
                                 Clear
@@ -562,7 +526,7 @@ const Myclass = () => {
 
       {/* Edit Class Model */}
       {editClassModel && (
-        <div className="absolute w-full h-full  z-30 ">
+        <div className="absolute w-full h-full  z-30 left-0 top-0">
           <div className="flex justify-center opacity-100 ">
             <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-2/3 z-50">
               {classes.map((item, index) => {
@@ -582,7 +546,7 @@ const Myclass = () => {
                       </div>
                       <div className="mt-7">
                         <h1 className="text-2xl font-bold text-darkblue-500 px-6 ">
-                          {`Edit Class ${item.class_name}`}
+                          Edit <span className="text-blue-500">{`Class ${item.class_name}`}</span>
                         </h1>
                         <div>
                           <form
@@ -625,7 +589,7 @@ const Myclass = () => {
                                   <div className="Batch">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
-                                        Batch
+                                        Batch Starting Year
                                       </span>
                                       <div className=" mt-1">
                                         <div className="input flex items-center border border-slate-300 rounded-md">
@@ -634,7 +598,7 @@ const Myclass = () => {
                                             type="text"
                                             disabled={true}
                                             placeholder="Starting year"
-                                            className={`xl:w-24 2xl:w-28  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                            className={`w-full 2xl:w-60 block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                               errors.batch_start_year &&
                                               "border-red-600"
                                             }`}
@@ -662,42 +626,6 @@ const Myclass = () => {
                                               trigger("batch_start_year");
                                             }}
                                           />
-                                          <div className="w-0.5 bg-slate-500  rounded-md">
-                                            554
-                                          </div>
-                                          <input
-                                            defaultValue={item.batch_end_year}
-                                            type="text"
-                                            disabled={true}
-                                            placeholder="Ending year"
-                                            className={`xl:w-28 2xl:w-32 block  px-3 py-2 bg-white  rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
-                                              errors.batch_end_year &&
-                                              "border-red-600"
-                                            }`}
-                                            {...register(
-                                              "batch_end_year_edit",
-                                              {
-                                                pattern: {
-                                                  value: /^[0-9]*$/,
-                                                  message:
-                                                    "Please enter only numbers",
-                                                },
-                                                minLength: {
-                                                  value: 4,
-                                                  message:
-                                                    "Please enter four digits only",
-                                                },
-                                                maxLength: {
-                                                  value: 4,
-                                                  message:
-                                                    "Please enter four digits only",
-                                                },
-                                              }
-                                            )}
-                                            onKeyUp={() => {
-                                              trigger("batch_end_year");
-                                            }}
-                                          />
                                         </div>
                                         <div className="msg flex items-center mt-1 ml-1 ">
                                           {errors.batch_start_year && (
@@ -705,17 +633,52 @@ const Myclass = () => {
                                               {errors.batch_start_year.message}
                                             </small>
                                           )}
-                                          <div className="ml-14">
-                                            {errors.batch_end_year && (
-                                              <small className="text-red-700">
-                                                {errors.batch_end_year.message}
-                                              </small>
-                                            )}
-                                          </div>
                                         </div>
                                       </div>
                                     </label>
                                   </div>
+                                  <div className="Section">
+                                    <label className="block">
+                                      <span className="block text-sm font-medium text-slate-700">
+                                        Section
+                                      </span>
+                                      <select
+                                        className={`xl:w-52 2xl:w-60  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                          errors.is_primary && "border-red-600"
+                                        }`}
+                                        {...register("is_primary", {
+                                          required: "Section is required",
+                                        })}
+                                        onKeyUp={() => {
+                                          trigger("is_primary");
+                                        }}
+                                      >
+                                        <option
+                                          value={1}
+                                          selected={
+                                            item.is_primary == 1 ? true : false
+                                          }
+                                        >
+                                          Primary
+                                        </option>
+                                        <option
+                                          value={0}
+                                          selected={
+                                            item.is_primary == 0 ? true : false
+                                          }
+                                        >
+                                          Secondary
+                                        </option>
+                                      </select>
+                                      {errors.is_primary && (
+                                        <small className="text-red-700">
+                                          {errors.is_primary.message}
+                                        </small>
+                                      )}
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="flex lg:flex-row md:flex-col gap-4 items-center">
                                   <div className="Medium">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
@@ -768,48 +731,6 @@ const Myclass = () => {
                                       )}
                                     </label>
                                   </div>
-                                </div>
-                                <div className="flex lg:flex-row md:flex-col gap-4 items-center">
-                                  <div className="Class">
-                                    <label className="block">
-                                      <span className="block text-sm font-medium text-slate-700">
-                                        Section
-                                      </span>
-                                      <select
-                                        className={`xl:w-52 2xl:w-60  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
-                                          errors.is_primary && "border-red-600"
-                                        }`}
-                                        {...register("is_primary", {
-                                          required: "Section is required",
-                                        })}
-                                        onKeyUp={() => {
-                                          trigger("is_primary");
-                                        }}
-                                      >
-                                        <option
-                                          value={1}
-                                          selected={
-                                            item.is_primary == 1 ? true : false
-                                          }
-                                        >
-                                          Primary
-                                        </option>
-                                        <option
-                                          value={0}
-                                          selected={
-                                            item.is_primary == 0 ? true : false
-                                          }
-                                        >
-                                          Secondary
-                                        </option>
-                                      </select>
-                                      {errors.is_primary && (
-                                        <small className="text-red-700">
-                                          {errors.is_primary.message}
-                                        </small>
-                                      )}
-                                    </label>
-                                  </div>
                                   <div className="Stream">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
@@ -835,16 +756,6 @@ const Myclass = () => {
                                           None
                                         </option>
                                         <option
-                                          value="commerce"
-                                          selected={
-                                            item.stream == "commerce"
-                                              ? true
-                                              : false
-                                          }
-                                        >
-                                          Commerce
-                                        </option>
-                                        <option
                                           value="science"
                                           selected={
                                             item.stream == "science"
@@ -854,6 +765,18 @@ const Myclass = () => {
                                         >
                                           Science
                                         </option>
+                                        
+                                        <option
+                                          value="commerce"
+                                          selected={
+                                            item.stream == "commerce"
+                                              ? true
+                                              : false
+                                          }
+                                        >
+                                          Commerce
+                                        </option>
+                                        
                                         <option
                                           value="arts"
                                           defaultValue={
@@ -905,18 +828,11 @@ const Myclass = () => {
                                 </div>
                                 <div className="flex lg:flex-row md:flex-col gap-4">
                                   <div className="btn mt-5 flex justify-center w-60 space-x-3">
-                                    {/* <button
-                                type="button"
-                                onClick={handleClick}
-                                className="bg-blue-900 hover:bg-white text-lg border-2 hover:border-blue-900 text-white hover:text-blue-900 font-medium h-11 w-28 rounded-md tracking-wider"
-                              >
-                                Clear
-                              </button> */}
                                     <button
                                       type="submit"
-                                      className="bg-blue-900 hover:bg-white border-2 flex justify-center items-center  hover:border-blue-900 text-white hover:text-blue-900 font-medium h-11 w-28 rounded-md tracking-wider"
+                                      className="bg-darkblue-500 hover:bg-white border-2 flex justify-center items-center  hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium h-11 w-28 rounded-md tracking-wider"
                                     >
-                                      <h1 className=" text-lg">Update</h1>
+                                      <h1 className="text-lg">Update</h1>
                                     </button>
                                   </div>
                                 </div>
@@ -966,8 +882,8 @@ const Myclass = () => {
                               value={item._id.batch_start_year}
                             >
                               {index == 0
-                                ? "Current Year"
-                                : `${item._id.batch_start_year}-${item._id.batch_end_year}`}
+                                ? `Current (${classesByYear[0]._id.batch_start_year})`
+                                : item._id.batch_start_year}
                             </option>
                           );
                         })
@@ -994,7 +910,7 @@ const Myclass = () => {
                     onChange={handleMediumChange}
                     className="cursor-pointer text-darkblue-500 text-base outline-none"
                   >
-                    <option value="">Select</option>
+                    <option value="">All</option>
                     <option value="english">English</option>
                     <option value="gujarati">Gujarati</option>
                     <option value="hindi">Hindi</option>
@@ -1016,11 +932,11 @@ const Myclass = () => {
                     onChange={handleStreamChange}
                     className="cursor-pointer text-darkblue-500 text-base outline-none"
                   >
-                    <option value="">Select</option>
+                    <option value="">All</option>
                     <option value="none">None</option>
                     <option value="science">Science</option>
-                    <option value="arts">Arts</option>
                     <option value="commerce">Commerce</option>
+                    <option value="arts">Arts</option>
                   </select>
                 </button>
               </div>
@@ -1047,27 +963,49 @@ const Myclass = () => {
                 </Tooltip>
                 {
                   allClasses && allClasses?.length > 0 ? (
-                  <button
-                    className="btn cursor-pointer  h-11 w-40 rounded-full bg-white text-left border  overflow-hidden"
-                    id="btn"
-                  >
-                    <NavLink
-                      className="nav-link"
-                      to="class/ChangeYear"
-                      state={{ allClasses }}
+                  <>
+                    <button
+                      className="btn cursor-pointer  h-11 w-48 rounded-full bg-white text-left border  overflow-hidden"
+                      id="btn"
                     >
-                      <div
-                        className="icons  h-11 w-40 flex ml-3 items-center"
-                        id="icons"
+                      <NavLink
+                        className="nav-link"
+                        to="class/deactivate"
+                        state={{ allClasses }}
                       >
-                        <FaArrowRight className="text-xl text-darkblue-500  " />
-                        <span className="ml-2 text-lg text-darkblue-500 font-semibold">
-                          Change Year
-                        </span>
-                      </div>
-                    </NavLink>
-                  </button>
-                ) : null}
+                        <div
+                          className="icons  h-11 w-48 flex ml-3 items-center"
+                          id="icons"
+                        >
+                          <span className="ml-2 text-lg text-darkblue-500 font-semibold">
+                            Deactivate Classes
+                          </span>
+                        </div>
+                      </NavLink>
+                    </button>
+                    <button
+                      className="btn cursor-pointer  h-11 w-40 rounded-full bg-white text-left border  overflow-hidden"
+                      id="btn"
+                    >
+                      <NavLink
+                        className="nav-link"
+                        to="class/ChangeYear"
+                        state={{ allClasses }}
+                      >
+                        <div
+                          className="icons  h-11 w-40 flex ml-3 items-center"
+                          id="icons"
+                        >
+                          <FaArrowRight className="text-xl text-darkblue-500  " />
+                          <span className="ml-2 text-lg text-darkblue-500 font-semibold">
+                            Change Year
+                          </span>
+                        </div>
+                      </NavLink>
+                    </button>
+                  </>
+                 ) : null
+                }
               </div>
             </div>
           </div>
@@ -1099,7 +1037,7 @@ const Myclass = () => {
                               }}
                             >
                               <div className=" h-6 flex justify-end items-center space-x-2 mr-2 ">
-                                {isCurrentYearSelected ? (
+                                {item.is_active ? (
                                   <>
                                     <div
                                       className="edit_delete_btns px-1 py-1 rounded-md"
@@ -1164,7 +1102,7 @@ const Myclass = () => {
                                             index % headingBgColor.length
                                           ],
                                       }}
-                                      className={`text-xl font-bold ${
+                                      className={` font-bold ${
                                         item.class_name.length < 8 && "text-4xl"
                                       }  ${
                                         item.class_name.length <= 2 && "text-7xl"

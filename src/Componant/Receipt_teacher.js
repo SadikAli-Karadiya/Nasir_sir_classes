@@ -82,7 +82,7 @@ function Receipt_teacher() {
     formState: { errors },
     reset,
     trigger,
-    resetField,
+    clearErrors
   } = useForm();
 
 
@@ -106,6 +106,13 @@ function Receipt_teacher() {
     }
   };
 
+  const handleModelClose = () =>{
+    setModel(false);
+    reset();
+    clearErrors();
+    setError('')
+  }
+
 
   if (isloading) {
     return <Loader />
@@ -121,7 +128,7 @@ function Receipt_teacher() {
               <div className='h-2/2 mx-auto  opacity-100 shadow-2xl rounded  mt-20 bg-white w-1/2 z-50'>
                 <div className=''>
                   <div className='flex justify-end '>
-                    <button onClick={(e) => setModel(!model)} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+                    <button onClick={handleModelClose} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
 
                       <AiFillCloseCircle />
                     </button>
@@ -252,7 +259,7 @@ function Receipt_teacher() {
                     <div className="flex justify-between">
                       <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
                       <div className={`${receiptTextColor} w-48 font-bold`}>
-                        <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad.</p>
+                        <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023.</p>
                         <p className="pt-2">Mobile: 9173603705</p>
                       </div>
                     </div>
@@ -349,8 +356,8 @@ function Receipt_teacher() {
                     <div className="flex justify-between">
                       <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
                       <div className={`${receiptTextColor} w-48 font-bold`}>
-                        <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad.</p>
-                        <p className="pt-2">Mobile: 8747382919</p>
+                        <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023.</p>
+                        <p className="pt-2">Mobile: 9173603705</p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-5">

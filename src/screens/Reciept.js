@@ -30,6 +30,7 @@ const Reciept = () => {
     reset,
     trigger,
     resetField,
+    clearErrors,
   } = useForm();
   const [model, setModel] = React.useState(false);
   
@@ -65,6 +66,13 @@ const Reciept = () => {
       }
     }
   };
+
+  const handleModelClose = () =>{
+    reset(); 
+    setError(''); 
+    clearErrors()
+    setModel(!model); 
+  }
 
   function inWords (num) {
     let a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
@@ -103,7 +111,7 @@ const Reciept = () => {
               date,
               roll_no: receipt_details?.student_id,
               class_name: receipt_details?.academics[0].class[0].class_name,
-              batch: `${receipt_details?.academics[0].class[0].batch_start_year}-${receipt_details?.academics[0].class[0].batch_end_year}`,
+              batch: receipt_details?.academics[0].class[0].batch_start_year,
               full_name: receipt_details?.basic_info[0].full_name,
               amount_in_words: amountInWords,
               is_by_cash: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cash,
@@ -151,7 +159,7 @@ const Reciept = () => {
             <div className='h-2/2 mx-auto  opacity-100 shadow-2xl rounded  mt-20 bg-white w-1/2 z-50'>
               <div className=''>
                 <div className='flex justify-end '>
-                  <button onClick={(e) => {setModel(!model); reset(); setError('')}} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+                  <button onClick={handleModelClose} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
                       <AiFillCloseCircle />
                   </button>
                 </div>

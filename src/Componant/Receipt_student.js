@@ -21,7 +21,7 @@ function Receipt_student({receiptDetails, forOffice}) {
           <div className={`${receiptTextColor} w-48 font-bold`}>
             <p>
               E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial,
-              Ahmedabad.
+              Ahmedabad 380023.
             </p>
             <p className="pt-2">Mobile: 9173603705</p>
           </div>

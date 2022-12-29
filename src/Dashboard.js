@@ -37,6 +37,7 @@ import Notification from "./screens/Notification";
 import ErrorBoundary from "./Componant/ErrorBound";
 import StudentAdmissionForm from "./Componant/StudentAdmissionForm";
 import { handleLogout } from "./AuthProvider";
+import DeactivateClasses from "./Componant/DeactivateClasses";
 
 function DashboardMenu() {
   const { setAdmin, login } = React.useContext(NasirContext);
@@ -102,6 +103,11 @@ function DashboardMenu() {
                 exact
                 path="/myclass/class/ChangeYear"
                 element={<ChangeYear />}
+              />
+              <Route
+                exact
+                path="/myclass/class/deactivate"
+                element={<DeactivateClasses />}
               />
               <Route
                 exact

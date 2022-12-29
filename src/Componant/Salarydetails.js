@@ -42,6 +42,7 @@ export default function Salarydetails() {
         hour: "",
         amount: "",
     });
+    const [hourRateEmptyError, setHourRateEmptyError] = React.useState(false);
     const [isLoadingOnSubmit, setIsLoadingOnSubmit] = React.useState(false);
 
 
@@ -94,33 +95,13 @@ export default function Salarydetails() {
     }, [])
 
 
-    //   // --------------------------------
-    //   // --------  Date ----------------
-    //   // -------------------------------
-    let date = new Date(faculty?.date);
-    date = `${date.getFullYear()}-${(date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1)}-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`
-
-    //   // -------------------------------------
-    //   // --------  Change Date ----------------
-    //   // -------------------------------------
-    const [Changedate, setChangedate] = React.useState("")
-    var today = new Date(Changedate);
-    var toggledate =
-        today.getDate() +
+    var receiptDate = new Date(faculty?.date);
+    var date =
+        receiptDate.getDate() +
         " / " +
-        (today.getMonth() + 1) +
+        (receiptDate.getMonth() + 1) +
         " / " +
-        today.getFullYear();
-    //   // -------------------------------------
-    //   // ------  Without Change Dtae ---------
-    //   // -------------------------------------  
-    var today = new Date(date);
-    var corrent =
-        today.getDate() +
-        " / " +
-        (today.getMonth() + 1) +
-        " / " +
-        today.getFullYear();
+        receiptDate.getFullYear();
 
     // ------------------------
     // ----- Payment_type ------
@@ -173,6 +154,7 @@ export default function Salarydetails() {
         setamounterror(false)
         setSalaryData({hour: '', amount: ''})
         setHourRateError(false)
+        setHourRateEmptyError(false);
     }
 
     function handleLecture(e) {
@@ -181,6 +163,7 @@ export default function Salarydetails() {
         setishourly(e.target.value);
         setToggle(true);
         setHourRateError(false)
+        setHourRateEmptyError(false);
         setamounterror(false)
     }
 
@@ -268,13 +251,13 @@ export default function Salarydetails() {
             const res = await Update_faculty_reciept(gen_reciept)
             setIsLoadingOnSubmit(false)
 
-            if (res.data.success == true) {
+            if (res?.data?.success == true) {
                 const receipt_id = res.data.salary_receipt_details.salary_receipt_id
                 navigate(`/salary/Receipt_teacher/${receipt_id}`, { state: { prevPath: "update_receipt" } })
                 Toaster()
             } else {
                 errtoast({
-                    invalid_pin: res.data.message
+                    invalid_pin: res?.data?.message
                 });
             }
 
@@ -290,6 +273,10 @@ export default function Salarydetails() {
         if(hourRateError){
             return;
         }
+        if(salaryData.hour == '' || salaryData.amount == ''){
+            setHourRateEmptyError(true);
+            return;
+        }
         setamounterror(false)
         setsalaryamount(salaryData.hour * salaryData.amount);
         setToggle(false);
@@ -301,14 +288,13 @@ export default function Salarydetails() {
 
     return (
         <>
-
-            <div className="relative bg-student-100 ">
+            <div className="w-full h-full bg-student-100">
                 {model && (
-                    <div className="flex justify-center mt-4   bg-white ">
+                    <div className="flex justify-center mt-4  bg-white ">
                         <div className="absolute h-2/5 mx-auto  opacity-100 shadow-2xl rounded      bg-white w-2/3 z-50">
                             <div className="flex justify-end">
                                 <button
-                                    onClick={(e) => setModel(!model)}
+                                    onClick={(e) => {setModel(!model); setError(false)}}
                                     className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                                 >
                                     <AiFillCloseCircle />
@@ -327,7 +313,7 @@ export default function Salarydetails() {
                                         <h1 className="font-bold uppercase">Name : {faculty.staff_id.basic_info_id.full_name}</h1>
                                     </div>
                                     <div className="text-sm">
-                                        <h4>Date : {Changedate ? toggledate : corrent} </h4>
+                                        <h4>Date : {date} </h4>
                                     </div>
                                 </div>
 
@@ -378,7 +364,7 @@ export default function Salarydetails() {
                 )}
 
                 <div
-                    className={`mt-2 bg-student-100 min-h-screen px-12  py-6 ${model && "opacity-5"} `}>
+                    className={`bg-student-100 h-full px-12  py-6 ${model && "opacity-5"} `}>
                     <div className="flex justify-between items-center">
                     <h1 className="font-bold text-3xl text-darkblue-500 ">
                         Update Salary Receipt
@@ -397,10 +383,8 @@ export default function Salarydetails() {
                                     Receipt No : {faculty.salary_receipt_id}
                                 </h1>
                             </div>
-                            <div className="p-6 pt-0 font-serif flex items-center space-x-2">
-                                <h3 className=""> Date :</h3>
-                                <input type="date" className="px-2 " defaultValue={date}
-                                    onChange={(e) => { setChangedate(e.target.value) }} />
+                            <div className="p-6 pt-0 font-serif">
+                                <h3 className=""> Date : {date}</h3>
                             </div>
                         </div>
                         <div className="flex items-center px-6">
@@ -444,8 +428,10 @@ export default function Salarydetails() {
                                                     value={salaryData.hour}
                                                     onChange={(e) =>{
                                                         const regex = new RegExp(/^[0-9]+$/)
+                                                        
+                                                        setHourRateEmptyError(false);
 
-                                                        if(!regex.test(e.target.value) || !regex.test(salaryData.amount)){
+                                                        if(!regex.test(e.target.value)){
                                                         setHourRateError(true)
                                                         }
                                                         else{
@@ -462,8 +448,10 @@ export default function Salarydetails() {
                                                     value={salaryData.amount}
                                                     onChange={(e) =>{
                                                         const regex = new RegExp(/^[0-9]+$/)
+                                                        
+                                                        setHourRateEmptyError(false);
 
-                                                        if(!regex.test(e.target.value) || !regex.test(salaryData.hour)){
+                                                        if(!regex.test(e.target.value)){
                                                         setHourRateError(true)
                                                         }
                                                         else{
@@ -487,6 +475,15 @@ export default function Salarydetails() {
                                                 ?
                                                 <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
                                                     *Please enter only numbers
+                                                </h1>
+                                                :
+                                                null
+                                            }                                        
+                                            {
+                                                hourRateEmptyError 
+                                                ?
+                                                <h1 className=" text-red-700  mx-6 text-xs px-1 my-1 font-bold">
+                                                    *Both fields are required
                                                 </h1>
                                                 :
                                                 null
