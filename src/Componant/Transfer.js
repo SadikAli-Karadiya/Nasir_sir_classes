@@ -195,7 +195,7 @@ const Transfer = () => {
 
                     <div className='flex justify-center items-center p-10 pt-0'>
 
-                        <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 pt-5 shadow-xl space-y-5 w-full">
+                        <div className="relative  sm:rounded-lg bg-white p-10 pt-5 shadow-xl space-y-5 w-full">
                             <div className='flex justify-between items-center'>
                                 <h1 className='pl-5 text-xl text-red-600 font-bold'>
                                     Not Eligible For Transfer
@@ -256,7 +256,7 @@ const Transfer = () => {
                         </div>
                     </div>
                     <div className='flex justify-center items-center p-10 pt-0 '>
-                        <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 pt-5 shadow-2xl space-y-5 w-full">
+                        <div className=" relative  sm:rounded-lg bg-white p-10 pt-5 shadow-2xl space-y-5 w-full">
                             <h1 className='pl-5 text-xl text-green-600 font-bold'>
                                 Eliglible for Transfer
                             </h1>

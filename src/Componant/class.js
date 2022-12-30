@@ -277,7 +277,7 @@ const Class = () => {
           </div>
         </div>
         <div className="flex justify-center items-center p-10 pt-5">
-          <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-5 shadow-xl  w-full space-y-5">
+          <div className=" relative  sm:rounded-lg bg-white p-5 shadow-xl  w-full space-y-5">
             <div className="print-btn flex items-center justify-between space-x-3">
               <div className=" flex  items-center justify-center ml-6">
                 <input

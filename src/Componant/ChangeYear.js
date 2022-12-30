@@ -105,7 +105,7 @@ const ChangeYear = () => {
                         </div>
 
                     </div>
-                    <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
+                    <div className=" relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
 
                         <table className="w-full text-sm text-center bg-class3-50 rounded-xl  ">
                             <thead className="text-xs text-gray-700 uppercase">

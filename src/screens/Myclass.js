@@ -21,6 +21,8 @@ import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import { NasirContext } from "../NasirContext";
 import LoaderSmall from "../Componant/LoaderSmall";
+import {startScroll, stopScroll} from '../hooks/helper'
+
 
 const Myclass = () => {
   const { section } = React.useContext(NasirContext);
@@ -269,6 +271,7 @@ const Myclass = () => {
                     onClick={(e) => {
                       setModel(!model);
                       handleClear();
+                      startScroll()
                     }}
                     className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                   >
@@ -541,6 +544,7 @@ const Myclass = () => {
                           onClick={(e) => {
                             setEditClassModel(!editClassModel);
                             reset();
+                            startScroll()
                           }}
                           className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                         >
@@ -952,7 +956,7 @@ const Myclass = () => {
                   className="text-white bg-black rounded p-2"
                 >
                   <div
-                    onClick={(e) => setModel(true)}
+                    onClick={(e) => {setModel(true); stopScroll()}}
                     className="btn cursor-pointer  h-12 w-12 rounded-full bg-white text-left border  overflow-hidden "
                     id="btn"
                   >
@@ -1058,7 +1062,7 @@ const Myclass = () => {
                                       }}
                                       onMouseEnter={handleMouseEnterEdit}
                                       onMouseLeave={handleMouseLeaveEdit}
-                                      onClick={() => handleEditClass(item._id)}
+                                      onClick={() => {handleEditClass(item._id); stopScroll()}}
                                     >
                                       <MdModeEdit />
                                     </div>

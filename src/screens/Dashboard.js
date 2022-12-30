@@ -183,7 +183,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="flex justify-center items-center p-10 pt-0">
-        <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
+        <div className=" relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
           <div className="print-btn flex justify-between items-center">
             <div className=" flex  items-center justify-center ml-5">
               <input

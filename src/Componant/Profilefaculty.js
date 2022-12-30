@@ -332,7 +332,7 @@ const Profilefaculty = () => {
         </div>
       </div>
       <section className=" p-10 pt-3 ">
-        <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10  space-y-5 w-full">
+        <div className="relative  sm:rounded-lg bg-white p-10  space-y-5 w-full">
           <form ref={form} className="flex justify-center items-center "
             onSubmit={(e) => setState(valid.handleSubmit(e, onSubmit))} >
             <div className=" w-full grid grid-cols-1 rounded-lg  truncate  pb-5 pt-10 ">

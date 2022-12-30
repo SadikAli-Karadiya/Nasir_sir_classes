@@ -11,7 +11,7 @@ import { IoNotifications } from "react-icons/io5";
 import { ImSearch } from "react-icons/im";
 import { NavLink } from "react-router-dom";
 
-export default function Sidebar({ data }) {
+export default function Sidebar() {
   return (
     <div className="h-full bg-white sticky left-0 top-0">
       <div className="sidebar h-screen w-20 xl:w-60">

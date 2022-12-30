@@ -103,7 +103,7 @@ const Faculty = () => {
 
       <div className="relative">
         {model && (
-          <div className="absolute w-full overflow-y-hidden" style={{minHeight: "calc(100vh - 70px)"}}>
+          <div className="absolute w-full" style={{minHeight: "calc(100vh - 70px)"}}>
             <div className='flex justify-center shadow-2xl'>
               <div className='absolute  mx-auto  opacity-100 shadow-2xl rounded mt-10 bg-white w-2/3 z-50'>
                 <div className=''>

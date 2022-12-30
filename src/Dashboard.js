@@ -73,7 +73,7 @@ function DashboardMenu() {
       {<Sidebar />}
       <div className="w-full">
         {<Searchbar SetToggle={SetToggle} toggle={toggle} />}
-        <div className="page-rendering-div relative" style={{ minHeight: "calc(100% - 70px)" }}>
+        <div className="page-rendering-div relative" style={{ minHeight: "calc(100vh - 70px)" }}>
           <ErrorBoundary>
             <Routes>
               <Route exact path="/admin-login" element={<AdminLogin />} />

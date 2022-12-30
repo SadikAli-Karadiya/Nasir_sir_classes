@@ -49,7 +49,7 @@ export default function AdminList() {
       </div>
       <div className="px-12 py-20">
         <h2 className="font-semibold text-red-500 pb-2">Note: Clicking on "Set Default" button will reset current password and the new password will be "admin"</h2>
-        <div className="overflow-x-auto">
+        <div className="">
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="bg-gray-200 h-16 w-full text-sm leading-none font-bold text-darkblue-500">

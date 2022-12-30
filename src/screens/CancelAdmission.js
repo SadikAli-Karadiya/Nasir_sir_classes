@@ -13,6 +13,7 @@ import { IoClose } from "react-icons/io5";
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
 import {NasirContext} from '../NasirContext'
+import { startScroll, stopScroll } from '../hooks/helper';
 
 function CancelAdmission() {
     const location = useLocation();
@@ -83,6 +84,7 @@ function CancelAdmission() {
     }
 
     const handleCloseSearchModel = ()=>{
+        startScroll()
         setSearchValue('')
         setdata([]);
         setSearchModel(false);
@@ -391,7 +393,7 @@ function CancelAdmission() {
                                                         Students List
                                                     </p>
                                                     </div>
-                                                    <div className="overflow-x-auto">
+                                                    <div className="">
                                                     <table className="w-full whitespace-nowrap">
                                                         <thead>
                                                         <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
@@ -626,7 +628,7 @@ function CancelAdmission() {
 
                             amountToPay > 0
                             ?
-                                <button className="ml-5 bg-white-500 border-2 border-darkblue-500 text-darkblue-500 hover:bg-darkblue-500 hover:text-white rounded-md px-5 py-1" onClick={()=>{setSearchModel(true)}}>Transfer to student</button>
+                                <button className="ml-5 bg-white-500 border-2 border-darkblue-500 text-darkblue-500 hover:bg-darkblue-500 hover:text-white rounded-md px-5 py-1" onClick={()=>{setSearchModel(true); stopScroll()}}>Transfer to student</button>
                             :
                                 null
                                 

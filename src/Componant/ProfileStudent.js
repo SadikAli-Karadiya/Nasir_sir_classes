@@ -14,6 +14,7 @@ import { AxiosError } from 'axios';
 import Validator from '../hooks/validator';
 import { useParams } from "react-router-dom";
 import { NasirContext } from "../NasirContext";
+import { stopScroll, startScroll } from "../hooks/helper";
 
 const valid = new Validator();
 valid.register({
@@ -445,7 +446,7 @@ const Profilestudent = () => {
                             <div className='absolute mx-auto  opacity-100 shadow-2xl rounded mt-32 bg-white w-1/3 z-50'>
                                 <div className=''>
                                     <div className='flex justify-end '>
-                                        <button onClick={(e) => setClassSelectionModel(!classSelectionModel)} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+                                        <button onClick={(e) => {setClassSelectionModel(!classSelectionModel); startScroll()}} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
 
                                             <AiFillCloseCircle />
                                         </button>
@@ -510,7 +511,7 @@ const Profilestudent = () => {
                             <span className=" text-xl text-darkblue-500 font-semibold group-hover:text-blue-700">Back</span>
                         </div>
                     </div>
-                    <div className={`bg-white overflow-x-auto relative  sm:rounded-lg  shadow-xl space-y-5 w-full`}>
+                    <div className={`bg-white relative  sm:rounded-lg  shadow-xl space-y-5 w-full`}>
                         <form ref={form} className="flex justify-center items-center" onSubmit={(e) => setState(valid.handleSubmit(e, onSubmit))} >
                             <div className=" w-11/12 rounded-lg  truncate bg-white p-5 2xl:p-10 content-center">
                                 <div className="grid grid-cols-2">
@@ -945,6 +946,7 @@ const Profilestudent = () => {
                                         onClick={(e) => {
                                             e.preventDefault()
                                             setClassSelectionModel(true);
+                                            stopScroll()
                                         }} >
                                         Transfer
                                     </button>
@@ -1014,7 +1016,7 @@ const Profilestudent = () => {
                             </div>
                         </form>
 
-                        <div className="overflow-x-auto relative  sm:rounded-lg  p-10  space-y-5 w-full">
+                        <div className=" relative  sm:rounded-lg  p-10  space-y-5 w-full">
 
                             <div className="ml-5 flex items-center text-gray-700">
                                 <h3 className="text-2xl font-medium">Academic Details</h3>

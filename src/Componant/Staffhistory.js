@@ -76,7 +76,7 @@ const Staffhistory = () => {
           <div className={`${isPrint ? 'flex' : 'hidden'} justify-between items-center py-2 bg-gray-100`}>
             <h3 className="text-lg mx-4 font-medium">Name: {location.state.faculty_name}</h3> 
           </div>
-          <div className={`overflow-x-auto relative ${isPrint ? '' : 'rounded-lg'} border`}>
+          <div className={` relative ${isPrint ? '' : 'rounded-lg'} border`}>
             <table className="w-full text-sm text-left  ">
               <thead className="text-sm uppercase bg-darkblue-500">
                 <tr className='text-white'>

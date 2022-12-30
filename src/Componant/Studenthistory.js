@@ -113,7 +113,7 @@ const Studenthistory = () => {
                   </h3>
                 </div>
                 <div
-                  className={`overflow-x-auto relative ${
+                  className={`relative ${
                     isPrint ? "" : "rounded-lg"
                   }`}
                 >

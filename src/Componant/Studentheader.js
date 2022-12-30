@@ -140,7 +140,7 @@ const Studenthearder = () => {
         <StudentChart key="student" />
       </div>
       <div className="flex justify-center items-center p-10 pt-10">
-        <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
+        <div className=" relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
           <div>
             <p className="text-base md:text-lg lg:text-xl font-bold leading-tight text-gray-800">
               Transaction List
@@ -226,7 +226,7 @@ const Studenthearder = () => {
             </div>
           </div>
           <div className="p-5 pt-3 pb-0">
-            <div className="overflow-x-auto">
+            <div className="">
               <table ref={componentRef} className="w-full whitespace-nowrap">
                 <thead>
                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">

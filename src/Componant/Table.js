@@ -39,7 +39,7 @@ const Table = () => {
         <>
             <section className='table h-full w-full mt-10 shadow-none'>
                 <div className='flex justify-center items-center p-10 pt-0'>
-                    <div className="overflow-x-auto relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
+                    <div className=" relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
                         <div className="print-btn flex items-center space-x-3">
                             <button id="year-btn" className=" flex items-center border bg-white p-2 xl:p-2 xl:py-1 rounded-full shadow-2xl space-x-1 ">
                                 <select name="" id="" className="cursor-pointer text-darkblue-500 text-xs xl:text-lg outline-none">

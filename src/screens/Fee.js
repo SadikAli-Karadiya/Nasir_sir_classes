@@ -96,7 +96,7 @@ export default function Fess() {
                             Students List
                           </p>
                         </div>
-                        <div className="overflow-x-auto">
+                        <div className="">
                           <table className="w-full whitespace-nowrap">
                             <thead>
                               <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">

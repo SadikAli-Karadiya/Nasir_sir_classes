@@ -89,7 +89,7 @@ export default function ReciptScreen() {
                                 Student List
                               </p>
                             </div>
-                            <div className="overflow-x-auto">
+                            <div className="">
                               <table className="w-full whitespace-nowrap">
                                 <thead>
                                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
@@ -196,7 +196,7 @@ export default function ReciptScreen() {
                                 Staff List
                               </p>
                             </div>
-                            <div className="overflow-x-auto">
+                            <div className="">
                               <table className="w-full whitespace-nowrap">
                                 <thead>
                                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
