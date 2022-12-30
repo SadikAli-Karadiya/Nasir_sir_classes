@@ -14,45 +14,28 @@ import Toaster from '../hooks/showToaster'
 import LoaderSmall from '../Componant/LoaderSmall';
 
 
-const Facultytable = () => {
+const Facultytable = ({allFaculty, isLoading}) => {
   // -------------------------------
   // -------- All useState -----------
   // -------------------------------
   const componentRef = useRef();
   const [isPrint, setIsPrint] = useState(false);
-  const [facultyData, setFacultyData] = useState([])
   const [currentItems, setcurrentItems] = useState([])
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [Serialno, setserialno] = useState(1)
-  const [call, setcall] = useState(false)
-  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 12;
-
-  // -------------------------------
-  // --------  API Work  -----------
-  // -------------------------------
-  useEffect(() => {
-    async function fatchallstaff() {
-      const res = await getAllFaculty();
-      setIsLoading(false)
-      if (res) {
-        setFacultyData(res.staffData)
-      }
-    }
-    fatchallstaff();
-  }, [call]);
 
   // -------------------------------
   // -------- Pagination -----------
   // -------------------------------
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-    setcurrentItems(facultyData.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(facultyData.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, facultyData])
+    setcurrentItems(allFaculty.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(allFaculty.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, allFaculty])
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % facultyData.length;
+    const newOffset = (event.selected * itemsPerPage) % allFaculty.length;
     setserialno(event.selected + 1)
     setItemOffset(newOffset);
   };
@@ -152,12 +135,12 @@ const Facultytable = () => {
                           return (
                             <tr key={key} className="border-b"  >
                               <th className="py-5 px-2">{(key + 1) + (itemsPerPage * Serialno - itemsPerPage)}</th>
-                              <td className="py-5 px-2 capitalize">{item.basic_info_id.full_name}</td>
-                              <td className="py-5 px-2">{item.contact_info_id.whatsapp_no}</td>
-                              <td className="py-5 px-2">{item.role}</td>
+                              <td className="py-5 px-2 capitalize">{item?.basic_info_id?.full_name}</td>
+                              <td className="py-5 px-2">{item?.contact_info_id?.whatsapp_no}</td>
+                              <td className="py-5 px-2">{item?.role}</td>
                               <td className={`py-5 px-2 ${isPrint ? "hidden" : ""}`}>
                                 <div className="flex justify-center items-center">
-                                  <NavLink to={`Profilefaculty/${item._id}`} >
+                                  <NavLink to={`Profilefaculty/${item?._id}`} >
                                     <Tooltip content="Show Profile" placement="bottom-end" className="text-white bg-black rounded p-2" >
                                       <span className="text-xl text-darkblue-500">
                                         <AiFillEye className="cursor-pointer" />
@@ -168,7 +151,7 @@ const Facultytable = () => {
                               </td>
                               <td className={`py-5 px-5 ${isPrint ? "hidden" : ""}`}>
                                 <div className="flex justify-center items-center">
-                                  <NavLink to={`/salary/${item._id}`}>
+                                  <NavLink to={`/salary/${item?._id}`}>
                                     <Tooltip
                                       content="Pay Salary"
                                       placement="bottom-end"
@@ -190,12 +173,12 @@ const Facultytable = () => {
                             return (
                               <tr key={key} className="border-b"  >
                                 <th className="py-5 px-2">{(key + 1) + (itemsPerPage * Serialno - itemsPerPage)}</th>
-                                <td className="py-5 px-2 capitalize">{item.basic_info_id.full_name}</td>
-                                <td className="py-5 px-2">{item.contact_info_id.whatsapp_no}</td>
-                                <td className="py-5 px-2">{item.role}</td>
+                                <td className="py-5 px-2 capitalize">{item?.basic_info_id?.full_name}</td>
+                                <td className="py-5 px-2">{item?.contact_info_id?.whatsapp_no}</td>
+                                <td className="py-5 px-2">{item?.role}</td>
                                 <td className={`py-5 px-2 ${isPrint ? "hidden" : ""}`}>
                                   <div className="flex justify-center items-center">
-                                    <NavLink to={`Profilefaculty/${item._id}`} >
+                                    <NavLink to={`Profilefaculty/${item?._id}`} >
                                       <Tooltip content="Show Profile" placement="bottom-end" className="text-white bg-black rounded p-2" >
                                         <span className="text-xl text-darkblue-500">
                                           <AiFillEye className="cursor-pointer" />
@@ -206,7 +189,7 @@ const Facultytable = () => {
                                 </td>
                                 <td className={`py-5 px-5 ${isPrint ? "hidden" : ""}`}>
                                   <div className="flex justify-center items-center">
-                                    <NavLink to={`/salary/${item._id}`}>
+                                    <NavLink to={`/salary/${item?._id}`}>
                                       <Tooltip
                                         content="Pay Salary"
                                         placement="bottom-end"

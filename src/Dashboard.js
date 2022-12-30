@@ -33,6 +33,7 @@ import AdminList from "./screens/AdminList";
 import CancelAdmission from "./screens/CancelAdmission";
 import Salarydetails from "./Componant/Salarydetails";
 import UpdateStudentReceipt from "./screens/UpdateStudentReceipt";
+import UniversalSearch from "./screens/UniversalSearch";
 import Notification from "./screens/Notification";
 import ErrorBoundary from "./Componant/ErrorBound";
 import StudentAdmissionForm from "./Componant/StudentAdmissionForm";
@@ -72,7 +73,7 @@ function DashboardMenu() {
       {<Sidebar />}
       <div className="w-full">
         {<Searchbar SetToggle={SetToggle} toggle={toggle} />}
-        <div className="relative" style={{ minHeight: "calc(100% - 70px)" }}>
+        <div className="page-rendering-div relative" style={{ minHeight: "calc(100% - 70px)" }}>
           <ErrorBoundary>
             <Routes>
               <Route exact path="/admin-login" element={<AdminLogin />} />
@@ -166,6 +167,12 @@ function DashboardMenu() {
                 exact
                 path="studentregister"
                 element={<Studentregister />}
+              />
+
+              <Route
+                exact
+                path="universal-search"
+                element={<UniversalSearch />}
               />
               <Route path="/fee/:id" element={<FeesDetail />} />
               <Route path="/salary/:id" element={<Salary />} />

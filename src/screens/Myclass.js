@@ -219,6 +219,9 @@ const Myclass = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if(isClassYearError){
+      return;
+    }
     setIsAddingClass(true)
     const response = await AddClass(data);
     setIsAddingClass(false)
@@ -779,7 +782,7 @@ const Myclass = () => {
                                         
                                         <option
                                           value="arts"
-                                          defaultValue={
+                                          selected={
                                             item.stream == "arts" ? true : false
                                           }
                                         >

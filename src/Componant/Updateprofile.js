@@ -166,13 +166,13 @@ const Updateprofile = () => {
     }-${dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate()}`;
     
     valid.fieldsValue = {
-      full_name: admin?.staff_id?.basic_info_id.full_name,
-      email: admin?.staff_id?.contact_info_id.email,
-      whatsapp_no: admin?.staff_id?.contact_info_id.whatsapp_no,
-      alternate_no: admin?.staff_id?.contact_info_id.alternate_no == '' ? '--' : admin?.staff_id?.contact_info_id.alternate_no,
-      security_pin: admin?.security_pin,
-      address: admin?.staff_id?.contact_info_id.address,
-      dob: dob,
+      full_name: admin_data.full_name ?? admin_data.full_name,
+      email: admin_data.email ?? admin_data.email,
+      whatsapp_no: admin_data.whatsapp_no ?? admin_data.whatsapp_no,
+      alternate_no: admin_data.alternate_no ?? admin_data.alternate_no,
+      security_pin: admin_data.security_pin ?? admin_data.security_pin,
+      dob: admin_data.dob ?? admin_data.dob,
+      address: admin_data.address ?? admin_data.address,
     };
     setadminInputController(() => {
       return {

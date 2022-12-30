@@ -121,11 +121,11 @@ const DeactivateClasses = () => {
                                     </td>
                                     <td className="w-20 h-20">
                                         <select name="" disabled={true} 
-                                        className=' rounded-md w-20 h-7 text-center' defaultValue={item.section} 
+                                        className=' rounded-md w-20 h-7 text-center' defaultValue={item.is_primary} 
                                         >
                                         
-                                            <option value={0} defaultValue={item.is_primary == 0 ? true:false}>Primary</option>
-                                            <option value={1} defaultValue={item.is_primary == 1 ? true:false}>Secondary</option>
+                                            <option value={1}>Primary</option>
+                                            <option value={0}>Secondary</option>
                                         
                                         </select>
                                     </td>

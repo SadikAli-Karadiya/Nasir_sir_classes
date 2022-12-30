@@ -8,6 +8,7 @@ import { IoMdPersonAdd } from "react-icons/io";
 import { GiTeacher } from "react-icons/gi";
 import { IoMdHelpCircle } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
+import { ImSearch } from "react-icons/im";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar({ data }) {
@@ -24,15 +25,6 @@ export default function Sidebar({ data }) {
         </div>
         <div className="navigation mt-12 xl:mt-0 2xl:mt-4">
           <ul className="text-center">
-            {/* <div className="mb-3">
-            <NavLink className="nav-link" activeclassname="active" to="/">
-              <li className="inline-flex xl:pl-11 mx-5 xl:mx-0 items-center py-2 w-full xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
-                <RiDashboardFill className="xl:w-5 xl:h-5 xl:mr-2" />
-                <h1 className="text-base hidden xl:block  ">Dashboard</h1>
-              </li>
-            </NavLink>
-            </div> */}
-
             <div className="mb-3">
               <NavLink
                 className="nav-link"
@@ -94,11 +86,11 @@ export default function Sidebar({ data }) {
               <NavLink
                 className="nav-link"
                 activeclassname="active"
-                to="report"
+                to="studentregister"
               >
                 <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
-                  <FaWpforms className="xl:w-5 xl:h-5 xl:mr-2" />
-                  <h1 className="text-base hidden  xl:block  "> Report</h1>
+                  <IoMdPersonAdd className="xl:w-5 xl:h-5 xl:mr-2" />
+                  <h1 className="text-base hidden  xl:block  ">Student Reg.</h1>
                 </li>
               </NavLink>
             </div>
@@ -107,11 +99,24 @@ export default function Sidebar({ data }) {
               <NavLink
                 className="nav-link"
                 activeclassname="active"
-                to="studentregister"
+                to="universal-search"
               >
                 <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
-                  <IoMdPersonAdd className="xl:w-5 xl:h-5 xl:mr-2" />
-                  <h1 className="text-base hidden  xl:block  ">Student Reg.</h1>
+                  <ImSearch className="xl:w-5 xl:h-5 xl:mr-2" />
+                  <h1 className="text-base hidden  xl:block  ">Search</h1>
+                </li>
+              </NavLink>
+            </div>
+
+            <div className="mb-3">
+              <NavLink
+                className="nav-link"
+                activeclassname="active"
+                to="report"
+              >
+                <li className="inline-flex xl:pl-11 items-center px-2 py-2 xl:w-48 cursor-pointer hover:bg-lightblue-200 hover:text-blue-500 rounded-md">
+                  <FaWpforms className="xl:w-5 xl:h-5 xl:mr-2" />
+                  <h1 className="text-base hidden  xl:block  "> Report</h1>
                 </li>
               </NavLink>
             </div>

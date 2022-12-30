@@ -5,7 +5,7 @@ import { Tooltip } from "@material-tailwind/react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaUserEdit } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
-import { getStudentDetails, studentAllAcademicDetails, updateStudent, getActiveClasses, deleteAndtransferStudent } from '../hooks/usePost';
+import { findStudentUniversal, studentAllAcademicDetails, updateStudent, getActiveClasses, deleteAndtransferStudent } from '../hooks/usePost';
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
 import Loader from './Loader';
@@ -200,7 +200,7 @@ const Profilestudent = () => {
     useEffect(() => {
         async function studentApi() {
             try {
-                student_details = await getStudentDetails(student_id, section == 'primary' ? 1 : 0)
+                student_details = await findStudentUniversal(student_id, section == 'primary' ? 1 : 0)
                 if(!student_details.data.success){
                     Toaster('error', student_details.data.message)
                     return navigate(-1);
@@ -814,7 +814,7 @@ const Profilestudent = () => {
                                                     <input
                                                         type="text" id='discount'
                                                         name="discount"
-                                                        placeholder="Enter Discount"
+                                                        placeholder="Enter Discount in Rs"
                                                         value={studentInputController.discount}
                                                         disabled={isEnable}
                                                         className={` 2xl:w-60 mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.discount != '' && 'border-red-600'}`}

@@ -206,7 +206,9 @@ const Studentregister = () => {
                                                 name="whatsapp_no"
                                                 placeholder="Enter WhatsApp No"
                                                 className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.whatsapp_no && 'border-red-600'}`}
-                                                {...register("whatsapp_no", { required: "Whatsapp no is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valida whatsapp no" } })}
+                                                {...register("whatsapp_no", { required: "Whatsapp no is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid whatsapp no" },
+                                                maxLength: { value: 10, message: "Please enter valid whatsapp no" }  
+                                                })}
                                                 onKeyUp={() => {
                                                     trigger('whatsapp_no')
                                                 }}
@@ -224,7 +226,9 @@ const Studentregister = () => {
                                                 name="alternate_no"
                                                 placeholder="Enter Mobile No"
                                                 className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.alternate_no && 'border-red-600'}`}
-                                                {...register("alternate_no", {pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valida mobile no" } })}
+                                                {...register("alternate_no", {pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid mobile no" }, 
+                                                maxLength: { value: 10, message: "Please enter valid mobile no" }
+                                                })}
                                                 onKeyUp={() => {
                                                     trigger('alternate_no')
                                                 }}
@@ -428,7 +432,7 @@ const Studentregister = () => {
                                             <input
                                                 type="text" id='discount'
                                                 name="discount"
-                                                placeholder="Enter Discount"
+                                                placeholder="Enter Discount in Rs"
                                                 className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.discount && 'border-red-600'}`}
                                                 {...register("discount", { required: false, pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" } })}
                                                 onKeyUp={() => {

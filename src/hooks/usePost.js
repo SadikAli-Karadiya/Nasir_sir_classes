@@ -200,6 +200,12 @@ export async function getStudentDetails(student_id, is_primary) {
     .then((res) => res);
 }
 
+export async function findStudentUniversal(student_id, is_primary) {
+  return axios
+    .get(`${SERVER}/students/details/universal/${student_id}/${is_primary}`)
+    .then((res) => res);
+}
+
 export async function studentAllAcademicDetails(student_id) {
   return await axios.get(`${SERVER}/fees/all-academics/${student_id}`);
 }

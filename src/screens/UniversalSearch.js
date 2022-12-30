@@ -3,13 +3,14 @@ import { AiFillEye, AiOutlineSearch } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import { IoMdInformationCircle } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import {getStudentDetails} from '../hooks/usePost';
+import {findStudentUniversal} from '../hooks/usePost';
 import LoaderSmall from '../Componant/LoaderSmall';
 import Toaster from '../hooks/showToaster';
 import {AxiosError} from 'axios';
 import {NasirContext} from '../NasirContext'
 
-export default function Fess() {
+function UniversalSearch() {
+  
   const {admin, section} = React.useContext(NasirContext);
   const [data, setdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function Fess() {
         return;
       }
       setLoading(true);
-      const res = await getStudentDetails(searchValue, section == 'primary' ? 1 : 0)
+      const res = await findStudentUniversal(searchValue, section == 'primary' ? 1 : 0)
       setLoading(false);
       setdata(res?.data?.data?.students_detail?.length > 0 ? res?.data?.data?.students_detail : null);
       setShowNotFound(1)
@@ -43,19 +44,10 @@ export default function Fess() {
     }
   }
 
-  function dateDiffInDays(startDate, currentDate) {
-    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-    const utc1 = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-    const utc2 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-
-    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-  }
-
   return (
     <div className="bg-student-100 py-10 px-14" style={{minHeight: "calc(100vh - 70px)"}}>
       <div className="">
-        <h1 className="text-3xl  font-bold text-darkblue-500">Pay Fees</h1>
+        <h1 className="text-3xl  font-bold text-darkblue-500">Search Students</h1>
 
         <div className="px-2 py-2 flex mt-7 items-center justify-center">
           <input
@@ -128,29 +120,15 @@ export default function Fess() {
                                   Profile
                                 </th>
                                 <th className="font-bold text-left px-2 xl:px-0">
-                                  Action
+                                  Status
                                 </th>
                               </tr>
                             </thead>
                               <tbody className="w-full">
                                 {data.map((m, index) => {
-                                  let isPending = false;
-
-                                  const studentAcademicStartDate = new Date(m.academic.date);
-                                  const currentDate = new Date();
-
-                                  const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
-                                  const perDayFee = m.fees.net_fees / 365
-
-                                  const feesToBePaid = daysDifferent * perDayFee;
-
-                                  const paidAmount = m.fees.net_fees - m.fees.pending_amount;
-
-                                  if(feesToBePaid > paidAmount){
-                                    isPending = true;
-                                  }
+                                  
                                   return (
-                                    <tr key={index} className={`${isPending ? 'bg-red-100' : 'bg-green-100'} border-b-1 border-gray-200 h-20 text-sm leading-none text-gray-800 border-b border-gray-100`}>
+                                    <tr key={index} className={`border-b-1 border-gray-200 h-20 text-sm leading-none text-gray-800 border-b border-gray-100`}>
                                       <td className="pl-5">
                                         <span className="font-bold">
                                             {m.personal.student_id}
@@ -213,23 +191,7 @@ export default function Fess() {
                                         </NavLink>
                                       </td>
                                       <td className="">
-                                        <span className="">
-                                          <NavLink to={"/receipt/FeesDetail"} state={{
-                                            rollno: m.personal.student_id,
-                                            full_name: m.personal.basic_info_id.full_name,
-                                            class_name: m.academic.class_id.class_name,
-                                            medium: m.academic.class_id.medium,
-                                            paid_upto: m.fees.paid_upto,
-                                            net_fees: m.fees.net_fees,
-                                            pending_amount: m.fees.pending_amount,
-                                            stream: m.academic.class_id.stream,
-                                            batch: `${m.academic.class_id.batch_start_year}`
-                                          }} >
-                                          <button className={`${m.fees.pending_amount <= 0 ? 'disabled:opacity-40' : 'bg-darkblue-500 hover:bg-blue-900'} bg-darkblue-500 rounded-lg  duration-200 transition text-white px-7 font-bold py-2`} disabled={m.fees.pending_amount <= 0 ? true : false}>
-                                          Pay
-                                        </button>
-                                          </NavLink>
-                                        </span>
+                                        <span className={`${m.personal.is_cancelled ? 'text-red-600' : 'text-green-600'} font-semibold italic`}>{m.personal.is_cancelled ? 'Past' : 'Current'}</span>
                                       </td>
                                     </tr>
                                   );
@@ -258,5 +220,7 @@ export default function Fess() {
       </div>
     </div>
   );
+
 }
 
+export default UniversalSearch

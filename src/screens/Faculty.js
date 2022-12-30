@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { getAllFaculty, Addfaculty } from "../hooks/usePost"
 import { toast } from "react-toastify";
+import {startScroll, stopScroll} from '../hooks/helper'
 import "react-toastify/dist/ReactToastify.css";
 
 const Faculty = () => {
@@ -24,17 +25,21 @@ const Faculty = () => {
   const [img, setImg] = useState(defaultImage);
   const [facultyDetails, setFacultyDetails] = useState([])
 
-
   // ----------------------------------------
   // -------------- API Works ---------------
   // ----------------------------------------
-  useEffect(() => {
-    async function fetchfacultdata() {
+  async function fetchfacultdata() {
+    try{
       const res = await getAllFaculty();
       setFacultyDetails(res.staffData)
       setData(() => res.staffData.length)
       setloading(false);
+    }catch(err){
+      errtoast()
+      setloading(false);
     }
+  }
+  useEffect(() => {
     fetchfacultdata()
   }, [])
 
@@ -68,16 +73,19 @@ const Faculty = () => {
       setData(data + 1)
       Toaster();
       handleClick()
+      fetchfacultdata()
       return setModel(false)
     } else {
       return errtoast()
     }
   }
 
+
   // ---------------------------------------
   // ---------Input field blank ------------
   // ---------------------------------------
   const handleClick = () => {
+    startScroll()
     resetField("photo"); resetField("full_name"); resetField("email"); resetField("whatsapp_no"); resetField("alternate_no"); resetField("dob");
     resetField("joining_date"); resetField("role"); resetField("address"); resetField("gender");
     setImg(defaultImage)
@@ -93,251 +101,253 @@ const Faculty = () => {
   return (
     <>
 
-      <div className="relative ">
+      <div className="relative">
         {model && (
-          <div className='flex justify-center shadow-2xl  '>
-            <div className='absolute  mx-auto  opacity-100 shadow-2xl rounded mt-10 bg-white w-2/3 z-50'>
-              <div className=''>
-                <div className='flex justify-end '>
-                  <button onClick={handleClick} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+          <div className="absolute w-full overflow-y-hidden" style={{minHeight: "calc(100vh - 70px)"}}>
+            <div className='flex justify-center shadow-2xl'>
+              <div className='absolute  mx-auto  opacity-100 shadow-2xl rounded mt-10 bg-white w-2/3 z-50'>
+                <div className=''>
+                  <div className='flex justify-end '>
+                    <button onClick={handleClick} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
 
-                    <AiFillCloseCircle />
-                  </button>
+                      <AiFillCloseCircle />
+                    </button>
 
-                </div>
-                <div className='mt-7'>
-                  <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Staff Registration</h1>
+                  </div>
+                  <div className='mt-7'>
+                    <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Staff Registration</h1>
 
-                  <form ref={form} className="flex justify-center items-center " onSubmit={handleSubmit(onSubmit)}>
-                    <div className=" w-full grid grid-cols-1 rounded-lg  bg-white pb-5 pt-10 ">
-                      <div className=" flex flex-col items-center gap-4">
-                        <div className='profile_img_div flex justify-center items-center border-2 border-gray-500 shadow-lg'>
-                          <img src={img} width="100%" height="100%" alt="student profile" />
-                          <div className='profile_img_overlay flex flex-col justify-center items-center'>
-                            <input type='file' id="file" className="rounded-md w-16" accept=".png, .jpg, .jpeg" onInput={onImageChange} {...register('photo')} />
+                    <form ref={form} className="flex justify-center items-center " onSubmit={handleSubmit(onSubmit)}>
+                      <div className=" w-full grid grid-cols-1 rounded-lg  bg-white pb-5 pt-10 ">
+                        <div className=" flex flex-col items-center gap-4">
+                          <div className='profile_img_div flex justify-center items-center border-2 border-gray-500 shadow-lg'>
+                            <img src={img} width="100%" height="100%" alt="student profile" />
+                            <div className='profile_img_overlay flex flex-col justify-center items-center'>
+                              <input type='file' id="file" className="rounded-md w-16" accept=".png, .jpg, .jpeg" onInput={onImageChange} {...register('photo')} />
 
-                            {
-                              img != defaultImage
-                                ?
-                                <button
-                                  className='bg-red-600 px-1 rounded text-white hover:bg-red-400 mt-5 flex items-center justify-center gap-3' onClick={() => {
-                                    setImg(defaultImage);
-                                    document.getElementById('file').value = ''
-                                  }}>
-                                  <span> Remove</span>
-                                </button>
-                                :
-                                null
-                            }
+                              {
+                                img != defaultImage
+                                  ?
+                                  <button
+                                    className='bg-red-600 px-1 rounded text-white hover:bg-red-400 mt-5 flex items-center justify-center gap-3' onClick={() => {
+                                      setImg(defaultImage);
+                                      document.getElementById('file').value = ''
+                                    }}>
+                                    <span> Remove</span>
+                                  </button>
+                                  :
+                                  null
+                              }
 
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex lg:flex-row md:flex-col gap-4 ">
-                          <div className="fullname">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Full Name *
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="First Name, Middle Name, Last Name"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.full_name && 'border-red-600'}`}
-                                {...register("full_name", { required: "Fullname is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
-                                onKeyUp={() => {
-                                  trigger('full_name')
-                                }}
-                              />
-                              {errors.full_name && (<small className="text-red-700">{errors.full_name.message}</small>)}
-                            </label>
+                          <div className="flex lg:flex-row md:flex-col gap-4 ">
+                            <div className="fullname">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Full Name *
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="First Name, Middle Name, Last Name"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.full_name && 'border-red-600'}`}
+                                  {...register("full_name", { required: "Fullname is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
+                                  onKeyUp={() => {
+                                    trigger('full_name')
+                                  }}
+                                />
+                                {errors.full_name && (<small className="text-red-700">{errors.full_name.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="email">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Email *
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Your Email"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.email && 'border-red-600'}`}
+                                  {...register("email", { required: "Email is required", pattern: { value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: "Please enter valid email" } })}
+                                  onKeyUp={() => {
+                                    trigger('email')
+                                  }}
+                                />
+                                {errors.email && (<small className="text-red-700">{errors.email.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="whatsappno">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  WhatsApp No *
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Your WhatsApp No"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.whatsapp_no && 'border-red-600'}`}
+                                  {...register("whatsapp_no", { required: "Whatsapp no is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid whatsapp no" } })}
+                                  onKeyUp={() => {
+                                    trigger('whatsapp_no')
+                                  }}
+                                />
+                                {errors.whatsapp_no && (<small className="text-red-700">{errors.whatsapp_no.message}</small>)}
+                              </label>
+                            </div>
                           </div>
-                          <div className="email">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Email *
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="Enter Your Email"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.email && 'border-red-600'}`}
-                                {...register("email", { required: "Email is required", pattern: { value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: "Please enter valid email" } })}
-                                onKeyUp={() => {
-                                  trigger('email')
-                                }}
-                              />
-                              {errors.email && (<small className="text-red-700">{errors.email.message}</small>)}
-                            </label>
-                          </div>
-                          <div className="whatsappno">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                WhatsApp No *
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="Enter Your WhatsApp No"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.whatsapp_no && 'border-red-600'}`}
-                                {...register("whatsapp_no", { required: "Whatsapp no is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid whatsapp no" } })}
-                                onKeyUp={() => {
-                                  trigger('whatsapp_no')
-                                }}
-                              />
-                              {errors.whatsapp_no && (<small className="text-red-700">{errors.whatsapp_no.message}</small>)}
-                            </label>
-                          </div>
-                        </div>
-                        <div className="flex lg:flex-row md:flex-col gap-4 items-center">
+                          <div className="flex lg:flex-row md:flex-col gap-4 items-center">
 
-                          <div className="alternate_no">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Mobile No
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="Enter Your Mobile No"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.alternate_no && 'border-red-600'}`}
-                                {...register("alternate_no", { pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid mobile no" } })}
-                                onKeyUp={() => {
-                                  trigger('alternate_no')
-                                }}
-                              />
-                              {errors.alternate_no && (<small className="text-red-700">{errors.alternate_no.message}</small>)}
-                            </label>
-                          </div>
-                          <div className="dateofbirth">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Date Of Birth *
-                              </span>
-                              <input
-                                type="date"
-                                className={`2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.dob && 'border-red-600'}`}
-                                {...register("dob", { required: "Date of birth is required" })}
-                              />
+                            <div className="alternate_no">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Mobile No
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Your Mobile No"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.alternate_no && 'border-red-600'}`}
+                                  {...register("alternate_no", { pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid mobile no" } })}
+                                  onKeyUp={() => {
+                                    trigger('alternate_no')
+                                  }}
+                                />
+                                {errors.alternate_no && (<small className="text-red-700">{errors.alternate_no.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="dateofbirth">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Date Of Birth *
+                                </span>
+                                <input
+                                  type="date"
+                                  className={`2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.dob && 'border-red-600'}`}
+                                  {...register("dob", { required: "Date of birth is required" })}
+                                />
 
-                              {errors.dob && (<small className="text-red-700">{errors.dob.message}</small>)}
-                            </label>
-                          </div>
-                          <div className="gender 2xl:w-60 w-[185px] ">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Gender *
-                              </span>
-                              <div className={` border w-full 2xl:w-60 border-slate-300 mt-1 rounded-md h-10 flex justify-center items-center space-x-5 ${errors.gender && 'border-red-600'}`}>
-                                <div className="male ">
+                                {errors.dob && (<small className="text-red-700">{errors.dob.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="gender 2xl:w-60 w-[185px] ">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Gender *
+                                </span>
+                                <div className={` border w-full 2xl:w-60 border-slate-300 mt-1 rounded-md h-10 flex justify-center items-center space-x-5 ${errors.gender && 'border-red-600'}`}>
+                                  <div className="male ">
 
-                                  <label for="gender" className="m-2">
-                                    Male
-                                  </label>
-                                  <input
-                                    type="radio"
-                                    id="male"
-                                    name="gender"
-                                    value="Male"
-                                    className="  hover:cursor-pointer"
-                                    {...register("gender", { required: "Gender is required" })}
-                                  />
+                                    <label for="gender" className="m-2">
+                                      Male
+                                    </label>
+                                    <input
+                                      type="radio"
+                                      id="male"
+                                      name="gender"
+                                      value="Male"
+                                      className="  hover:cursor-pointer"
+                                      {...register("gender", { required: "Gender is required" })}
+                                    />
+                                  </div>
+                                  <div className="female">
+                                    <label for="gender" className="m-2">
+                                      Female
+                                    </label>
+                                    <input
+                                      type="radio"
+                                      id="female"
+                                      name="gender"
+                                      value="Female"
+                                      className="   hover:cursor-pointer"
+                                      {...register("gender", { required: "Gender is required" })}
+                                    />
+
+                                  </div>
+
                                 </div>
-                                <div className="female">
-                                  <label for="gender" className="m-2">
-                                    Female
-                                  </label>
-                                  <input
-                                    type="radio"
-                                    id="female"
-                                    name="gender"
-                                    value="Female"
-                                    className="   hover:cursor-pointer"
-                                    {...register("gender", { required: "Gender is required" })}
-                                  />
-
-                                </div>
-
-                              </div>
-                            </label>
-                            {errors.gender && (<small className="text-red-700">{errors.gender.message}</small>)}
+                              </label>
+                              {errors.gender && (<small className="text-red-700">{errors.gender.message}</small>)}
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex lg:flex-row md:flex-col gap-4">
-                          <div className="role">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Role *
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="Enter Your Role"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.role && 'border-red-600'}`}
-                                {...register("role", { required: "Role is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
-                                onKeyUp={() => {
-                                  trigger('role')
-                                }}
-                              />
-                              {errors.role && (<small className="text-red-700">{errors.role.message}</small>)}
-                            </label>
+                          <div className="flex lg:flex-row md:flex-col gap-4">
+                            <div className="role">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Role *
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Your Role"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.role && 'border-red-600'}`}
+                                  {...register("role", { required: "Role is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
+                                  onKeyUp={() => {
+                                    trigger('role')
+                                  }}
+                                />
+                                {errors.role && (<small className="text-red-700">{errors.role.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="address">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Address *
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Your Address"
+                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.address && 'border-red-600'}`}
+                                  {...register("address", { required: "Address is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
+                                  onKeyUp={() => {
+                                    trigger('address')
+                                  }}
+                                />
+                                {errors.address && (<small className="text-red-700">{errors.address.message}</small>)}
+                              </label>
+                            </div>
+                            <div className="dateofjoining">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Date Of Joining *
+                                </span>
+                                <input
+                                  type="date"
+                                  className={`2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.joining_date && 'border-red-600'}`}
+                                  {...register("joining_date", { required: "Date of joining is required" })}
+                                />
+
+                                {errors.joining_date && (<small className="text-red-700">{errors.joining_date.message}</small>)}
+                              </label>
+                            </div>
                           </div>
-                          <div className="address">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Address *
-                              </span>
-                              <input
-                                type="text"
-                                placeholder="Enter Your Address"
-                                className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.address && 'border-red-600'}`}
-                                {...register("address", { required: "Address is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
-                                onKeyUp={() => {
-                                  trigger('address')
-                                }}
-                              />
-                              {errors.address && (<small className="text-red-700">{errors.address.message}</small>)}
-                            </label>
-                          </div>
-                          <div className="dateofjoining">
-                            <label className="block">
-                              <span className="block text-sm font-medium text-slate-700">
-                                Date Of Joining *
-                              </span>
-                              <input
-                                type="date"
-                                className={`2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.joining_date && 'border-red-600'}`}
-                                {...register("joining_date", { required: "Date of joining is required" })}
-                              />
+                          <div className="flex lg:flex-row md:flex-col gap-4">
 
-                              {errors.joining_date && (<small className="text-red-700">{errors.joining_date.message}</small>)}
-                            </label>
-                          </div>
-                        </div>
-                        <div className="flex lg:flex-row md:flex-col gap-4">
-
-                          <div className="btn mt-5 flex justify-center w-60">
-                            <button
-                              type="button" onClick={handleClear}
-                              className="bg-darkblue-500 hover:bg-white border-2 hover:border-darkblue-500 uppercase text-white hover:text-darkblue-500 font-medium h-11 w-28 rounded-md tracking-wider"
-                            >
-                              Clear
-                            </button>
-                            <button
-                              type="submit" disabled={isLoadingOnSubmit}
-                              className={` bg-darkblue-500 hover:bg-white border-2 flex justify-center items-center 
-                              ${isLoadingOnSubmit ? 'opacity-40' : 'opacity-100'}
-                               hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium uppercase h-11 w-28 rounded-md tracking-wider`}>
+                            <div className="btn mt-5 flex justify-center w-60">
+                              <button
+                                type="button" onClick={handleClear}
+                                className="bg-darkblue-500 hover:bg-white border-2 hover:border-darkblue-500 uppercase text-white hover:text-darkblue-500 font-medium h-11 w-28 rounded-md tracking-wider"
+                              >
+                                Clear
+                              </button>
+                              <button
+                                type="submit" disabled={isLoadingOnSubmit}
+                                className={` bg-darkblue-500 hover:bg-white border-2 flex justify-center items-center 
+                                ${isLoadingOnSubmit ? 'opacity-40' : 'opacity-100'}
+                                hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium uppercase h-11 w-28 rounded-md tracking-wider`}>
 
 
-                              {isLoadingOnSubmit ? 'Loading...' : 'SUBMIT'}
-                            </button>
+                                {isLoadingOnSubmit ? 'Loading...' : 'SUBMIT'}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
 
 
 
 
+
+                  </div>
 
                 </div>
-
               </div>
             </div>
           </div>
@@ -360,7 +370,7 @@ const Faculty = () => {
                       <div
                         className="icons  h-12 w-52 flex ml-3 items-center "
                         id="icons"
-                        onClick={(e) => setModel(true)}
+                        onClick={(e) =>{ setModel(true); stopScroll()}}
                       >
                         <FaPlus className="text-2xl text-darkblue-500  " />
                         <span className="ml-3 text-lg text-darkblue-500 font-semibold">
@@ -392,7 +402,7 @@ const Faculty = () => {
                 </div>
               </div>
             </div>
-            <Facultytable allFaculty={facultyDetails} />
+            <Facultytable allFaculty={facultyDetails} isLoading={isloading} />
           </div>
         </div>
 

@@ -155,12 +155,12 @@ const ChangeYear = () => {
                                     </td>
                                     <td className="w-20 h-20">
                                         <select name="" disabled={item.is_disabled} 
-                                        className=' rounded-md w-20 h-7 text-center' defaultValue={item.section} 
+                                        className=' rounded-md w-20 h-7 text-center' defaultValue={item.is_primary} 
                                         onChange={(e)=>{ handleSection(e.target.value, index)}} 
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}>
                                         
-                                            <option value={0} defaultValue={item.is_primary == 0 ? true:false}>Primary</option>
-                                            <option value={1} defaultValue={item.is_primary == 1 ? true:false}>Secondary</option>
+                                            <option value={1} defaultValue={item.is_primary == 1 ? true:false}>Primary</option>
+                                            <option value={0} defaultValue={item.is_primary == 0 ? true:false}>Secondary</option>
                                         
                                         </select>
                                     </td>

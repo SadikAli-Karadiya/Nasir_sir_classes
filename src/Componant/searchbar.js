@@ -51,8 +51,8 @@ export default function Searchbar({toggle, SetToggle}) {
             </div>
             <div className="text-left items-center">
               <p className="text-base capitalize">
-                {myData?.staff_id?.basic_info_id?.full_name
-                  ? myData?.staff_id?.basic_info_id?.full_name
+                {admin?.username
+                  ? admin?.username
                   : "...."}
               </p>
               <p className="text-xs text-gray-500">

@@ -73,22 +73,17 @@ const Profilefaculty = () => {
   const [facultysalary, setfacultysalary] = React.useState([]);
   const [Totalpaid, setTotalpaid] = React.useState([]);
   const [isloading, setloading] = React.useState(true)
-  const [gender, setgender] = useState("");
   const [state, setState] = React.useState(true);
-  const [photo, setphoto] = useState();
   const [call, setcall] = React.useState(true)
   const defaultImage = "images/user_default@123.png";
   const [img, setImg] = useState('');
-  const [Dob, setDob] = useState();
-  const [Doj, setDoj] = useState();
   const Toaster = () => { toast.success('Profile updated successfully') }
-  const errtoast = () => { toast.error("Something Wrong") }
   const navigate = useNavigate();
   const [toggle, setToggle] = React.useState(false)
   const [oldFacultyDetails, setOldFacultyDetails] = useState({});
-  const [data, setdata] = useState({})
   const [studDetails, setStudDetails] = useState({}); //Only used to pass data to next page
   const [facultyInputController, setFacultyInputController] = useState({
+    id: '',
     photo: '',
     full_name: '',
     email: '',
@@ -105,7 +100,7 @@ const Profilefaculty = () => {
   // -----------------------  API WORKS   --------------------------------------------
   // ---------------------------------------------------------------------------------
   let faculty_details
-  let facul_data
+  let faculty_data
   const setfacultydetails = () => {
     faculty_details = faculty_details.data.one_staff_Details;
     setStudDetails(faculty_details)
@@ -115,7 +110,7 @@ const Profilefaculty = () => {
     let joining_date = new Date(faculty_details.joining_date);
     joining_date = `${joining_date.getFullYear()}-${joining_date.getMonth() + 1 < 10 ? "0" + (joining_date.getMonth() + 1) : joining_date.getMonth() + 1}-${joining_date.getDate() < 10 ? "0" + joining_date.getDate() : joining_date.getDate()}`
 
-    facul_data = {
+    faculty_data = {
       id: faculty_details._id,
       photo: faculty_details.basic_info_id.photo,
       full_name: faculty_details.basic_info_id.full_name,
@@ -130,20 +125,20 @@ const Profilefaculty = () => {
     }
     const photo = faculty_details.basic_info_id.photo;
     setImg(photo != '' ? photo : '')
-    setFacultyInputController(facul_data)
+    setFacultyInputController(faculty_data)
 
-    setOldFacultyDetails(facul_data)
+    setOldFacultyDetails(faculty_data)
 
     valid.fieldsValue = {
-      full_name: facul_data.full_name ?? facul_data.full_name,
-      email: facul_data.email ?? facul_data.email,
-      whatsapp_no: facul_data.whatsapp_no ?? facul_data.whatsapp_no,
-      alternate_no: facul_data.alternate_no ?? facul_data.alternate_no,
-      dob: facul_data.dob ?? facul_data.dob,
-      gender: facul_data.gender ?? facul_data.gender,
-      role: facul_data.role ?? facul_data.role,
-      address: facul_data.address ?? facul_data.address,
-      joining_date: facul_data.joining_date ?? facul_data.joining_date,
+      full_name: faculty_data.full_name ?? faculty_data.full_name,
+      email: faculty_data.email ?? faculty_data.email,
+      whatsapp_no: faculty_data.whatsapp_no ?? faculty_data.whatsapp_no,
+      alternate_no: faculty_data.alternate_no ?? faculty_data.alternate_no,
+      dob: faculty_data.dob ?? faculty_data.dob,
+      gender: faculty_data.gender ?? faculty_data.gender,
+      role: faculty_data.role ?? faculty_data.role,
+      address: faculty_data.address ?? faculty_data.address,
+      joining_date: faculty_data.joining_date ?? faculty_data.joining_date,
     }
   }
 
@@ -481,8 +476,8 @@ const Profilefaculty = () => {
                             name="gender"
                             value="male"
                             disabled={isEnable}
-                            checked={facultyInputController.gender.toLowerCase() == 'male'}
-                            className="  hover:cursor-pointer"
+                            checked={facultyInputController?.gender?.toLowerCase() == 'male'}
+                            className="hover:cursor-pointer"
                             onChange={handleChange}
                           />
                         </div>
@@ -496,14 +491,13 @@ const Profilefaculty = () => {
                             name="gender"
                             value="female"
                             disabled={isEnable}
-                            checked={facultyInputController.gender.toLowerCase() == 'female'}
-                            className="   hover:cursor-pointer"
+                            checked={facultyInputController?.gender?.toLowerCase() == 'female'}
+                            className="hover:cursor-pointer"
                             onChange={handleChange}
                           />
                         </div>
                       </div>
                     </label>
-                    {valid.errors?.gender != '' ? <small className="text-red-600 mt-3">*{valid.errors?.gender}</small> : null}
                   </div>
 
                 </div>
@@ -624,8 +618,9 @@ const Profilefaculty = () => {
                       </td>
                       <td className={`py-5 px-2 text-center  ${isPrint ? "hidden" : "block"}`}>
                         <div className='flex justify-center space-x-2'>
+                          {console.log(facultyInputController.id)}
                           <NavLink className="nav-link" to={`/Profilefaculty/Staffhistory/${facultyInputController.id}`} state={{ faculty_name: facultyInputController.full_name }}>
-                            <Tooltip content="Show History" placement="bottom-end" className='text-white bg-black rounded p-2'><a href="#" class="text-xl text-darkblue-500"><AiFillEye /></a></Tooltip>
+                            <Tooltip content="Show History" placement="bottom-end" className='text-white bg-black rounded p-2'><span className="text-xl text-darkblue-500"><AiFillEye /></span></Tooltip>
 
                           </NavLink>
                         </div>
