@@ -4,10 +4,13 @@ import "../Styles/Studentform.css";
 import {registerStudent, getActiveClasses} from '../hooks/usePost';
 import { useNavigate } from "react-router-dom";
 import Toaster from '../hooks/showToaster'
+import { NasirContext } from "../NasirContext";
 
 const Studentregister = () => {
     const form = useRef(null);
     const defaultImage = "images/user_default@123.png"
+    const {section} = React.useContext(NasirContext);
+    const isPrimary =  section == 'primary' ? 1 : 0
     
     const [img, setImg] = useState(defaultImage);
     const [medium, setMedium] = useState('--');
@@ -314,7 +317,7 @@ const Studentregister = () => {
                                             <select
                                                 name="class"
                                                 id="class"
-                                                className={` 2xl:w-[142px] w-[110px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.class_name && 'border-red-600'}`}
+                                                className={` 2xl:w-[142px] w-[110px] hover:cursor-pointer mt-1 block  px-3 py-[6px] bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.class_name && 'border-red-600'} capitalize`}
                                                 {...register("class_name", { required: "Class required" })}
                                                 onChange={handleClassChange}
                                             >
@@ -323,9 +326,22 @@ const Studentregister = () => {
                                                     classes && classes[0] 
                                                     ?
                                                         classes.map((item, key) => {
+                                                            if(item.is_primary != isPrimary){
+                                                                return
+                                                            }
                                                             return (
                                                                 <option key={key} value={item._id}>
-                                                                    <>{`${item.class_name} ${item.medium.toUpperCase()} ${item.stream == 'none' ? '' : item.stream.toUpperCase()}`}</>
+                                                                    
+                                                                        {
+                                                                            item.class_name + ' | ' + item.medium
+                                                                        }
+                                                                        {
+                                                                            item.stream.toLowerCase() != 'none'
+                                                                                ?
+                                                                                <>{' | ' + item.stream}</>
+                                                                                :
+                                                                                null
+                                                                        }
                                                                 </option>
                                                             )
                                                         })

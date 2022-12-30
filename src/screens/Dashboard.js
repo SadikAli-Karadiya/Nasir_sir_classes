@@ -32,22 +32,24 @@ export default function Dashboard() {
   function dateDiffInDays(startDate, currentDate) {
     const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-    const utc1 = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-    const utc2 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const admissionDate = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const currDate = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
-    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+    return Math.floor((currDate - admissionDate) / _MS_PER_DAY);
   }
 
   useEffect(() => {
     async function fetchFeesPendingData() {
       const res = await Alloverstudent(section);
       const StudentsWithPendingFees = res.data?.filter((student) => {
+
         let isPending = false;
 
-        const studentAcademicStartDate = new Date(student.academics[0].date);
+        const studentAdmissionDate = new Date(student.admission_date);
         const currentDate = new Date();
 
-        const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
+        const daysDifferent = dateDiffInDays(studentAdmissionDate, currentDate);
+
         const perDayFee = student.academics[0].fees[0].net_fees / 365
 
         const feesToBePaid = daysDifferent * perDayFee;
@@ -107,7 +109,6 @@ export default function Dashboard() {
   const sendNotification = async (e) =>{
     e.preventDefault();
     const res = await sendPendingFeesNotification(allStudent);
-    console.log(res)
 
     if(res?.data.success){
       Toaster('success', 'Message sent successfully');
@@ -136,7 +137,7 @@ export default function Dashboard() {
 
   return (
     <div className="">
-      <div className="pt-0 md:flex items-center justify-center md:justify-between mr-5 ">
+      <div className="pt-0 md:flex items-center justify-center md:justify-between ">
         <div className="left pt-0">
           <img src="images/desk.webp" alt="" className="" />
         </div>

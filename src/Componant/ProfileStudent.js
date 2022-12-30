@@ -14,7 +14,7 @@ import { AxiosError } from 'axios';
 import Validator from '../hooks/validator';
 import { useParams } from "react-router-dom";
 import { NasirContext } from "../NasirContext";
-import { stopScroll, startScroll } from "../hooks/helper";
+import { scrollToTop, stopScroll, startScroll } from "../hooks/helper";
 
 const valid = new Validator();
 valid.register({
@@ -439,24 +439,24 @@ const Profilestudent = () => {
 
     return (
         <>
-            <section className={` p-10 pt-0 ${classSelectionModel ? 'opacity:20' : 'opacity:100'} `}>
+            <section className={`relative p-10 pt-0 ${classSelectionModel ? 'opacity:20' : 'opacity:100'} `}>
                 {classSelectionModel && (
-                    <div className='absolute w-full h-full z-30'  >
+                    <div className='absolute left-0 w-full h-full z-30'  >
                         <div className='flex justify-center shadow-2xl opacity-100 '>
                             <div className='absolute mx-auto  opacity-100 shadow-2xl rounded mt-32 bg-white w-1/3 z-50'>
                                 <div className=''>
                                     <div className='flex justify-end '>
-                                        <button onClick={(e) => {setClassSelectionModel(!classSelectionModel); startScroll()}} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+                                        <button onClick={(e) => {setClassSelectionModel(!classSelectionModel); startScroll(); setClassNotSelectedError(false) }} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
 
                                             <AiFillCloseCircle />
                                         </button>
 
                                     </div>
                                     <div className='mt-7'>
-                                        <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Class Selection</h1>
+                                        <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Select Class</h1>
                                     </div>
                                     <div className="select-clas flex flex-col justify-center items-center px-10 pt-10">
-                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12 capitalize' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
+                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12     ' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
                                             <option value="">Select</option>
                                             {
                                                 classes.map((classes, index) => {
@@ -946,7 +946,8 @@ const Profilestudent = () => {
                                         onClick={(e) => {
                                             e.preventDefault()
                                             setClassSelectionModel(true);
-                                            stopScroll()
+                                            stopScroll();
+                                            scrollToTop();
                                         }} >
                                         Transfer
                                     </button>

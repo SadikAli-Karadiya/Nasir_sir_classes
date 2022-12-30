@@ -972,7 +972,7 @@ const Myclass = () => {
                   allClasses && allClasses?.length > 0 ? (
                   <>
                     <button
-                      className="btn cursor-pointer  h-11 w-48 rounded-full bg-white text-left border  overflow-hidden"
+                      className="btn cursor-pointer  h-11 w-44 rounded-full bg-white text-left border  overflow-hidden"
                       id="btn"
                     >
                       <NavLink
@@ -981,11 +981,11 @@ const Myclass = () => {
                         state={{ allClasses }}
                       >
                         <div
-                          className="icons  h-11 w-48 flex ml-3 items-center"
+                          className="icons  h-11 w-44 flex justify-center items-center"
                           id="icons"
                         >
-                          <span className="ml-2 text-lg text-darkblue-500 font-semibold">
-                            Deactivate Classes
+                          <span className=" text-lg text-darkblue-500 font-semibold">
+                            Deactivate Class
                           </span>
                         </div>
                       </NavLink>

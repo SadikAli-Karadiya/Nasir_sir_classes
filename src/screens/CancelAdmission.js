@@ -13,7 +13,7 @@ import { IoClose } from "react-icons/io5";
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
 import {NasirContext} from '../NasirContext'
-import { startScroll, stopScroll } from '../hooks/helper';
+import { scrollToTop, startScroll, stopScroll } from '../hooks/helper';
 
 function CancelAdmission() {
     const location = useLocation();
@@ -23,7 +23,7 @@ function CancelAdmission() {
     location.state == null ?? navigate('/')
 
     const {student_id} = useParams();
-    const admin_id = admin._id
+    const admin_id = admin?._id
     
     const [studentDetails, setStudentDetails] = useState({
         full_name: location.state.studDetails.personal.basic_info_id.full_name,
@@ -84,7 +84,7 @@ function CancelAdmission() {
     }
 
     const handleCloseSearchModel = ()=>{
-        startScroll()
+        setShowNotFound(-1)
         setSearchValue('')
         setdata([]);
         setSearchModel(false);
@@ -92,6 +92,7 @@ function CancelAdmission() {
 
     const handleCloseAmountModel = () =>{
         setAmountModel(false);
+        startScroll()
         setErrors({
             amount: '',
             security_pin: ''
@@ -343,8 +344,8 @@ function CancelAdmission() {
             {
                 searchModel
                 ?
-                    <div className={`${amountModel ? 'opacity-50 z-30' : ''}`}>
-                        <div className={`w-full h-full absolute opacity-100 z-20`}>
+                    <div className={`${amountModel ? 'opacity-30 z-30' : ''} `}>
+                        <div className={`w-full h-full absolute top-0 opacity-100 z-20`}>
                             <div className= "relative w-4/5 bg-white shadow-md p-10 mx-auto mt-16">
                                 <button
                                     onClick={handleCloseSearchModel}
@@ -384,7 +385,6 @@ function CancelAdmission() {
                                         ? (
                                             <div className="p-4 bg-whrounded">
                                             <h1 className="font-bold text-2xl text-darkblue-500"> </h1>
-                                            {/* Recipet table  */}
                                             <div>
                                                 <div className=" bg-white rounded-lg shadow">
                                                 <div className="border rounded-lg border-gray-100">
@@ -483,6 +483,8 @@ function CancelAdmission() {
                                                                     <span className="">
                                                                         <button className={`${m.fees.pending_amount <= 0 ? 'disabled:opacity-40' : 'bg-darkblue-500 hover:bg-blue-900'} bg-darkblue-500 rounded-lg  duration-200 transition text-white px-7 font-bold py-2`} 
                                                                         onClick={()=> {
+                                                                            scrollToTop();
+                                                                            stopScroll();
                                                                             setPayeeId(m.personal.student_id);
                                                                             setPayeePendingAmount(m.fees.pending_amount)
                                                                             setAmountModel(true)
@@ -510,7 +512,7 @@ function CancelAdmission() {
                                             <div className="bg-red-200 font-bold items-center p-2 rounded mx-3 flex space-x-2 justify-center">
                                                 <IoMdInformationCircle className="text-xl text-red-600" />
 
-                                                <h1 className="text-red-800">No Student Found </h1>
+                                                <h1 className="text-red-800">Student Not Found </h1>
                                                 </div>
                                             :
                                             null
@@ -628,7 +630,7 @@ function CancelAdmission() {
 
                             amountToPay > 0
                             ?
-                                <button className="ml-5 bg-white-500 border-2 border-darkblue-500 text-darkblue-500 hover:bg-darkblue-500 hover:text-white rounded-md px-5 py-1" onClick={()=>{setSearchModel(true); stopScroll()}}>Transfer to student</button>
+                                <button className="ml-5 bg-white-500 border-2 border-darkblue-500 text-darkblue-500 hover:bg-darkblue-500 hover:text-white rounded-md px-5 py-1" onClick={()=>{setSearchModel(true);  scrollToTop()}}>Transfer to student</button>
                             :
                                 null
                                 

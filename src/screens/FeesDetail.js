@@ -491,7 +491,7 @@ export default function FeesDetail() {
                             ?
                               <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
                             :
-                              <span class="text-[16px] ml-2 font-semibold">--</span>
+                              <span className="text-[16px] ml-2 font-semibold">--</span>
                           } 
                         </h2>
                       :
@@ -594,7 +594,7 @@ export default function FeesDetail() {
                         ?
                           <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
                         :
-                          <span class="text-[16px] ml-2 font-semibold">--</span>
+                          <span className="text-[16px] ml-2 font-semibold">--</span>
                       } 
                     </h2>
                   :

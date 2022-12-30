@@ -1,11 +1,16 @@
 const stopScroll = ()=>{
-    document.body.style.overflow = "hidden"
+    document.body.style.overflowY = "hidden"
 }
 const startScroll = ()=>{
-document.body.style.overflow = "scroll"
+    document.body.style.overflowY = "scroll"
+}
+
+const scrollToTop = ()=>{
+    window.scrollTo(0, 0);
 }
 
 export {
     stopScroll,
-    startScroll
+    startScroll,
+    scrollToTop
 }
