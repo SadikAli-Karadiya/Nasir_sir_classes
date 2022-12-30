@@ -33,7 +33,7 @@ function CancelAdmission() {
         net_fees: location.state.studDetails.fees.net_fees,
         discount: location.state.studDetails.fees.discount,
         pending_fees: location.state.studDetails.fees.pending_amount,
-        academic_start_date:  location.state.studDetails.academic.date
+        admission_date:  location.state.studDetails.personal.admission_date
     })
 
     const [searchModel, setSearchModel] = useState(false);
@@ -265,27 +265,29 @@ function CancelAdmission() {
     useEffect(() =>{
         //Fetching new student details
         async function fetchStudentDetails(){
-            let studentDetails = await getStudentDetails(student_id, section == 'primary' ? 1 : 0);
-            studentDetails = studentDetails.data.data.students_detail[0]
+            let student_Details = await getStudentDetails(student_id, section == 'primary' ? 1 : 0);
+
+            student_Details = student_Details.data.data.students_detail[0]
 
             setStudentDetails({
-                full_name: studentDetails.personal.basic_info_id.full_name,
-                class_name: studentDetails.academic.class_id.class_name,
-                medium: studentDetails.academic.class_id.medium,
-                stream: studentDetails.academic.class_id.stream,
-                net_fees: studentDetails.fees.net_fees,
-                discount: studentDetails.fees.discount,
-                pending_fees: studentDetails.fees.pending_amount,
-                academic_start_date:  studentDetails.academic.date
+                full_name: student_Details.personal.basic_info_id.full_name,
+                class_name: student_Details.academic.class_id.class_name,
+                medium: student_Details.academic.class_id.medium,
+                stream: student_Details.academic.class_id.stream,
+                net_fees: student_Details.fees.net_fees,
+                discount: student_Details.fees.discount,
+                pending_fees: student_Details.fees.pending_amount,
+                admission_date:  student_Details.personal.admission_date
             })
         }
 
         fetchStudentDetails();
     },[])
 
-    let academicDate = new Date(studentDetails.academic_start_date);
 
-    const daysStudied = Math.round( ( new Date().getTime() - new Date(studentDetails.academic_start_date).getTime() ) / (1000 * 3600 * 24) );
+    let academicDate = new Date(studentDetails.admission_date);
+
+    const daysStudied = Math.round( ( new Date().getTime() - new Date(studentDetails.admission_date).getTime() ) / (1000 * 3600 * 24) );
     const feesPerDay = Math.round(studentDetails.net_fees / 365);
     const daysStudiedAmount = daysStudied * feesPerDay;
     const feesPaid = (studentDetails.net_fees + studentDetails.discount) - studentDetails.pending_fees;

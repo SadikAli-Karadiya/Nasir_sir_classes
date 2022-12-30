@@ -136,10 +136,10 @@ export default function Fess() {
                                 {data.map((m, index) => {
                                   let isPending = false;
 
-                                  const studentAcademicStartDate = new Date(m.academic.date);
+                                  const studentAdmissionDate = new Date(m.personal.admission_date);
                                   const currentDate = new Date();
 
-                                  const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
+                                  const daysDifferent = dateDiffInDays(studentAdmissionDate, currentDate);
                                   const perDayFee = m.fees.net_fees / 365
 
                                   const feesToBePaid = daysDifferent * perDayFee;
