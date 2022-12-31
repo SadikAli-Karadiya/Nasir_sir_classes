@@ -36,7 +36,7 @@ function Receipt_student({receiptDetails, forOffice}) {
             section == 'primary'
             ?
               <div className={`border-2 border-red-600 w-26 rounded-md flex justify-center items-center`}>
-                <p className="text-red-600 font-semibold px-4 py-0.5">
+                <p className="text-red-600 font-semibold px-4">
                   {
                     receiptDetails.from_month == receiptDetails.to_month 
                     ?

@@ -48,7 +48,7 @@ const Changepassword = () => {
 
   return (
     <>
-      <section className="flex justify-center items-center absolute h-full w-full">
+      <section className="flex justify-center items-center h-full w-full" style={{minHeight:"calc(100vh - 70px)"}}>
         <div className="overflow-hidden w-3/5  rounded-md bg-white shadow-lg">
           <div className=" justify-center px-8 py-12 items-center bg-white  ">
             <div className="mb-10">

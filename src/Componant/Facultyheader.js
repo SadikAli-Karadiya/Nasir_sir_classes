@@ -29,14 +29,12 @@ const Facultyheader = () => {
 
   const componentRef = useRef();
 
-  console.log(salaryReport);
   function calcaulateTotal() {
     let total = 0;
     data?.map((d) => {
       total += d.transaction[0].amount;
     });
 
-    console.log(total);
     setTransaction(total);
     return total;
   }
@@ -72,7 +70,6 @@ const Facultyheader = () => {
     const dateData = handleDataFilter(date);
 
     setNextDate(() => e);
-    console.log(dateData);
 
     const newData = salaryReport.data.data.filter(
       (recipet) =>

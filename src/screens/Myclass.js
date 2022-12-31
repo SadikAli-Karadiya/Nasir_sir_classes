@@ -21,7 +21,7 @@ import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import { NasirContext } from "../NasirContext";
 import LoaderSmall from "../Componant/LoaderSmall";
-import {startScroll, stopScroll} from '../hooks/helper'
+import {scrollToTop, startScroll, stopScroll} from '../hooks/helper'
 
 
 const Myclass = () => {
@@ -226,9 +226,11 @@ const Myclass = () => {
     }
     setIsAddingClass(true)
     const response = await AddClass(data);
+
     setIsAddingClass(false)
     if (response.data.success) {
       fetchClasses();
+      startScroll();
       setModel(false);
       reset();
       return notify();
@@ -241,6 +243,7 @@ const Myclass = () => {
   const onEditSubmit = async (data) => {
     const editClassResponse = await updateClass(edit_class_id, data);
     if (editClassResponse) {
+      startScroll();
       setCall(() => !call);
       setEditClassModel(false);
       reset();
@@ -259,11 +262,11 @@ const Myclass = () => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5 relative">
       {/* Add New Class Model */}
       {model && (
         <div className="absolute w-full h-full z-30 left-0 top-0">
-          <div className="w-full flex justify-center opacity-100 ">
+          <div className="w-full flex justify-center opacity-100">
             <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-10 2xl:mt-24  bg-white w-3/4 z-50">
               <div className="">
                 <div className="flex justify-end ">
@@ -532,7 +535,7 @@ const Myclass = () => {
 
       {/* Edit Class Model */}
       {editClassModel && (
-        <div className="absolute w-full h-full  z-30 left-0 top-0">
+        <div className="absolute w-full h-full z-30 left-0 top-0">
           <div className="flex justify-center opacity-100 ">
             <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-2/3 z-50">
               {classes.map((item, index) => {
@@ -956,7 +959,7 @@ const Myclass = () => {
                   className="text-white bg-black rounded p-2"
                 >
                   <div
-                    onClick={(e) => {setModel(true); stopScroll()}}
+                    onClick={(e) => {setModel(true); scrollToTop(); stopScroll()}}
                     className="btn cursor-pointer  h-12 w-12 rounded-full bg-white text-left border  overflow-hidden "
                     id="btn"
                   >

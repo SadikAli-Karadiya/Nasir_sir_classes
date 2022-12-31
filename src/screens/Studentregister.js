@@ -32,6 +32,7 @@ const Studentregister = () => {
         formState: { errors },
         reset,
         trigger,
+        setError,
         clearErrors
     } = useForm();
 
@@ -77,6 +78,7 @@ const Studentregister = () => {
         document.getElementById('file').value = '';
     };
     const totalDis = (totalFee) => {
+
         const disc = document.getElementById("discount").value;
         const totalDis = disc == '' ? 0 : disc;
 

@@ -96,7 +96,7 @@ export default function Fess() {
                             Students List
                           </p>
                         </div>
-                        <div className="">
+                        <div className="overflow-x-auto">
                           <table className="w-full whitespace-nowrap">
                             <thead>
                               <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
@@ -136,10 +136,10 @@ export default function Fess() {
                                 {data.map((m, index) => {
                                   let isPending = false;
 
-                                  const studentAdmissionDate = new Date(m.personal.admission_date);
+                                  const studentAcademicStartDate = new Date(m.academic.date);
                                   const currentDate = new Date();
 
-                                  const daysDifferent = dateDiffInDays(studentAdmissionDate, currentDate);
+                                  const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
                                   const perDayFee = m.fees.net_fees / 365
 
                                   const feesToBePaid = daysDifferent * perDayFee;

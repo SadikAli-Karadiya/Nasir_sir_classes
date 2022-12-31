@@ -260,9 +260,6 @@ const Profilefaculty = () => {
             photo_name = img.split("/")[3]
         }
     }
-    
-    console.log(photo_name);
-    console.log(old_photo_url);
 
     formdata.append('photo_name', photo_name);
     formdata.append('old_photo_url', old_photo_url);
@@ -618,7 +615,6 @@ const Profilefaculty = () => {
                       </td>
                       <td className={`py-5 px-2 text-center  ${isPrint ? "hidden" : "block"}`}>
                         <div className='flex justify-center space-x-2'>
-                          {console.log(facultyInputController.id)}
                           <NavLink className="nav-link" to={`/Profilefaculty/Staffhistory/${facultyInputController.id}`} state={{ faculty_name: facultyInputController.full_name }}>
                             <Tooltip content="Show History" placement="bottom-end" className='text-white bg-black rounded p-2'><span className="text-xl text-darkblue-500"><AiFillEye /></span></Tooltip>
 

@@ -169,13 +169,13 @@ const Class = () => {
           <div className="button flex mr-6">
             <NavLink
               className="nav-link mr-10"
-              to={totalStudents > 0 ? "Transfer" : ""}
+              to={totalStudents > 0 && classDetails.is_active == 0 ? "Transfer" : ""}
               state={{ allClassStudents }}
             >
               <div className="wrapper">
                 <div
                   className={`btn ${
-                    totalStudents > 0 ? "cursor-pointer" : "cursor-default"
+                    totalStudents > 0 && classDetails.is_active == 0 ? "cursor-pointer" : "cursor-default"
                   }  h-10 w-40 rounded-full bg-white text-left border  overflow-hidden`}
                   id="btn"
                 >
@@ -185,14 +185,14 @@ const Class = () => {
                   >
                     <FaArrowRight
                       className={`text-2xl ${
-                        totalStudents > 0
+                        totalStudents > 0 && classDetails.is_active == 0
                           ? "text-darkblue-500"
                           : "text-gray-400"
                       } `}
                     />
                     <span
                       className={`ml-3 text-lg ${
-                        totalStudents > 0
+                        totalStudents > 0 && classDetails.is_active == 0
                           ? "text-darkblue-500"
                           : "text-gray-400"
                       } font-semibold`}

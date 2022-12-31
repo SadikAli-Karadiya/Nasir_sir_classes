@@ -67,7 +67,6 @@ const Studenthearder = () => {
     const dateData = handleDataFilter(date);
 
     setNextDate(() => e);
-    console.log(dateData);
 
     const newData = reportData.data.data.filter(
       (recipet) =>
@@ -96,9 +95,7 @@ const Studenthearder = () => {
         admin: m.admin[0]?.username,
       };
     });
-    console.log(data);
 
-    console.log(filterData);
     const fileName = date ? `feesReport${date}` : "feesreport";
     const exportType = exportFromJSON.types.csv;
     exportFromJSON({ data: filterData, fileName, exportType });
@@ -123,7 +120,6 @@ const Studenthearder = () => {
       total += d.transaction[0].amount;
     });
 
-    console.log(total);
     setTransaction(total);
     return total;
   }

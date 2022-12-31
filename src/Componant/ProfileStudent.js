@@ -371,7 +371,8 @@ const Profilestudent = () => {
                     }
                     catch (err) {
                         setIsProcessing(false)
-
+                        setClassSelectionModel(false)
+                        startScroll()
                         if (err instanceof AxiosError) {
                             Toaster("error", err.response.data.message);
                         }
@@ -456,7 +457,7 @@ const Profilestudent = () => {
                                         <h1 className='text-2xl font-bold text-darkblue-500 px-6 '>Select Class</h1>
                                     </div>
                                     <div className="select-clas flex flex-col justify-center items-center px-10 pt-10">
-                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12     ' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
+                                        <select name="class" id="" className='border px-2 py-1 rounded-md drop-shadow-md w-8/12 capitalize' onChange={(e) => { setSelectedClass(e.target.value); setClassNotSelectedError(false) }}>
                                             <option value="">Select</option>
                                             {
                                                 classes.map((classes, index) => {

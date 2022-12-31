@@ -16,18 +16,18 @@ valid.register({
     required: [false],
   },
   full_name: {
-    required: [true, "Field is required"],
+    required: [true, "Full Name is required"],
     pattern: [/^[A-Za-z ]+$/, "Please enter only characters"],
   },
   email: {
-    required: [true, "Field is required"],
+    required: [true, "Email is required"],
     pattern: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       "Please enter valid email",
     ],
   },
   whatsapp_no: {
-    required: [true, "Field is required"],
+    required: [true, "Whastsapp no. is required"],
     pattern: [/^[0-9]*$/, "Please enter only numbers"],
     length: [10, "Number should be of 10 digits"],
   },
@@ -37,12 +37,12 @@ valid.register({
     length: [10, "Number should be of 10 digits"],
   },
   security_pin: {
-    required: [true, "Field is required"],
+    required: [true, "Pin is required"],
     pattern: [/^[0-9]*$/, "Please enter only numbers"],
     minLength: [4, "Security pin should be of at least 4 digits"],
   },
   dob: {
-    required: [true, "Field is required"],
+    required: [true, "DOB is required"],
   },
   address: {
     required: [true, "Address is required"],
@@ -51,26 +51,16 @@ valid.register({
 
 const Updateprofile = () => {
   const { admin } = React.useContext(NasirContext);
-  const [img, setImg] = useState("images/user.png");
-  const [data, setData] = React.useState({ admin });
-  const [date, setDate] = React.useState("");
-  const [basic_info_id, setBasicinfoid] = React.useState({});
-  const [contact_info_id, setContactinfoid] = React.useState({});
-  const [isEdiable, setEditable] = React.useState(false);
   const updateAdmin = useUpdateAdmin();
 
   const { changeSection } = React.useContext(NasirContext);
-  const navigate = useNavigate();
-  const [isloading, setloading] = React.useState(true);
   const server = "http://localhost:4000/";
   const [toggle, setToggle] = React.useState(false);
   const [isEnable, setIsEnable] = useState(true);
   const defaultImage = "http://localhost:4000/user_default@123.png";
-  const [oldadminDetails, setOldadminyDetails] = useState({});
+  const [oldadminDetails, setOldAdminDetails] = useState({});
   const [state, setState] = React.useState(true);
   const [isLoadingOnSubmit, setIsLoadingOnSubmit] = useState(false);
-  const [newDate, setnewDate] = useState("");
-  const [studDetails, setadminDetails] = useState({}); //Only used to pass data to next page
   const [adminInputController, setadminInputController] = useState({
     photo: "",
     full_name: "",
@@ -86,7 +76,6 @@ const Updateprofile = () => {
   let admin_data;
   const setadmin = () => {
     admin_details = admin_details;
-    setadminDetails(admin_details);
 
     let dob = new Date(admin_details?.staff_id?.basic_info_id?.dob);
     dob = `${dob.getFullYear()}-${
@@ -105,10 +94,9 @@ const Updateprofile = () => {
     };
 
     const photo = admin_details?.staff_id?.basic_info_id.photo;
-    setImg(photo != "" ? server + photo : defaultImage);
     setadminInputController(admin_data);
 
-    setOldadminyDetails(admin_data);
+    setOldAdminDetails(admin_data);
 
     valid.fieldsValue = {
       full_name: admin_data.full_name ?? admin_data.full_name,
@@ -125,7 +113,6 @@ const Updateprofile = () => {
       try {
         admin_details = await admin;
         setadmin();
-        setloading(false);
       } catch (err) {
         if (err instanceof AxiosError) {
           Toaster("error", err.response.data.message);
@@ -166,22 +153,22 @@ const Updateprofile = () => {
     }-${dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate()}`;
     
     valid.fieldsValue = {
-      full_name: admin_data.full_name ?? admin_data.full_name,
-      email: admin_data.email ?? admin_data.email,
-      whatsapp_no: admin_data.whatsapp_no ?? admin_data.whatsapp_no,
-      alternate_no: admin_data.alternate_no ?? admin_data.alternate_no,
-      security_pin: admin_data.security_pin ?? admin_data.security_pin,
-      dob: admin_data.dob ?? admin_data.dob,
-      address: admin_data.address ?? admin_data.address,
+      full_name: admin_data?.full_name ?? admin_data?.full_name,
+      email: admin_data?.email ?? admin_data?.email,
+      whatsapp_no: admin_data?.whatsapp_no ?? admin_data?.whatsapp_no,
+      alternate_no: admin_data?.alternate_no ?? admin_data?.alternate_no,
+      security_pin: admin_data?.security_pin ?? admin_data?.security_pin,
+      dob: admin_data?.dob ?? admin_data?.dob,
+      address: admin_data?.address ?? admin_data?.address,
     };
     setadminInputController(() => {
       return {
-        full_name: admin?.staff_id?.basic_info_id.full_name,
-        email: admin?.staff_id?.contact_info_id.email,
-        whatsapp_no: admin?.staff_id?.contact_info_id.whatsapp_no,
-        alternate_no: admin?.staff_id?.contact_info_id.alternate_no == '' ? '--' : admin?.staff_id?.contact_info_id.alternate_no,
+        full_name: admin?.staff_id?.basic_info_id?.full_name,
+        email: admin?.staff_id?.contact_info_id?.email,
+        whatsapp_no: admin?.staff_id?.contact_info_id?.whatsapp_no,
+        alternate_no: admin?.staff_id?.contact_info_id?.alternate_no == '' ? '--' : admin?.staff_id?.contact_info_id?.alternate_no,
         security_pin: admin?.security_pin,
-        address: admin?.staff_id?.contact_info_id.address,
+        address: admin?.staff_id?.contact_info_id?.address,
         dob: dob,
       };
     });
@@ -194,6 +181,7 @@ const Updateprofile = () => {
 
     let name = e.target.name;
     let value = e.target.value;
+    console.log(value)
 
     valid.validate({
       fieldName: name,
@@ -210,13 +198,14 @@ const Updateprofile = () => {
 
   React.useEffect(() => {
     if (updateAdmin.isSuccess) {
+      setIsLoadingOnSubmit(false)
       Toaster("success", "Profile Updated Successfully")
       localStorage.removeItem("section");
       changeSection();
     }
   }, [updateAdmin.isSuccess]);
   const onSubmit = async (data) => {
-    data.dob = newDate;
+    setIsLoadingOnSubmit(true);
     updateAdmin.mutate(data);
     reset();
   };
@@ -397,16 +386,15 @@ const Updateprofile = () => {
                         disabled={isEnable}
                         type="date"
                         name="dob"
-                        onChange={(e) => setnewDate(e.target.value)}
-                        defaultValue={adminInputController.dob}
+                        onChange={(e) => handleChange(e)}
+                        value={adminInputController.dob}
                         className={`w-72 hover:cursor-pointer mt-1 block w-full px-3 py-2 bg-white border border-slate-300 
                         rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
                          ${valid.errors.dob != "" && "border-red-600"}`}
                       />
                       {valid.errors.dob && (
                         <small className="text-red-700">
-                          {" "}
-                          {valid.errors.dob.message}{" "}
+                          {valid.errors.dob.message}
                         </small>
                       )}
                     </label>

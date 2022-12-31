@@ -59,7 +59,7 @@ const DeactivateClasses = () => {
 
     return (
         <>
-            <section className='table h-full w-full  shadow-none'>
+            <section className='table h-full w-full shadow-none'>
                 <div className=' justify-center items-center mt-2 p-10  pt-0'>
                     <div className="title py-6 flex justify-between items-center">
                         <h1 className="text-3xl text-center font-medium text-[#020D46] mb-3">

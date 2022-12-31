@@ -246,6 +246,7 @@ function CancelAdmission() {
                 setdata([]);
                 setAmountModel(false);
                 setSearchModel(false);
+                startScroll();
             }
             else{
                 Toaster("error", res.data.message);
@@ -277,7 +278,7 @@ function CancelAdmission() {
                 net_fees: student_Details.fees.net_fees,
                 discount: student_Details.fees.discount,
                 pending_fees: student_Details.fees.pending_amount,
-                admission_date:  student_Details.personal.admission_date
+                academic_date:  student_Details.academic.date
             })
         }
 
@@ -285,9 +286,9 @@ function CancelAdmission() {
     },[])
 
 
-    let academicDate = new Date(studentDetails.admission_date);
+    let academicDate = new Date(studentDetails.academic_date);
 
-    const daysStudied = Math.round( ( new Date().getTime() - new Date(studentDetails.admission_date).getTime() ) / (1000 * 3600 * 24) );
+    const daysStudied = Math.round( ( new Date().getTime() - academicDate.getTime() ) / (1000 * 3600 * 24) );
     const feesPerDay = Math.round(studentDetails.net_fees / 365);
     const daysStudiedAmount = daysStudied * feesPerDay;
     const feesPaid = (studentDetails.net_fees + studentDetails.discount) - studentDetails.pending_fees;

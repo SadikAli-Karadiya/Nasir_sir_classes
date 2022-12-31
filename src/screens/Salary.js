@@ -176,7 +176,6 @@ export default function Salary() {
   // ------------------------------------
   function genreciept() {
     let error = 0
-    console.log(chequeDate)
     if (is_hourly == 0 && (amounterror || fee == '')) {
       error++;
       setamounterror(true)
@@ -246,7 +245,7 @@ export default function Salary() {
       setIsLoadingOnSubmit(true)
       setError(false)
       const res = await salarypay(gen_reciept)
-      console.log(res)
+
       setIsLoadingOnSubmit(false)
       if (res.data.success == true) {
         const salary_receipt_id = res.data.data.salaryreceipt.salary_receipt_id

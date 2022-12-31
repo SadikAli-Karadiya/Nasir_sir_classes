@@ -74,6 +74,7 @@ const Faculty = () => {
       Toaster();
       handleClick()
       fetchfacultdata()
+      startScroll();
       return setModel(false)
     } else {
       return errtoast()
