@@ -217,8 +217,8 @@ export async function studentFeesHistory(academic_id) {
 export async function updateStudent(student_id, formdata) {
   return await axios.put(`${SERVER}/students/update/${student_id}`, formdata);
 }
-export async function searchReceipt(fees_receipt_id, is_primary) {
-  return await axios.get(`${SERVER}/receipt/search/${fees_receipt_id}/${is_primary}`);
+export async function searchReceipt(receipt_params, is_primary) {
+  return await axios.get(`${SERVER}/receipt/search/${receipt_params}/${is_primary}`);
 }
 
 export async function generateStudentReceipt(data) {

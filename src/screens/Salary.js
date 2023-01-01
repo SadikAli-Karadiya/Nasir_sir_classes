@@ -271,7 +271,7 @@ export default function Salary() {
       <div className="relative bg-student-100 py-6 h-full">
         {model && (
           <div className="flex justify-center mt-4  bg-white ">
-            <div className="absolute h-2/5 mx-auto  opacity-100 shadow-2xl rounded      bg-white w-2/3 z-50">
+            <div className="absolute h-3/5 mx-auto  opacity-100 shadow-2xl rounded  bg-white w-2/3 z-50">
               <div className="flex justify-end">
                 <button
                   onClick={(e) => {setModel(!model); setError(false);}}
@@ -284,7 +284,7 @@ export default function Salary() {
               <div className="mt-7">
                 <div className="flex justify-between items-center">
                   <h1 className="text-2xl font-bold text-darkblue-500 px-6 ">
-                    Confirm Payment{" "}
+                    Confirm Payment
                   </h1>
 
                 </div>

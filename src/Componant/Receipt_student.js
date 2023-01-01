@@ -92,7 +92,7 @@ function Receipt_student({receiptDetails, forOffice}) {
         <div className="mt-5">
           <p className={`${receiptTextColor} font-bold italic`}>
             The sum of Rupees:
-            <span className="text-black">{receiptDetails?.amount_in_words}</span>
+            <span className="text-black"> {receiptDetails?.amount_in_words}</span>
           </p>
         </div>
         <div className="mt-5">  
