@@ -62,11 +62,11 @@ const Class = () => {
     async function fetchClassStudents() {
       const res = await getAllStudentsInClass(params.id);
       setIsLoading(false);
+      setClassDetails(() => res?.data?.classDetails);
       if (res.success) {
         setClassStudents(() => res.data.studentDetails);
         setAllClassStudents(() => res.data.studentDetails);
         setTotalStudents(() => res.data.classDetails.total_student);
-        setClassDetails(() => res.data.classDetails);
         setTotalPendingStudents(() =>
           res.data.studentDetails.filter((data) => {
             return data.fees_id.pending_amount != 0;
@@ -160,11 +160,12 @@ const Class = () => {
   };
 
   return (
-    <div className="relative  ">
+    <div className="relative">
       <div className={`bg-slate-100 `}>
         <div className="flex justify-between  items-center px-5 pt-3  space-y-5">
-          <h1 className="ml-5 text-xl xl:text-3xl  text-darkblue-500 xl:text-left font-bold text-darkblue-50 ">
+          <h1 className="ml-5 text-xl lg:text-3xl xl:text-4xl  text-darkblue-500 xl:text-left font-bold text-darkblue-50 capitalize">
             {classDetails.class_name}
+            <span className="capitalize text-md lg:text-lg ml-2">({classDetails.medium})</span>
           </h1>
           <div className="button flex mr-6">
             <NavLink
@@ -364,7 +365,7 @@ const Class = () => {
                     <th scope="col" className="pl-3 py-4">
                       Serial No
                     </th>
-                    <th scope="col" className="pl-3 py-4">
+                    <th scope="col" className="py-4">
                       Student Id
                     </th>
                     <th scope="col" className="px-2 py-4">
@@ -408,11 +409,11 @@ const Class = () => {
                         isPrint ? (
                           allClassStudents.map((item, index) => {
                             return (
-                              <tr className=" border-b" key={index}>
-                                <th className="py-5 px-2">
+                              <tr className="border-b" key={index}>
+                                <th className="py-5">
                                   {index + 1 + (itemsPerPage * Serialno - itemsPerPage)}
                                 </th>
-                                <td className=" py-5 text-gray-500">
+                                <td className=" py-5 px-2 text-gray-500">
                                   {item.student_id.student_id}
                                 </td>
                                 <td className="px-2 py-5 capitalize">
@@ -457,7 +458,7 @@ const Class = () => {
                         ) : (
                           paginationData.map((item, index) => {
                             return (
-                              <tr className=" border-b" key={index}>
+                              <tr className={`border-b ${item.student_id.is_cancelled ? 'bg-red-100' : ''}`} key={index}>
                                 <th className="py-5 px-2">
                                   {index + 1 + (itemsPerPage * Serialno - itemsPerPage)}
                                 </th>
@@ -551,7 +552,7 @@ const Class = () => {
                           >
                             <div className="flex space-x-2 justify-center items-center">
                               <IoMdInformationCircle className="text-xl text-red-600" />
-                              <h1 className="text-red-800">Students not found </h1>
+                              <h1 className="text-red-800">Students not found</h1>
                             </div>
                           </td>
                         </tr>

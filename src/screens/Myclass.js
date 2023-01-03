@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { NasirContext } from "../NasirContext";
 import LoaderSmall from "../Componant/LoaderSmall";
 import {scrollToTop, startScroll, stopScroll} from '../hooks/helper'
+import '../Styles/MyClass.css'
 
 
 const Myclass = () => {
@@ -960,14 +961,14 @@ const Myclass = () => {
                 >
                   <div
                     onClick={(e) => {setModel(true); scrollToTop(); stopScroll()}}
-                    className="btn cursor-pointer  h-12 w-12 rounded-full bg-white text-left border  overflow-hidden "
+                    className="btn cursor-pointer  h-12 w-12 rounded-full bg-white hover:bg-darkblue-300 hover:text-white text-darkblue-500 text-left border  overflow-hidden "
                     id="btn"
                   >
                     <div
                       className="icons  h-12 w-40 flex ml-3 items-center "
                       id="icons"
                     >
-                      <BiFolderPlus className="text-2xl text-darkblue-500  " />
+                      <BiFolderPlus className="text-2xl " />
                     </div>
                   </div>
                 </Tooltip>
@@ -975,7 +976,7 @@ const Myclass = () => {
                   allClasses && allClasses?.length > 0 ? (
                   <>
                     <button
-                      className="btn cursor-pointer  h-11 w-44 rounded-full bg-white text-left border  overflow-hidden"
+                      className="btn cursor-pointer h-11 w-44 rounded-full bg-white hover:bg-darkblue-500 hover:text-white text-darkblue-500 text-left border  overflow-hidden"
                       id="btn"
                     >
                       <NavLink
@@ -987,14 +988,14 @@ const Myclass = () => {
                           className="icons  h-11 w-44 flex justify-center items-center"
                           id="icons"
                         >
-                          <span className=" text-lg text-darkblue-500 font-semibold">
+                          <span className=" text-lg font-semibold">
                             Deactivate Class
                           </span>
                         </div>
                       </NavLink>
                     </button>
                     <button
-                      className="btn cursor-pointer  h-11 w-40 rounded-full bg-white text-left border  overflow-hidden"
+                      className="btn cursor-pointer h-11 w-40 rounded-full bg-white hover:bg-darkblue-500 hover:text-white text-darkblue-500 text-left border  overflow-hidden"
                       id="btn"
                     >
                       <NavLink
@@ -1003,11 +1004,11 @@ const Myclass = () => {
                         state={{ allClasses }}
                       >
                         <div
-                          className="icons  h-11 w-40 flex ml-3 items-center"
+                          className="icons h-11 w-40 flex ml-3 items-center"
                           id="icons"
                         >
-                          <FaArrowRight className="text-xl text-darkblue-500  " />
-                          <span className="ml-2 text-lg text-darkblue-500 font-semibold">
+                          <FaArrowRight className="text-xl" />
+                          <span className="ml-2 text-lg font-semibold">
                             Change Year
                           </span>
                         </div>
@@ -1112,7 +1113,7 @@ const Myclass = () => {
                                             index % headingBgColor.length
                                           ],
                                       }}
-                                      className={` font-bold ${
+                                      className={`capitalize font-bold ${
                                         item.class_name.length < 8 && "text-4xl"
                                       }  ${
                                         item.class_name.length <= 2 && "text-7xl"

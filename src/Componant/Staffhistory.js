@@ -98,11 +98,11 @@ const Staffhistory = () => {
                       " / " +
                       today.getFullYear();
                     return (
-                      <tr className="bg-white border-b">
+                      <tr key={key} className="bg-white border-b">
                         <td className="py-4 px-2 text-center">{item.salary_receipt_id}</td>
                         <td className="py-4 px-2 text-center">{date}</td>
                         <td className="py-4 px-2 text-center">{item.transaction_id.amount}</td>
-                        <td className="py-4 px-2 text-center">{item.admin_id.username}</td>
+                        <td className="py-4 px-2 text-center capitalize">{item.admin_id.username}</td>
                         <td className={`py-4 px-2 flex justify-center item-center ${isPrint ? "hidden" : "flex"}`}>
                             <NavLink className="nav-link" to={`/Staffhistory/Receipt_teacher/${item.salary_receipt_id}`} state={{ isStaff: true, isSalaried: item.is_hourly }}>
 

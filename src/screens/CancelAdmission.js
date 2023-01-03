@@ -8,7 +8,7 @@ import {AxiosError} from 'axios';
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdInformationCircle } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import {getStudentDetails, tranferFees, cancelAdmission} from '../hooks/usePost';
+import {searchStudentInPrimarySecondary, getStudentDetails, tranferFees, cancelAdmission} from '../hooks/usePost';
 import { IoClose } from "react-icons/io5";
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
@@ -43,8 +43,7 @@ function CancelAdmission() {
     const [amountModel, setAmountModel] = useState(false);
     const [amount, setAmount] = useState('');
     const [securityPin, setSecurityPin] = useState('');
-    const [payeeId, setPayeeId] = useState('');
-    const [payeePendingAmount, setPayeePendingAmount] = useState(0);
+    const [payeeDetails, setPayeeDetails] = useState({});
     const [errors, setErrors] = useState({
         amount: '',
         security_pin: '',
@@ -58,7 +57,7 @@ function CancelAdmission() {
                 return;
             }
             setLoading(true);
-            const res = await getStudentDetails(searchValue, section == 'primary' ? 1 : 0)
+            const res = await searchStudentInPrimarySecondary(searchValue)
        
             setLoading(false);
             setdata(
@@ -163,7 +162,29 @@ function CancelAdmission() {
         }
     }
 
-    const handleSubmit = async () =>{
+    const handlePayBtnClick = (student) =>{
+        scrollToTop();
+        stopScroll();
+        setPayeeDetails(student)
+        setAmountModel(true)
+
+        if(student.academic.class_id.is_primary){
+            const feesPerMonth = Math.floor(student.fees.net_fees / 12);
+
+            if(amountToPay < student.fees.pending_amount){
+                setAmount(Math.floor(amountToPay/feesPerMonth) * feesPerMonth)
+            }
+            else{
+                setAmount(student.fees.pending_amount);
+            }
+        }
+        else{
+            setAmount(amountToPay > student.fees.pending_amount ? student.fees.pending_amount : amountToPay)
+        }
+    }
+
+    const handleSubmit = async (e) =>{
+        e.preventDefault();
         let err = 0;
 
         if(amount == ''){
@@ -174,7 +195,7 @@ function CancelAdmission() {
                     amount: '*Please enter amount'
                 }
             })
-        }
+        }   
 
         if(securityPin == ''){
             err++;
@@ -199,7 +220,7 @@ function CancelAdmission() {
             })
         }
 
-        if(amount > payeePendingAmount){
+        if(amount > payeeDetails.fees.pending_amount){
             return setErrors((prevData)=>{
                 return{
                     ...prevData,
@@ -216,10 +237,13 @@ function CancelAdmission() {
             setLoading(true);
             const res = await tranferFees({
                 payer_fees_id: location.state.studDetails.fees._id,
-                payee_id: payeeId, 
+                payee_id: payeeDetails.personal.student_id, 
                 amount, 
                 admin_id,
-                security_pin: securityPin
+                security_pin: securityPin,
+                payeeIsPrimary: payeeDetails.academic.class_id.is_primary,
+                NoOfMonths : Math.floor(amountToPay / (payeeDetails.fees.net_fees / 12)),
+                last_paid: payeeDetails.fees.paid_upto
             })
 
             setLoading(false);
@@ -291,7 +315,7 @@ function CancelAdmission() {
     const daysStudied = Math.round( ( new Date().getTime() - academicDate.getTime() ) / (1000 * 3600 * 24) );
     const feesPerDay = Math.round(studentDetails.net_fees / 365);
     const daysStudiedAmount = daysStudied * feesPerDay;
-    const feesPaid = (studentDetails.net_fees + studentDetails.discount) - studentDetails.pending_fees;
+    const feesPaid = (studentDetails.net_fees) - studentDetails.pending_fees;
 
     let amountToPay = feesPaid - daysStudiedAmount;
 
@@ -313,8 +337,13 @@ function CancelAdmission() {
                             </div>
                             <div className="flex flex-col justify-center items-center p-10 mt-3">
                                 <div className="w-3/4">
-                                    <h4 className="text-lg font-xl font-medium">Enter Amount:</h4>
-                                    <input type="text" value={amount} className="w-full text-lg px-3 py-1 rounded-md mt-2 border border-gray-500 focus:outline-none focus:ring-2" placeholder="Enter amount" onChange={handleAmountChange} />
+                                    <h4 className="text-lg font-xl font-medium">{payeeDetails.academic.class_id.is_primary ?'' : 'Enter'} Amount:</h4>
+                                    <input 
+                                        type="text" 
+                                        value={amount} 
+                                        disabled={ payeeDetails.academic.class_id.is_primary ? true : false } className="w-full text-lg px-3 py-1 rounded-md mt-2 border border-gray-500 focus:outline-none focus:ring-2" placeholder="Enter amount" 
+                                        onChange={handleAmountChange} 
+                                    />
                                     {
                                         errors.amount != '' 
                                         ? 
@@ -336,7 +365,7 @@ function CancelAdmission() {
                                     }
                                 </div>
                                 <div className="w-3/4 mt-10 text-center">
-                                    <button disabled={loading} className={`w-full text-white ${loading ? 'opacity-50' : 'opacity-100'} bg-blue-600 hover:bg-blue-400 rounded-md px-5 py-2`} onClick={handleSubmit}>Submit</button>
+                                    <button disabled={loading} className={`w-full text-white ${loading ? 'opacity-50' : 'opacity-100'} bg-blue-600 hover:bg-blue-400 rounded-md px-5 py-2`} onClick={handleSubmit}>{loading ? 'Loading...' : 'Submit'}</button>
                                 </div>
                             </div>
                         </div>
@@ -456,14 +485,14 @@ function CancelAdmission() {
                                                                 </td>
                                                                 <td className="px-2 xl:px-0">
                                                                     <p className="">
-                                                                    <span className="">
+                                                                    <span className="capitalize">
                                                                         {m.academic.class_id.medium}
                                                                     </span>
                                                                     </p>
                                                                 </td>
                                                                 <td className="px-2 xl:px-0">
                                                                     <p className="">
-                                                                    <span className="">
+                                                                    <span className="capitalize">
                                                                         {m.academic.class_id.stream.toLowerCase() == 'none' ? '--' : m.academic.class_id.stream}
                                                                     </span>
                                                                     </p>
@@ -485,14 +514,7 @@ function CancelAdmission() {
                                                                 <td className="">
                                                                     <span className="">
                                                                         <button className={`${m.fees.pending_amount <= 0 ? 'disabled:opacity-40' : 'bg-darkblue-500 hover:bg-blue-900'} bg-darkblue-500 rounded-lg  duration-200 transition text-white px-7 font-bold py-2`} 
-                                                                        onClick={()=> {
-                                                                            scrollToTop();
-                                                                            stopScroll();
-                                                                            setPayeeId(m.personal.student_id);
-                                                                            setPayeePendingAmount(m.fees.pending_amount)
-                                                                            setAmountModel(true)
-                                                                            setAmount(amountToPay > m.fees.pending_amount ? m.fees.pending_amount : amountToPay)    
-                                                                        }} 
+                                                                        onClick={()=> {handlePayBtnClick(m)}} 
                                                                         disabled={m.fees.pending_amount <= 0 ? true : false}>
                                                                         Pay
                                                                         </button>
@@ -554,13 +576,13 @@ function CancelAdmission() {
                         </div>
                         <div className="w-2/3 flex mt-5">
                             <div className="">
-                                <h4 className="text-lg tracking-wide text-gray-600">Class: <span className="font-normal text-black">{studentDetails.class_name}</span></h4>
+                                <h4 className="text-lg tracking-wide text-gray-600">Class: <span className="font-normal text-black capitalize">{studentDetails.class_name}</span></h4>
                             </div>
                             <div className="ml-10">
-                                <h4 className="text-lg tracking-wide text-gray-600">Medium: <span className="font-normal text-black">{studentDetails.medium}</span></h4>
+                                <h4 className="text-lg tracking-wide text-gray-600">Medium: <span className="font-normal text-black capitalize">{studentDetails.medium}</span></h4>
                             </div>
                             <div className="ml-10">
-                                <h4 className="text-lg tracking-wide text-gray-600">Stream: <span className="font-normal text-black">{studentDetails.stream}</span></h4>
+                                <h4 className="text-lg tracking-wide text-gray-600">Stream: <span className="font-normal text-black capitalize">{studentDetails.stream}</span></h4>
                             </div>
                         </div>
                         <div className="w-2/3 mt-5 flex">

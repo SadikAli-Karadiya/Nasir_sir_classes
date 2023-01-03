@@ -40,6 +40,8 @@ export default function UpdateStudentReceipt() {
         pending_amount: location.state.receiptDetails.pending_amount,
     };
 
+  const newPendingAmount = student.pending_amount + student.amount + student.discount
+
   const [fee, setFee] = React.useState(student?.amount);
   const [discount, setDiscount] = React.useState(student?.discount == 0 ? '' : student?.discount);
   const [chequeNo, setChequeNo] = React.useState(student?.cheque_no == -1 ? '' : student?.cheque_no);
@@ -180,10 +182,31 @@ export default function UpdateStudentReceipt() {
             }
         })
     }
+    else {
+      err++;
+        setErrors((prevData) => {
+            return {
+                ...prevData,
+                discount: ''
+            }
+        })
+    }
+
+    if(Number(e.target.value) > newPendingAmount){
+      err++;
+        setErrors((prevData) => {
+            return {
+                ...prevData,
+                amount: '*Amount should be not be greater than pending fees'
+            }
+        })
+    }
+
     if(err > 0){
         setFee(e.target.value);
         return;
     }
+    
     setDeduction(0);
     setDiscountAppliedMsg(true);
   }
@@ -493,8 +516,9 @@ export default function UpdateStudentReceipt() {
                         <span className="ml-5 capitalize">Medium: {student.medium}</span>
                         <span className="ml-5 capitalize">Stream: {student.stream}</span>
                     </h2>
-                    <h2 className="text-sm">Roll no : {student.rollno} </h2>
+                    <h2 className="text-sm">Student ID: {student.rollno} </h2>
                     <h3 className="text-sm">Net Fees: {student.net_fees}</h3>
+                    <h3 className="text-sm">Pending Fees: {newPendingAmount}</h3>
                 </div>
                 <div className="text-sm">
                   <h4>Date : {date}</h4>
@@ -527,7 +551,7 @@ export default function UpdateStudentReceipt() {
                         :
                             null
                 }
-                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin?.username}</span></h3>
+                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600 capitalize">{admin?.username}</span></h3>
               </div>
 
               <div className="border-2 mx-8 mt-6 h-8 rounded  w-fit flex items-center border-darkblue-500">
@@ -579,17 +603,18 @@ export default function UpdateStudentReceipt() {
                 <div className="bg-darkblue-500 w-48 p-1">
                     <p className="text-md text-white font-bold text-center font-mono tracking-wide">Receipt No: {student.receipt_no}</p>
                 </div>
-                <h2 className="font-bold text-lg tracking-wide">NAME : {student.name.toUpperCase()}</h2>
+                <h2 className="font-bold text-lg tracking-wide">NAME: {student.name.toUpperCase()}</h2>
                 <h2 className="text-[16px] tracking-wide capitalize"> Class: {student.class_name}
                     <span className="ml-5 capitalize">Medium: {student.medium}</span>
                     <span className="ml-5 capitalize">Stream: {student.stream}</span>
                 </h2>
-                <h3 className="text-[16px] tracking-wide">Roll no: {student.rollno}</h3>
+                <h3 className="text-[16px] tracking-wide">Student ID: {student.rollno}</h3>
                 <h3 className="text-[16px] tracking-wide">Net Fees: {student.net_fees}</h3>
+                <h3 className="text-[16px] tracking-wide">Pending Fees: {newPendingAmount}</h3>
             </div>
             <div className="px-7 font-mono">
-                <h3 className=""> Date : {date}</h3>
-                <h6> Batch : {student.batch}</h6>
+                <h3 className=""> Date: {date}</h3>
+                <h6> Batch: {student.batch}</h6>
             </div>
           </div>
 
@@ -765,7 +790,7 @@ export default function UpdateStudentReceipt() {
 
           <div></div>
           <div className="text-sm flex justify-between items-center uppercase font-bold font-mono tracking-wide mt-4 ">
-            <h1 className="px-6"> admin : {admin?.username}</h1>
+            <h1 className="px-6"> admin : <span className="capitalize">{admin?.username}</span></h1>
             <button
               className="px-7  mx-7 py-2 text-base tracking-widest
            font-semibold uppercase bg-darkblue-500

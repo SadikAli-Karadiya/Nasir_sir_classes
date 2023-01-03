@@ -7,7 +7,6 @@ import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { getAllFaculty, Addfaculty } from "../hooks/usePost"
 import { toast } from "react-toastify";
-import {startScroll, stopScroll} from '../hooks/helper'
 import "react-toastify/dist/ReactToastify.css";
 
 const Faculty = () => {
@@ -58,7 +57,7 @@ const Faculty = () => {
     formState: { errors },
     reset,
     trigger,
-    resetField,
+    resetField, 
   } = useForm();
 
   // ---------------------------------------
@@ -74,7 +73,6 @@ const Faculty = () => {
       Toaster();
       handleClick()
       fetchfacultdata()
-      startScroll();
       return setModel(false)
     } else {
       return errtoast()
@@ -86,16 +84,13 @@ const Faculty = () => {
   // ---------Input field blank ------------
   // ---------------------------------------
   const handleClick = () => {
-    startScroll()
-    resetField("photo"); resetField("full_name"); resetField("email"); resetField("whatsapp_no"); resetField("alternate_no"); resetField("dob");
-    resetField("joining_date"); resetField("role"); resetField("address"); resetField("gender");
+    reset();
     setImg(defaultImage)
     setIsLoadingOnSubmit(false);
     setModel(false)
   }
   const handleClear = () => {
-    resetField("photo"); resetField("full_name"); resetField("email"); resetField("whatsapp_no"); resetField("alternate_no"); resetField("dob");
-    resetField("joining_date"); resetField("role"); resetField("address"); resetField("gender");
+    reset();
     setImg(defaultImage)
   }
 
@@ -104,9 +99,9 @@ const Faculty = () => {
 
       <div className="relative">
         {model && (
-          <div className="absolute w-full" style={{minHeight: "calc(100vh - 70px)"}}>
+          <div className="absolute w-full h-full z-20">
             <div className='flex justify-center shadow-2xl'>
-              <div className='absolute  mx-auto  opacity-100 shadow-2xl rounded mt-10 bg-white w-2/3 z-50'>
+              <div className='absolute mx-auto opacity-100 shadow-2xl rounded mt-10 bg-white w-2/3 z-50'>
                 <div className=''>
                   <div className='flex justify-end '>
                     <button onClick={handleClick} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
@@ -152,7 +147,7 @@ const Faculty = () => {
                                   type="text"
                                   placeholder="First Name, Middle Name, Last Name"
                                   className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.full_name && 'border-red-600'}`}
-                                  {...register("full_name", { required: "Fullname is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
+                                  {...register("full_name", { required: "Full Name is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
                                   onKeyUp={() => {
                                     trigger('full_name')
                                   }}
@@ -186,7 +181,7 @@ const Faculty = () => {
                                   type="text"
                                   placeholder="Enter Your WhatsApp No"
                                   className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.whatsapp_no && 'border-red-600'}`}
-                                  {...register("whatsapp_no", { required: "Whatsapp no is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid whatsapp no" } })}
+                                  {...register("whatsapp_no", { required: "Whatsapp no. is required", pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid whatsapp no." }, maxLength: { value: 10, message: "Please enter valid whatsapp no." } })}
                                   onKeyUp={() => {
                                     trigger('whatsapp_no')
                                   }}
@@ -206,7 +201,7 @@ const Faculty = () => {
                                   type="text"
                                   placeholder="Enter Your Mobile No"
                                   className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.alternate_no && 'border-red-600'}`}
-                                  {...register("alternate_no", { pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid mobile no" } })}
+                                  {...register("alternate_no", { pattern: { value: /^[0-9]*$/, message: "Please enter only numbers" }, minLength: { value: 10, message: "Please enter valid mobile no." }, maxLength: { value: 10, message: "Please enter valid mobile no." } })}
                                   onKeyUp={() => {
                                     trigger('alternate_no')
                                   }}
@@ -362,19 +357,19 @@ const Faculty = () => {
               </h1>
               <NavLink className="nav-link" to="">
 
-                <div className="button flex justify-center text-center items-center space-x-4  ">
+                <div className="button flex justify-center text-center items-center mr-5">
                   <div className="wrapper">
                     <div
-                      className="btn cursor-pointer  h-12 w-56 rounded-full bg-white text-left border  overflow-hidden "
+                      className="btn cursor-pointer h-11 w-48 rounded-full bg-white text-left border  overflow-hidden hover:bg-darkblue-500 hover:text-white text-darkblue-500 "
                       id="btn"
                     >
                       <div
-                        className="icons  h-12 w-52 flex ml-3 items-center "
+                        className="icons h-full w-full flex justify-center items-center "
                         id="icons"
-                        onClick={(e) =>{ setModel(true); stopScroll()}}
+                        onClick={(e) =>{ setModel(true);}}
                       >
-                        <FaPlus className="text-2xl text-darkblue-500  " />
-                        <span className="ml-3 text-lg text-darkblue-500 font-semibold">
+                        <FaPlus className="text-2xl" />
+                        <span className="text-lg font-semibold ml-3 mr-1">
                           Add New Staff
                         </span>
                       </div>

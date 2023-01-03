@@ -14,6 +14,7 @@ export default function FeesDetail() {
   const { admin, section } = React.useContext(NasirContext);
 
   const student = location?.state;
+
   const Months = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   const [fee, setFee] = React.useState(section == 'secondary' ? '' : '0');
@@ -158,10 +159,31 @@ export default function FeesDetail() {
             }
         })
     }
+    else {
+      err++;
+        setErrors((prevData) => {
+            return {
+                ...prevData,
+                discount: ''
+            }
+        })
+    }
+
+    if(Number(e.target.value) > student.pending_amount){
+      err++;
+        setErrors((prevData) => {
+            return {
+                ...prevData,
+                amount: '*Amount should be not be greater than pending fees'
+            }
+        })
+    }
+
     if(err > 0){
         setFee(e.target.value);
         return;
     }
+    
     setDeduction(0);
     setDiscountAppliedMsg(true);
   }
@@ -475,13 +497,14 @@ export default function FeesDetail() {
               </h1>
               <div className="flex  justify-between px-7 py-3">
                 <div>
-                  <h1 className="font-bold">NAME : {student.full_name.toUpperCase()}</h1>
+                  <h1 className="font-bold">NAME: {student.full_name.toUpperCase()}</h1>
                     <h2 className="text-sm capitalize"> Class: {student.class_name}
                         <span className="ml-5 capitalize">Medium: {student.medium}</span>
                         <span className="ml-5 capitalize">Stream: {student.stream}</span>
                     </h2>
-                    <h2 className="text-sm">Roll no : {student.rollno} </h2>
+                    <h2 className="text-sm">Student ID: {student.rollno} </h2>
                     <h3 className="text-sm">Net Fees: {student.net_fees}</h3>
+                    <h3 className="text-sm">Pending Fees: {student.pending_amount}</h3>
                     {
                       section == 'primary'
                       ?
@@ -529,7 +552,7 @@ export default function FeesDetail() {
                         :
                             null
                 }
-                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600">{admin?.username}</span></h3>
+                <h3 className="font-bold">* Admin: <span className="font-medium text-gray-600 capitalize">{admin?.username}</span></h3>
               </div>
 
               <div className="border-2 mx-8 mt-6 h-8 rounded  w-fit flex items-center border-darkblue-500">
@@ -541,7 +564,7 @@ export default function FeesDetail() {
                 />
                 <button
                   disabled={isSubmitting}
-                  className={`px-4 py-1 ${isSubmitting ? 'bg-darkblue-300' : 'bg-darkblue-500'} text-white`}
+                  className={`px-4 py-1 mr-[-5px] ${isSubmitting ? 'bg-darkblue-300' : 'bg-darkblue-500'} text-white rounded-r`}
                   onClick={handlePINsubmit}
                 >
                   {isSubmitting ? 'Loading...' : 'Submit'}
@@ -552,7 +575,7 @@ export default function FeesDetail() {
               {
                 errors.invalid_pin != '' 
                 ? 
-                  <h1 className=" text-red-700  text-sm my-1 font-bold w-full pr-44  text-right">
+                  <h1 className=" text-red-700  text-sm font-bold w-full pr-44  text-right">
                       {errors.invalid_pin}
                   </h1>
                 :
@@ -583,8 +606,9 @@ export default function FeesDetail() {
                     <span className="ml-5 capitalize">Medium: {student.medium}</span>
                     <span className="ml-5 capitalize">Stream: {student.stream}</span>
                 </h2>
-                <h3 className="text-[16px] tracking-wide">Roll no: {student.rollno}</h3>
+                <h3 className="text-[16px] tracking-wide">Student ID: {student.rollno}</h3>
                 <h3 className="text-[16px] tracking-wide">Net Fees: {student.net_fees}</h3>
+                <h3 className="text-[16px] tracking-wide">Pending Fees: {student.pending_amount}</h3>
                 {
                   section == 'primary'
                   ?
@@ -774,7 +798,7 @@ export default function FeesDetail() {
 
           <div></div>
           <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-4 ">
-            <h1 className="px-6"> admin : {admin?.username}</h1>
+            <h1 className="px-6"> admin : <span className="capitalize">{admin?.username}</span></h1>
             <button
               className="px-7  mx-7 py-2 text-base tracking-widest
            font-semibold uppercase bg-darkblue-500

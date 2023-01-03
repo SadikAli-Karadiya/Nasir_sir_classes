@@ -66,6 +66,11 @@ const ChangeYear = () => {
         const res = classesNewData.filter((data)=>{
             return data.is_selected == true  
         })
+        
+        if(res.length == 0){
+            return toast.error('No class selected')
+        }
+
         Swal.fire({
             title: "Are you sure to start new year ?",
             text: "After starting new year, your current classes will be deleted!",
@@ -110,14 +115,14 @@ const ChangeYear = () => {
                         <table className="w-full text-sm text-center bg-class3-50 rounded-xl  ">
                             <thead className="text-xs text-gray-700 uppercase">
                                 <tr className='text-white text-base'>
-                                    <th scope="col" className="w-20 h-20">Select</th>
-                                    <th scope="col" className="w-20 h-20">Class</th>
-                                    <th scope="col" className="w-20 h-20">Batch</th>
-                                    <th scope="col" className="w-20 h-20">Medium</th>
-                                    <th scope="col" className="w-20 h-20">Section</th>
-                                    <th scope="col" className="w-20 h-20">Stream</th>
-                                    <th scope="col" className="w-20 h-20">Fees</th>
-                                    <th scope="col" className="w-20 h-20">Action</th>
+                                    <th scope="col" className="w-16 h-16">Select</th>
+                                    <th scope="col" className="w-16 h-16">Class</th>
+                                    <th scope="col" className="w-16 h-16">Batch</th>
+                                    <th scope="col" className="w-16 h-16">Medium</th>
+                                    <th scope="col" className="w-16 h-16">Section</th>
+                                    <th scope="col" className="w-16 h-16">Stream</th>
+                                    <th scope="col" className="w-16 h-16">Fees</th>
+                                    <th scope="col" className="w-16 h-16">Action</th>
                                 </tr>
                             </thead>
                             <tbody className='bg-white border items-center '>
@@ -131,17 +136,17 @@ const ChangeYear = () => {
                                         onClick={(e)=>{handleClassSelect(e,index)}} defaultValue={item._id}
                                         className=' rounded-md w-16 h-5 text-center bg-white'/>     
                                     </td>
-                                    <td scope="row" className="h-20"> 
+                                    <td scope="row" className="h-16"> 
                                         <input type="text" disabled={item.is_disabled}
                                         onChange={(e) => handleMyclassName(e.target.value, index) }
                                         className='rounded-md w-28 h-7 text-center bg-white' defaultValue={item.class_name}  
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}/>  
                                      </td>
-                                    <td className="w-28 h-20 space-x-4">
+                                    <td className="w-16 h-16 space-x-4">
                                         <input type="text" disabled={true}
                                         className=' rounded-md w-16 h-7 text-center bg-white' defaultValue={item.batch_start_year+1} />
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
                                         onChange={(e)=> handleMedium(e.target.value, index)} className=' rounded-md w-20 h-7 text-center'
                                         defaultValue={item.medium} 
@@ -153,7 +158,7 @@ const ChangeYear = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
                                         className=' rounded-md w-20 h-7 text-center' defaultValue={item.is_primary} 
                                         onChange={(e)=>{ handleSection(e.target.value, index)}} 
@@ -164,7 +169,7 @@ const ChangeYear = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
                                         className=' rounded-md w-24 h-7 text-center'  defaultValue={item.stream} 
                                         onChange={(e)=>{ handleStream(e.target.value, index)}} 
@@ -177,14 +182,14 @@ const ChangeYear = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <input type="text" disabled={item.is_disabled} 
                                         className=' rounded-md w-16 h-7 text-center bg-white' 
                                         defaultValue={item.fees} 
                                         onChange={(e)=>{handleFees(e.target.value, index)}} 
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}/>
                                     </td>
-                                    <td className="w-20 h-20 ">
+                                    <td className="w-16 h-16">
                                         <div className='flex justify-center space-x-2'>
 
                                             {item.is_disabled ?
@@ -206,8 +211,8 @@ const ChangeYear = () => {
                         </table>
                         <div className="button flex justify-end items-center space-x-4">
 
-                            <div onClick={onSubmit} id='transfer-btn' className='flex items-center hover:bg-class3-50 bg-orange-400 w-28 h-10 justify-center rounded-lg cursor-pointer space-x-2' >
-                                <p className='text-white text-lg'>SUBMIT</p>
+                            <div onClick={onSubmit} id='transfer-btn' className='flex items-center hover:bg-darkblue-300 bg-darkblue-500 w-24 h-8    justify-center rounded-lg cursor-pointer space-x-2' >
+                                <p className='text-white text-md'>Submit</p>
                             </div>
                         </div>
                         {/* Pagination */}

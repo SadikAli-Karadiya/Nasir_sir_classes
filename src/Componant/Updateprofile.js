@@ -181,7 +181,6 @@ const Updateprofile = () => {
 
     let name = e.target.name;
     let value = e.target.value;
-    console.log(value)
 
     valid.validate({
       fieldName: name,

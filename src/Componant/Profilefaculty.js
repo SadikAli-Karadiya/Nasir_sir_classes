@@ -319,17 +319,16 @@ const Profilefaculty = () => {
   return (
     <>
       <div className="title  flex items-center justify-between  m-5 pt-4">
-
-        <h1 className="text-3xl text-center font-medium text-[#020D46] ">
-          Profile
+        <h1 className="text-3xl ml-5 text-center font-medium text-[#020D46] ">
+          Staff Profile
         </h1>
         <div className="group h-9 w-20 flex justify-center items-center gap-1 cursor-pointer" id="" onClick={() => navigate(-1)}>
           <IoIosArrowBack className="text-2xl font-bold group-hover:text-blue-700 text-darkblue-500 mt-[3px]" />
           <span className=" text-xl text-darkblue-500 font-semibold group-hover:text-blue-700">Back</span>
         </div>
       </div>
-      <section className=" p-10 pt-3 ">
-        <div className="relative  sm:rounded-lg bg-white p-10  space-y-5 w-full">
+      <section className=" px-10 pb-10 pt-3 ">
+        <div className="relative  sm:rounded-lg bg-white px-10 pb-10 space-y-5 w-full">
           <form ref={form} className="flex justify-center items-center "
             onSubmit={(e) => setState(valid.handleSubmit(e, onSubmit))} >
             <div className=" w-full grid grid-cols-1 rounded-lg  truncate  pb-5 pt-10 ">
@@ -449,7 +448,7 @@ const Profilefaculty = () => {
                       <input
                         type="date"
                         disabled={isEnable}
-                        defaultValue={facultyInputController.dob}
+                        value={facultyInputController.dob}
                         name="dob"
                         className="w-60 hover:cursor-pointer mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm  placeholder-slate-400 outline-none"
                         onChange={handleChange}
@@ -546,7 +545,7 @@ const Profilefaculty = () => {
                         <input
                           type="date"
                           disabled={isEnable}
-                          defaultValue={facultyInputController.joining_date}
+                          value={facultyInputController.joining_date}
                           name="joining_date"
                           className="w-60 hover:cursor-pointer mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
                           onChange={handleChange}
@@ -629,7 +628,7 @@ const Profilefaculty = () => {
                         <div className="flex space-x-2 justify-center items-center">
 
                           <IoMdInformationCircle className="text-xl text-red-600" />
-                          <h1 className="text-red-800">Receipt not found </h1>
+                          <h1 className="text-red-800">No Details Found</h1>
                         </div>
                       </td>
                     </tr>

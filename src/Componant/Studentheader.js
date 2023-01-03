@@ -34,7 +34,7 @@ const Studenthearder = () => {
   const [itemOffset, setItemOffset] = useState(0);
   const [Serialno, setserialno] = useState(1);
   const [transaction, setTransaction] = useState("?");
-  const itemsPerPage = 4;
+  const itemsPerPage = 10;
 
   function handleDataFilter(filterDate) {
     const preDate = new Date(`${filterDate},23:59:00`);

@@ -108,7 +108,6 @@ export default function Dashboard() {
   const sendNotification = async (e) =>{
     e.preventDefault();
     const res = await sendPendingFeesNotification(allStudent);
-    console.log(res)
 
     if(res?.data.success){
       Toaster('success', 'Message sent successfully');

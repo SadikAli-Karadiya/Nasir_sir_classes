@@ -71,9 +71,9 @@ function Receipt_teacher() {
     str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
     str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
     str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
-    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
 
-    return str.toUpperCase();
+    return str.toUpperCase() + ' ONLY';
   }
 
   const {
@@ -326,7 +326,7 @@ function Receipt_teacher() {
                             </div>
                           </div>
                           <div className="border-2 border-red-600 rounded-full ml-2">
-                            <input type="text" className="w-48 h-10 border-2 p-2 pl-14 border-red-600 rounded-full text-2xl font-bold" disabled value={facultyhistory?.transaction_id?.amount} style={{ margin: '1px' }} />
+                            <input type="text" className="w-48 h-10 border-2 p-2 pl-14 border-red-600 rounded-full text-2xl font-bold" disabled value={`${facultyhistory?.transaction_id?.amount} /-`} style={{ margin: '1px' }} />
                           </div>
                         </div>
                       </div>
@@ -341,7 +341,7 @@ function Receipt_teacher() {
                             :
                               null
                           }
-                          Admin: <span className="text-black">{admin.username}</span></p>
+                          Admin: <span className="text-black capitalize">{admin.username}</span></p>
                       </div>
                       <div>
 
@@ -427,7 +427,7 @@ function Receipt_teacher() {
                             </div>
                           </div>
                           <div className="border-2 border-red-600 rounded-full ml-2">
-                            <input type="text" className="w-48 h-10 border-2 p-2 pl-14 border-red-600 rounded-full text-2xl font-bold" disabled value={facultyhistory.transaction_id?.amount} style={{ margin: '1px' }} />
+                            <input type="text" className="w-48 h-10 border-2 p-2 pl-14 border-red-600 rounded-full text-2xl font-bold" disabled value={`${facultyhistory?.transaction_id?.amount} /-`} style={{ margin: '1px' }} />
                           </div>
                         </div>
                       </div>
@@ -442,7 +442,7 @@ function Receipt_teacher() {
                             :
                               null
                           }
-                          Admin: <span className="text-black">{facultyhistory.admin_id?.username}</span></p>
+                          Admin: <span className="text-black capitalize">{facultyhistory.admin_id?.username}</span></p>
                       </div>
                       <div>
 

@@ -147,11 +147,11 @@ function Receipt_student({receiptDetails, forOffice}) {
                 {
                   receiptDetails.is_edited
                   ?
-                    <span className={`${receiptBgColor} text-white font-semibold italic rounded-md px-2 py-1 mr-1`}>Edited By</span>
+                    <span className={`${receiptBgColor} text-white font-semibold italic rounded px-2 py-0.5 mr-1`}>Edited By</span>
                   :
                     null
                 }
-                Admin: <span className="text-black">{receiptDetails?.admin?.toUpperCase()}</span>
+                Admin: <span className="text-black capitalize">{receiptDetails?.admin}</span>
               </p>
             </div>
           </div>

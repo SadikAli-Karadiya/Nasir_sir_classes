@@ -5,12 +5,7 @@ import { AiFillEye } from 'react-icons/ai';
 import { Tooltip } from "@material-tailwind/react";
 import { NavLink } from "react-router-dom";
 import { FiSend } from "react-icons/fi"
-import { FaArrowLeft } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { FiAlertCircle } from "react-icons/fi";
-import { BsCheck2All } from "react-icons/bs";
-import Swal from 'sweetalert2';
-import Confomodel from "../Componant/Confomodel"
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClasses, transferStudent } from "../hooks/usePost";
 import Toaster from '../hooks/showToaster';
@@ -18,6 +13,7 @@ import SweetAlert from '../hooks/sweetAlert';
 import { IoIosArrowBack } from 'react-icons/io';
 
 import {AxiosError} from 'axios';
+import { scrollToTop } from '../hooks/helper';
 
 const Transfer = () => {
     const location = useLocation();
@@ -132,7 +128,7 @@ const Transfer = () => {
            {classSelectionModel && (
                     <div className='absolute w-full h-full z-30'  >
                         <div className='flex justify-center shadow-2xl opacity-100 '>
-                            <div className='absolute mx-auto  opacity-100 shadow-2xl rounded mt-32 bg-white w-1/3 z-50'>
+                            <div className='absolute mx-auto  opacity-100 shadow-2xl rounded mt-20 bg-white w-1/3 z-50'>
                                 <div className=''>
                                     <div className='flex justify-end '>
                                         <button onClick={(e) => setClassSelectionModel(!classSelectionModel)} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
@@ -315,7 +311,7 @@ const Transfer = () => {
 
                             <div className="button flex justify-end ">
 
-                                <button id='transfer-btn' disabled={studentsEligibleData.length == 0 ? true : false} className={`flex items-center ${studentsEligibleData.length == 0 ? 'bg-green-300' : 'bg-green-500 hover:bg-green-700 cursor-pointer'} w-28 h-10 justify-center rounded-lg space-x-2`} onClick={(e) => setClassSelectionModel(true)} >
+                                <button id='transfer-btn' disabled={studentsEligibleData.length == 0 ? true : false} className={`flex items-center ${studentsEligibleData.length == 0 ? 'bg-green-300' : 'bg-green-500 hover:bg-green-700 cursor-pointer'} w-28 h-10 justify-center rounded-lg space-x-2`} onClick={(e) => {setClassSelectionModel(true); scrollToTop();}} >
                                     <div className=''>
                                         <FiSend className=' ml-1  text-white text-2xl  ' />
                                     </div>

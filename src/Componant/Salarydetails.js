@@ -332,7 +332,7 @@ export default function Salarydetails() {
                                     <div className="px-6 py-3 font-bold text-darkblue-500 ">
                                         <h2>* Paid by :  {payment == 1 ? 'Cash' : payment == 2 ? 'UPI' : 'Cheque'}</h2>
                                         {payment != 1 ? <h2>* {payment == 2 ? "UPI NO" : payment == 3 ? "Cheque No" : null} :  {payment == 2 ? upi_no : payment == 3 ? chaque_no : null}</h2> : null}
-                                        <h3 >* Received by  : <span className="uppercase">{admin.username}</span></h3>
+                                        <h3 >* Received by  : <span className="capitalize">{admin.username}</span></h3>
                                     </div>
                                     <div>
 
@@ -639,7 +639,7 @@ export default function Salarydetails() {
                             </div>
                         </div>
                         <div className="text-sm flex justify-between items-center uppercase font-bold font-mono mt-8 ">
-                            <h1 className="px-6"> admin : {admin.username}</h1>
+                            <h1 className="px-6"> admin : <span className="capitalize">{admin.username}</span> </h1>
                             <button onClick={genreciept}
                                 className="px-7  mx-7 py-2 text-base tracking-widest font-semibold uppercase bg-darkblue-500 text-white 
             transition duration-500 rounded-md hover:shadow-2xl"  >

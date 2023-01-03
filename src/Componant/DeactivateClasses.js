@@ -35,6 +35,9 @@ const DeactivateClasses = () => {
         const res = classesNewData.filter((data)=>{
             return data.is_selected == true  
         })
+        if(res.length == 0){
+            return toast.error('No class selected')
+        }
         Swal.fire({
             title: "Are you sure to deactivate classes ?",
             text: "Selected classes will be deactivated!",
@@ -74,16 +77,16 @@ const DeactivateClasses = () => {
                     </div>
                     <div className="relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
 
-                        <table className="w-full text-sm text-center bg-class3-50 rounded-xl  ">
+                        <table className="w-full text-sm text-center bg-class3-50 rounded-xl  overflow-hidden">
                             <thead className="text-xs text-gray-700 uppercase">
                                 <tr className='text-white text-base'>
-                                    <th scope="col" className="w-20 h-20">Select</th>
-                                    <th scope="col" className="w-20 h-20">Class</th>
-                                    <th scope="col" className="w-20 h-20">Batch</th>
-                                    <th scope="col" className="w-20 h-20">Medium</th>
-                                    <th scope="col" className="w-20 h-20">Section</th>
-                                    <th scope="col" className="w-20 h-20">Stream</th>
-                                    <th scope="col" className="w-20 h-20">Fees</th>
+                                    <th scope="col" className="w-16 h-16">Select</th>
+                                    <th scope="col" className="w-16 h-16">Class</th>
+                                    <th scope="col" className="w-16 h-16">Batch</th>
+                                    <th scope="col" className="w-16 h-16">Medium</th>
+                                    <th scope="col" className="w-16 h-16">Section</th>
+                                    <th scope="col" className="w-16 h-16">Stream</th>
+                                    <th scope="col" className="w-16 h-16">Fees</th>
                                 </tr>
                             </thead>
                             <tbody className='bg-white border items-center '>
@@ -98,16 +101,16 @@ const DeactivateClasses = () => {
                                          defaultValue={item._id}
                                         className=' rounded-md w-16 h-5 text-center bg-white'/>     
                                     </td>
-                                    <td scope="row" className="h-20"> 
+                                    <td scope="row" className="h-16"> 
                                         <input type="text" disabled={true}
                                         className='rounded-md w-28 h-7 text-center bg-white' defaultValue={item.class_name}  
                                         />  
                                      </td>
-                                    <td className="w-28 h-20 space-x-4">
+                                    <td className="w-16 h-16 space-x-4">
                                         <input type="text" disabled={true}
                                         className=' rounded-md w-16 h-7 text-center bg-white' defaultValue={item.batch_start_year+1} />
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={true} 
                                         className=' rounded-md w-20 h-7 text-center'
                                         defaultValue={item.medium} 
@@ -119,7 +122,7 @@ const DeactivateClasses = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={true} 
                                         className=' rounded-md w-20 h-7 text-center' defaultValue={item.is_primary} 
                                         >
@@ -129,7 +132,7 @@ const DeactivateClasses = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <select name="" disabled={true} 
                                         className=' rounded-md w-24 h-7 text-center'  defaultValue={item.stream} 
                                         >
@@ -141,7 +144,7 @@ const DeactivateClasses = () => {
                                         
                                         </select>
                                     </td>
-                                    <td className="w-20 h-20">
+                                    <td className="w-16 h-16">
                                         <input type="text" disabled={true} 
                                         className=' rounded-md w-16 h-7 text-center bg-white' 
                                         defaultValue={item.fees} 
@@ -155,8 +158,8 @@ const DeactivateClasses = () => {
                         </table>
                         <div className="button flex justify-end items-center space-x-4">
 
-                            <div onClick={onSubmit} id='transfer-btn' className='flex items-center hover:bg-class3-50 bg-orange-400 w-40 h-10 justify-center rounded-lg cursor-pointer space-x-2' >
-                                <p className='text-white text-lg'>Deactivate Classes</p>
+                            <div onClick={onSubmit} id='transfer-btn' className='flex items-center hover:bg-class3-50 bg-darkblue-500 hover:bg-darkblue-300 w-36 h-9 justify-center rounded-lg cursor-pointer space-x-2' >
+                                <p className='text-white text-md'>Deactivate Class</p>
                             </div>
                         </div>
                     </div>

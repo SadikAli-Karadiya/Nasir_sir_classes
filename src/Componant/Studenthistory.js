@@ -148,10 +148,8 @@ const Studenthistory = () => {
                     <tbody>
                       {feesReceipts.map((receipt, index) => {
                         {
-                          date = new Date(receipt.date).toLocaleString();
-                          // time = date.split(',')[1].trim()
-                          // time = time.split(':')[0]+ ":"+ time.split(':')[1] + " " + time.split(' ')[1]
-                          date = date.split(",")[0];
+                          date = new Date(receipt.date);
+                          date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
                         }
                         return (
                           <tr key={index} className="bg-white border-b">
@@ -165,12 +163,12 @@ const Studenthistory = () => {
                               {receipt.discount}
                             </td>
                             <td className="py-4 px-2 text-center">{date}</td>
-                            <td className="py-4 px-2 text-center">
+                            <td className="py-4 px-2 text-center capitalize">
                               {receipt.admin_id.username}
                             </td>
                             <td
                               className={`py-4 px-2 text-center ${
-                                isPrint ? "hidden" : "flex"
+                                isPrint ? "hidden" : "flex justify-center items-center"
                               } `}
                             >
                               <div className="flex justify-center space-x-2">
