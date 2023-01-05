@@ -416,7 +416,7 @@ const Profilestudent = () => {
                         class: studDetails.academic.class_id.class_name,
                         medium: studDetails.academic.class_id.medium,
                         stream: studDetails.academic.class_id.stream,
-                        formNo: studDetails.personal.student_id,
+                        studentId: studDetails.personal.student_id,
                         admissionDate: admissionDate,
                         gender: studDetails.personal.basic_info_id.gender,
                         whatsappNo: studDetails.personal.contact_info_id.whatsapp_no,

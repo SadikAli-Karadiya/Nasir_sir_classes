@@ -9,6 +9,10 @@ import ErrorBoundary from "./Componant/ErrorBound";
 function App() {
   const { token, section } = React.useContext(NasirContext);
 
+  if(process.env.NODE_ENV == 'development'){
+    document.getElementById("root").classList.add('debug-screens')
+  }
+
   return (
     <div className="min-h-screen w-full">
       {!token ? (

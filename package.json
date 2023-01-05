@@ -20,7 +20,6 @@
     "concurrently": "^7.3.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "electron-builder": "^23.3.3",
     "electron-is-dev": "^2.0.0",
     "export-from-json": "^1.7.0",
     "form-data": "^4.0.0",
@@ -57,6 +56,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-build": "electron-builder -mwl",
+    "electron:build": "electron-builder -c.extraMetadata.main=client/main.js",
     "electron-react": "concurrently \"cross-env npm start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
@@ -105,7 +105,7 @@
     "autoprefixer": "^10.4.8",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
-    "electron": "^20.1.0",
+    "electron": "^20.3.8",
     "electron-packager": "^17.1.1",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
@@ -116,6 +116,7 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tailwindcss": "^3.1.8",
+    "tailwindcss-debug-screens": "^2.2.1",
     "url": "^0.11.0"
   }
 }

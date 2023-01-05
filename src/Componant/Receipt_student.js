@@ -75,7 +75,7 @@ function Receipt_student({receiptDetails, forOffice}) {
           </div>
           <div>
             <p className={`${receiptTextColor} font-bold italic`}>
-              class: <span className="text-black">{receiptDetails?.class_name?.toUpperCase()}</span>
+              Class: <span className="text-black">{receiptDetails?.class_name?.toUpperCase()}</span>
             </p>
           </div>
           <div>

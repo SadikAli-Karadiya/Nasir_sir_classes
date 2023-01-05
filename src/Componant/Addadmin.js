@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import FormData from "form-data";
 
 export const Addadmin = () => {
-  const [img, setImg] = useState("/images/user.png");
   const createPost = useCreateAdmin();
   const navigate = useNavigate();
 
@@ -354,45 +353,15 @@ export const Addadmin = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex lg:flex-row flex-col gap-4">
-                      <div className="qualification">
-                        <label className="block">
-                          <span className="block text-sm font-medium text-slate-700">
-                            Qualification *
-                          </span>
-                          <input
-                            type="text"
-                            placeholder="Enter Your Qualification"
-                            className={`xl:w-52 2xl:w-60 lg:w-48 w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
-                              errors.qualification && "border-red-600"
-                            }`}
-                            {...register("qualification", {
-                              required: "Qualification is required",
-                              pattern: {
-                                value: /^[A-Za-z ]+$/,
-                                message: "Please enter only characters",
-                              },
-                            })}
-                            onKeyUp={() => {
-                              trigger("qualification");
-                            }}
-                          />
-                          {errors.qualification && (
-                            <small className="text-red-700">
-                              {errors.qualification.message}
-                            </small>
-                          )}
-                        </label>
-                      </div>
-                      <div className="address">
-                        <label className="block">
-                          <span className="block text-sm font-medium text-slate-700">
+                    <div className="w-full flex lg:flex-row flex-col justify-center gap-4 lg:px-[60px] xl:w-[80%] 2xl:w-full 2xl:px-[110px]">
+                      <div className="address 2xl:w-full xl:min-w-[430px] lg:min-w-[400px]">
+                        <label className=" flex flex-col">
+                          <span className=" text-sm font-medium text-slate-700">
                             Address *
                           </span>
-                          <input
-                            type="text"
+                          <textarea
                             placeholder="Enter Your Address"
-                            className={`xl:w-52 2xl:w-60 lg:w-48 w-60 mt-1 block px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                            className={`w-64 lg:w-full mt-1 py-0.5 bg-white border  border-slate-300 px-3 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                               errors.address && "border-red-600"
                             }`}
                             {...register("address", {
@@ -405,7 +374,7 @@ export const Addadmin = () => {
                             onKeyUp={() => {
                               trigger("address");
                             }}
-                          />
+                          ></textarea>
                           {errors.address && (
                             <small className="text-red-700">
                               {errors.address.message}
@@ -413,14 +382,14 @@ export const Addadmin = () => {
                           )}
                         </label>
                       </div>
-                      <div className="dateofjoining">
+                      <div className="dateofjoining address xl:w-52 2xl:w-60 lg:w-48 w-60">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
                             Date Of Joining *
                           </span>
                           <input
                             type="date"
-                            className={`xl:w-52 2xl:w-60 lg:w-48 w-60 hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                            className={`xl:w-52 2xl:w-60 lg:w-48 w-60 hover:cursor-pointer mt-1 block px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                               errors.dateofjoining && "border-red-600"
                             }`}
                             {...register("dateofjoining", {
@@ -435,6 +404,11 @@ export const Addadmin = () => {
                           )}
                         </label>
                       </div>
+                      {/* <div className="">
+                        <div className="btn mt-5 flex justify-center w-60">
+                          
+                        </div>
+                      </div> */}
                     </div>
 
                     <div className="flex lg:flex-row flex-col  gap-10">

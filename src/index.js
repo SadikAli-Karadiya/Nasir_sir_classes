@@ -10,6 +10,7 @@ import { NasirProvider } from "./NasirContext";
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <HashRouter>
     <QueryClientProvider client={queryClient}>

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const withMT = require("@material-tailwind/react/utils/withMT");
+const debugScreen = require('tailwindcss-debug-screens');
 
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -62,6 +63,11 @@ module.exports = {
     },
   },
   plugins: [
-   
+    debugScreen
   ],
 };
+
+// For debug screen first npm install tailwindcss-debug-screens --save-dev, import here and in App.js file add below code:
+  // if(process.env.NODE_ENV == 'development'){
+  //   document.getElementById("root").classList.add('debug-screens')
+  // }

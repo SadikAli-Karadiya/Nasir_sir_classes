@@ -33,7 +33,7 @@ const StudentAdmissionForm = () => {
                                     </div>
                                 </div>
                                 <div className="bottom-content text-center font-bold border-t-2 border-black w-full">
-                                    <p className="">E-35, Sumel-8, Safal Market, Nr Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023</p>
+                                    <p className="">E-35, Sumel-8, Safal Market, Nr Ajit Mill Char Rasta, Rakhial, Ahmedabad (380023)</p>
                                 </div>
                             </div>
                             <div className='right-content w-1/5 '>
@@ -44,16 +44,15 @@ const StudentAdmissionForm = () => {
                                             <img className="px-3" src={studentDetails.photo} alt='Passport-Photo'/>
                                         : 
                                             null
-
                                     }
                                 </div>
                             </div>
                         </div>
                         <div className="peragraph my-3 mx-1 border-b-2 pb-5 border-black">
                             <h1 className="font-bold ">Respected Sir,</h1>
-                            <p className="text-sm">I am willing to take admission in you organization for Class <span className="border-b-2 border-black">{studentDetails.class}</span> I have received the permission from
+                            <p className="text-sm">I am willing to take admission in your organization for class <span className="border-b-2 border-black capitalize">{studentDetails.class}</span>. I have received the permission from
                                 my parents regarding the admission. I am aware and agree to rules and regulation of the organization. I am
-                                bound to follow all the changed in rules and regulations made from time to time. 
+                                bound to follow all the changes in rules and regulations made from time to time. 
                             </p>
                         </div>
                         <div className="academic-info my-5 mx-1">
@@ -78,7 +77,7 @@ const StudentAdmissionForm = () => {
                                 <div className="middle ml-[-20px] w-40">
                                     <p className="border-2 border-black w-36 text-center">
                                         <h1 className="font-bold">Form No.</h1>
-                                        {studentDetails.formNo}
+                                        {studentDetails.studentId}
                                     </p>
                                 </div>
                                 <div className="right flex ml-[-40px]">
@@ -160,7 +159,7 @@ const StudentAdmissionForm = () => {
                                 </div>
                             </div>
                             <div className="birth of date flex my-5 mx-5">
-                                <label className="">Birth of Date:</label>
+                                <label className="">Date of Birth:</label>
                                 <div className="flex mb-2">
                                     <div className="date border-2 border-r-0 border-black px-2 ml-2">{studentDetails.dob[0]}</div>
                                     <div className="date border-2 border-r-0 border-black px-2">{studentDetails.dob[1]}</div>
@@ -180,7 +179,7 @@ const StudentAdmissionForm = () => {
                                 <div className="grid grid-rows-2">
                                     <div className="note">
                                         <label>Note:</label>
-                                        <div className="border-b-2 border-black ml-12 mt-[-22px]">
+                                        <div className="border-b-2 border-black ml-12 ">
                                             <span className="">{studentDetails.note}</span>
                                         </div>
                                     </div>
@@ -190,17 +189,29 @@ const StudentAdmissionForm = () => {
                                     </div>
                                 </div>
                                 <div className="total fees discount net pay mt-5">
-                                    <div className="total fee flex border-2 border-black">       
-                                        <label className="font-bold pl-2">Total Fees:</label>
-                                        <p className="pl-2">{studentDetails.totalFees}</p>
+                                    <div className="total fee flex border-2 border-black">
+                                        <div className="border-r-2 border-black flex flex-1">
+                                            <label className="font-bold pl-2">Total Fees</label>
+                                        </div>       
+                                        <div className="flex flex-1">
+                                            <p className="pl-2">{studentDetails.totalFees}</p>
+                                        </div>       
                                     </div>
-                                    <div className="discount flex border-2 border-t-0 border-black">       
-                                        <label className="font-bold pl-2">Discount:</label>
-                                        <p className="pl-2">{studentDetails.discount}</p>
+                                    <div className="discount flex border-2 border-t-0 border-black"> 
+                                        <div className="border-r-2 border-black flex flex-1">
+                                            <label className="font-bold pl-2">Discount:</label>
+                                        </div>       
+                                        <div className="flex flex-1">
+                                            <p className="pl-2">{studentDetails.discount}</p>
+                                        </div>        
                                     </div>
-                                    <div className="net payable flex border-2 border-t-0 border-black">       
-                                        <label className="font-bold pl-2">Net Payable:</label>
-                                        <p className="pl-2">{studentDetails.netPayable}</p>
+                                    <div className="net payable flex border-2 border-t-0 border-black"> 
+                                        <div className="border-r-2 border-black flex flex-1">
+                                            <label className="font-bold pl-2">Net Payable:</label>
+                                        </div>       
+                                        <div className="flex flex-1">
+                                            <p className="pl-2">{studentDetails.netPayable}</p>
+                                        </div>        
                                     </div>
                                 </div>
                             </div>
