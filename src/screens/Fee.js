@@ -52,6 +52,21 @@ export default function Fess() {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
   }
 
+  useEffect(()=>{
+    const listener = async (event) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault();
+        await searchStudent();
+      }
+    };
+
+    document.addEventListener("keydown", listener);
+
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  })
+
   return (
     <div className="bg-student-100 py-10 px-14" style={{minHeight: "calc(100vh - 70px)"}}>
       <div className="">
@@ -60,6 +75,7 @@ export default function Fess() {
         <div className="px-2 py-2 flex mt-7 items-center justify-center">
           <input
             type="search"
+            autoFocus={true}
             value={searchValue}
             onChange={(e)=> setSearchValue(e.target.value)}
             className="w-2/3 shadow-xl px-3 py-2 rounded-l-lg outline-none    "
@@ -140,7 +156,8 @@ export default function Fess() {
                                   const currentDate = new Date();
 
                                   const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
-                                  const perDayFee = m.fees.net_fees / 365
+                                  const totalDays = m.academic.class_id.batch_duration * 30;
+                                  const perDayFee = m.fees.net_fees / totalDays;
 
                                   const feesToBePaid = daysDifferent * perDayFee;
 
@@ -223,6 +240,7 @@ export default function Fess() {
                                             net_fees: m.fees.net_fees,
                                             pending_amount: m.fees.pending_amount,
                                             stream: m.academic.class_id.stream,
+                                            batch_duration: m.academic.class_id.batch_duration,
                                             batch: `${m.academic.class_id.batch_start_year}`
                                           }} >
                                           <button className={`${m.fees.pending_amount <= 0 ? 'disabled:opacity-40' : 'bg-darkblue-500 hover:bg-blue-900'} bg-darkblue-500 rounded-lg  duration-200 transition text-white px-7 font-bold py-2`} disabled={m.fees.pending_amount <= 0 ? true : false}>

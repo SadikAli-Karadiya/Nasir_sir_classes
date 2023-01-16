@@ -8,8 +8,10 @@ import Toaster from '../hooks/showToaster';
 import { Tooltip } from "@material-tailwind/react";
 import {generateStudentReceipt} from '../hooks/usePost';
 import { NasirContext } from "../NasirContext";
+import _ from "lodash";
 
 export default function FeesDetail() {
+  
   const location = useLocation();
   const { admin, section } = React.useContext(NasirContext);
 
@@ -32,6 +34,9 @@ export default function FeesDetail() {
   const [model, setModel] = React.useState(false);
   const [pin, setPin] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  let todayDate = new Date();
+  todayDate = `${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? "0" + (todayDate.getMonth() + 1) : todayDate.getMonth() + 1}-${todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate()}`;
+  const [receiptDate, setReceiptDate] = React.useState(todayDate);
 
   const [errors, setErrors]  = React.useState({
       amount: '',
@@ -42,15 +47,6 @@ export default function FeesDetail() {
       invalid_pin: '',
       month: '' 
   });
-
-
-  var today = new Date();
-  var date =
-    today.getDate() +
-    " / " +
-    (today.getMonth() + 1) +
-    " / " +
-    today.getFullYear();
 
   function handleDiscount(e) {
     if(discount == '' ){
@@ -183,13 +179,13 @@ export default function FeesDetail() {
         setFee(e.target.value);
         return;
     }
-    
+
     setDeduction(0);
     setDiscountAppliedMsg(true);
   }
 
   const handleMonthChange = (e) => {
-    const feesPerMonth = student.net_fees / 12;
+    const feesPerMonth = student.net_fees / student.batch_duration;
     const selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value))
     
     if(selectedFeesTotal > student.pending_amount){
@@ -333,6 +329,10 @@ export default function FeesDetail() {
     setChequeDate(e.target.value)
   }
 
+  const handleChangeDate = (e) => {
+    setReceiptDate(e.target.value);
+  }
+
 
   const onSubmit = () =>{
       let err = 0;
@@ -389,17 +389,17 @@ export default function FeesDetail() {
       }
       
       if(err == 0){
-          setPayment(
-            toggleCheque
-            ?
-                'Cheque'
-            :
-                toggleUpi
-                ?
-                    'UPI'
-                :
-                    'Cash'
-          )
+        setPayment(
+          toggleCheque
+          ?
+              'Cheque'
+          :
+              toggleUpi
+              ?
+                  'UPI'
+              :
+                  'Cash'
+        )
         setModel(true);
       }
       else{
@@ -424,7 +424,8 @@ export default function FeesDetail() {
         security_pin: pin,
         last_paid: student.paid_upto,
         total_months: totalMonths,
-        student_id: student.rollno
+        student_id: student.rollno,
+        date: receiptDate
       };
         
         setIsSubmitting(true);
@@ -493,7 +494,7 @@ export default function FeesDetail() {
 
             <div className="mt-7">
               <h1 className="text-2xl font-bold text-darkblue-500 px-6 ">
-                Confirm Payment{" "}
+                Confirm Payment
               </h1>
               <div className="flex  justify-between px-7 py-3">
                 <div>
@@ -522,7 +523,7 @@ export default function FeesDetail() {
                     }
                 </div>
                 <div className="text-sm">
-                  <h4>Date : {date}</h4>
+                  <h4>Date : {receiptDate.split('-').reverse().join('-')}</h4>
                   <h2>Batch : {student.batch}</h2>
                 </div>
               </div>
@@ -558,7 +559,9 @@ export default function FeesDetail() {
               <div className="border-2 mx-8 mt-6 h-8 rounded  w-fit flex items-center border-darkblue-500">
                 <input
                   type="password"
+                  autoFocus={true}
                   className=" px-3 outline-none "
+                  id="security_pin"
                   placeholder="Enter Security PIN"
                   onChange={(e) => setPin(e.target.value)}
                 />
@@ -626,8 +629,11 @@ export default function FeesDetail() {
                 }
             </div>
             <div className="px-7 font-mono">
-                <h3 className=""> Date : {date}</h3>
-                <h6> Batch : {student.batch}</h6>
+                <div className="flex">
+                  <h3 className=""> Date:</h3>
+                  <input type="date" className="ml-2" name="date" id="" value={receiptDate} onChange={handleChangeDate} />
+                </div>
+                <h6> Batch: {student.batch}</h6>
             </div>
           </div>
 
@@ -640,6 +646,7 @@ export default function FeesDetail() {
                   </span>
                   <input
                     type="text"
+                    autoFocus={true}
                     className="px-2 mr-4 text-xl font-bold outline-none w-32"
                     placeholder={`${section == 'secondary' ? 'Enter fees' : ''}`}
                     value={fee}
@@ -656,18 +663,11 @@ export default function FeesDetail() {
                       <h2 className="text-[14px]">No. of Months</h2>
                     <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
                       <option value="" className="text-gray-400">select</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
+                      {
+                        _.times(student.batch_duration, (i)=>(
+                          <option value={i+1}>{i+1}</option>
+                        ))
+                      }
                     </select>
                       {errors.month != '' ? (<small className="text-red-700 mt-2">{errors.month}</small>) : null}
                   </div>
@@ -751,6 +751,7 @@ export default function FeesDetail() {
                   <div className="flex border-2 border-darkblue-500 w-fit rounded-md ">
                     <input
                       type="text"
+                      autoFocus={true}
                       placeholder="Enter Cheque Number"
                       className="placeholder-black p-1 rounded-md outline-none placeholder-gray-400"
                       value={chequeNo}
@@ -784,6 +785,7 @@ export default function FeesDetail() {
                 <div className="flex border-2 border-darkblue-500 rounded-md w-fit">
                   <input
                     type="text"
+                    autoFocus={true}
                     placeholder="Enter Upi Number/id"
                     className=" placeholder-black p-1 rounded-md outline-none placeholder-gray-400"
                     value={upiNo}

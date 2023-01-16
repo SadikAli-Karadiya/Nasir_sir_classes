@@ -57,7 +57,7 @@
     "eject": "react-scripts eject",
     "electron-build": "electron-builder -mwl",
     "electron:build": "electron-builder -c.extraMetadata.main=client/main.js",
-    "electron-react": "concurrently \"cross-env npm start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-react": "concurrently \"cross-env npm start\" \"wait-on http://localhost:3000\""
   },
   "build": {
     "extends": null,

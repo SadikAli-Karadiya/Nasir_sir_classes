@@ -112,6 +112,7 @@ const Reciept = () => {
               roll_no: receipt_details?.student_id,
               class_name: receipt_details?.academics[0].class[0].class_name,
               batch: receipt_details?.academics[0].class[0].batch_start_year,
+              batch_duration: receipt_details?.academics[0].class[0].batch_duration,
               full_name: receipt_details?.basic_info[0].full_name,
               amount_in_words: amountInWords,
               is_by_cash: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cash,
@@ -178,6 +179,7 @@ const Reciept = () => {
                               <input
                                 type="text"
                                 id="Username"
+                                autoFocus={true}
                                 placeholder="Enter Username"
                                 onChange={(e) => setPin(e.target.value)}
                                 className={`w-60 mt-1 block py-2 pl-9 pr-3 bg-white border border-2 border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.oldpassword && "border-red-600"

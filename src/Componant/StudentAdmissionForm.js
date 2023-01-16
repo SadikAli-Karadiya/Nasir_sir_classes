@@ -9,6 +9,7 @@ const StudentAdmissionForm = () => {
     const navigate = useNavigate();
 
     const studentDetails = location.state.studentDetails;
+    console.log(studentDetails)
     
     return (
         <>
@@ -98,10 +99,10 @@ const StudentAdmissionForm = () => {
                                         <div className="year border-2 border-black px-1">{studentDetails.admissionDate[9]}</div>
                                         </div>
                                         <div className="boy mb-2">
-                                            <div className="border-2 border-black w-7 h-7 flex justify-center items-center ml-2">{ studentDetails.gender == 'male' ? <BsCheckLg className=""/> : null}</div>
+                                            <div className="border-2 border-black w-7 h-7 flex justify-center items-center ml-2">{ studentDetails.gender.toLowerCase() == 'male' ? <BsCheckLg className=""/> : null}</div>
                                         </div>
                                         <div className="girl">
-                                            <div className="border-2 w-7 h-7 border-black flex justify-center items-center p-1 ml-2">{studentDetails.gender == 'female' ? <BsCheckLg className=""/> : ''}</div>
+                                            <div className="border-2 w-7 h-7 border-black flex justify-center items-center p-1 ml-2">{studentDetails.gender.toLowerCase() == 'female' ? <BsCheckLg className=""/> : ''}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -179,9 +180,7 @@ const StudentAdmissionForm = () => {
                                 <div className="grid grid-rows-2">
                                     <div className="note">
                                         <label>Note:</label>
-                                        <div className="border-b-2 border-black ml-12 ">
-                                            <span className="">{studentDetails.note}</span>
-                                        </div>
+                                        <input type="text" disabled defaultValue={studentDetails.note} className="ml-2 border-b-2 border-black w-[85%]"/>
                                     </div>
                                     <div className="ref flex mt-5">
                                         <label>Ref:</label>
@@ -199,7 +198,7 @@ const StudentAdmissionForm = () => {
                                     </div>
                                     <div className="discount flex border-2 border-t-0 border-black"> 
                                         <div className="border-r-2 border-black flex flex-1">
-                                            <label className="font-bold pl-2">Discount:</label>
+                                            <label className="font-bold pl-2">Discount</label>
                                         </div>       
                                         <div className="flex flex-1">
                                             <p className="pl-2">{studentDetails.discount}</p>
@@ -207,7 +206,7 @@ const StudentAdmissionForm = () => {
                                     </div>
                                     <div className="net payable flex border-2 border-t-0 border-black"> 
                                         <div className="border-r-2 border-black flex flex-1">
-                                            <label className="font-bold pl-2">Net Payable:</label>
+                                            <label className="font-bold pl-2">Net Payable</label>
                                         </div>       
                                         <div className="flex flex-1">
                                             <p className="pl-2">{studentDetails.netPayable}</p>

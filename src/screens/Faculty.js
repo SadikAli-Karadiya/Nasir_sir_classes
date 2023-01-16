@@ -355,28 +355,25 @@ const Faculty = () => {
               <h1 className=" text-xl xl:text-3xl text-center xl:text-left text-darkblue-500 font-bold">
                 Staff
               </h1>
-              <NavLink className="nav-link" to="">
-
-                <div className="button flex justify-center text-center items-center mr-5">
-                  <div className="wrapper">
-                    <div
-                      className="btn cursor-pointer h-11 w-48 rounded-full bg-white text-left border  overflow-hidden hover:bg-darkblue-500 hover:text-white text-darkblue-500 "
-                      id="btn"
+              <div className="button flex justify-center text-center items-center mr-5">
+                <div className="wrapper">
+                  <div
+                    className="btn h-11 w-48 text-left"
+                    id="btn"
+                  >
+                    <button
+                      className="icons h-full w-full flex justify-center items-center cursor-pointer rounded-full bg-white border  overflow-hidden hover:bg-darkblue-500 hover:text-white text-darkblue-500 "
+                      id="icons"
+                      onClick={(e) =>{ setModel(true);}}
                     >
-                      <div
-                        className="icons h-full w-full flex justify-center items-center "
-                        id="icons"
-                        onClick={(e) =>{ setModel(true);}}
-                      >
-                        <FaPlus className="text-2xl" />
-                        <span className="text-lg font-semibold ml-3 mr-1">
-                          Add New Staff
-                        </span>
-                      </div>
-                    </div>
+                      <FaPlus className="text-2xl" />
+                      <span className="text-lg font-semibold ml-3 mr-1">
+                        Add New Staff
+                      </span>
+                    </button>
                   </div>
                 </div>
-              </NavLink>
+              </div>
             </div>
             <div className="pt-0 flex items-center justify-between   mx-20 xl:mx-32  ">
               <div className=" left">

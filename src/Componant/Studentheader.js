@@ -139,7 +139,7 @@ const Studenthearder = () => {
         <div className=" relative  sm:rounded-lg bg-white p-10 shadow-xl space-y-5 w-full">
           <div>
             <p className="text-base md:text-lg lg:text-xl font-bold leading-tight text-gray-800">
-              Transaction List
+              Transactions List
             </p>
           </div>
           <div className="print-btn flex items-center space-x-3">
@@ -161,7 +161,7 @@ const Studenthearder = () => {
             />
             <button
               id=""
-              className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+              className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
               onClick={(e) => {
                 setData(reportData?.data?.data);
                 setDate("");
@@ -196,7 +196,7 @@ const Studenthearder = () => {
                 </Tooltip>
                 <button
                   id=""
-                  className=" flex items-center border outline-none bg-gray-300  px-4 xl:px-4 xl:py-1 shadow-lg hover:shadow rounded-md  space-x-1 "
+                  className=" flex items-center border outline-none bg-gray-400 hover:bg-gray-300 px-4 xl:px-4 xl:py-1 shadow-lg rounded-md  space-x-1 "
                   onClick={handleExportClick}
                 >
                   Export
@@ -204,20 +204,17 @@ const Studenthearder = () => {
               </>
             ) : null}
             <div className="flex w-2/5  items-center justify-end ">
-              {" "}
-              <div className="flex flex-col items-center p-1 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
+              <div className="flex flex-col items-center py-1 px-3 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
                 <span className="font-semibold"> Total : {transaction} </span>
                 <span className="italic">
-                  {" "}
-                  Transaction :{transaction === "?" ? "?" : data?.length}{" "}
+                  Transactions :{transaction === "?" ? "?" : ' '+data?.length}
                 </span>
               </div>
               <button
                 onClick={calcaulateTotal}
-                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
               >
-                {" "}
-                Calculate Total{" "}
+                Calculate Total
               </button>
             </div>
           </div>
@@ -232,6 +229,9 @@ const Studenthearder = () => {
                     </th>
                     <th className="font-normal text-left px-2 xl:px-0">
                       Student Name
+                    </th>
+                    <th className="font-normal text-left px-2 xl:px-0">
+                      Class
                     </th>
                     <th className="font-normal text-left px-2 xl:px-0">Paid</th>
                     <th className="font-normal text-left px-2 xl:px-0">
@@ -256,6 +256,11 @@ const Studenthearder = () => {
                       <td className="pl-8">.........</td>
                       <td className=" px-2 font-bold xl:px-0">..</td>
                       <td className="px-2 xl:px-0">.....</td>
+                      <td className="font-medium px-2 xl:px-0">
+                        <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
+                          ...
+                        </span>
+                      </td>
                       <td className="font-medium px-2 xl:px-0">
                         <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
                           ...
@@ -304,6 +309,14 @@ const Studenthearder = () => {
                                 .full_name
                             }
                           </td>
+                          <td className="px-2 xl:px-0 capitalize">
+                            {
+                              m.fees[0].academics[0].class[0].class_name
+                            }
+                            {
+                              ` ${m.fees[0].academics[0].class[0].medium}${m.fees[0].academics[0].class[0].stream == 'none' ? '' : ` | ${m.fees[0].academics[0].class[0].stream}`}`
+                            }
+                          </td>
                           <td className="font-medium px-2 xl:px-0">
                             <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
                               {m.transaction[0].amount}
@@ -349,6 +362,14 @@ const Studenthearder = () => {
                             {
                               m.fees[0].academics[0].students[0].basic_info[0]
                                 .full_name
+                            }
+                          </td>
+                          <td className="px-2 xl:px-0 capitalize">
+                            {
+                              m.fees[0].academics[0].class[0].class_name
+                            }
+                            {
+                              ` ${m.fees[0].academics[0].class[0].medium}${m.fees[0].academics[0].class[0].stream == 'none' ? '' : ` | ${m.fees[0].academics[0].class[0].stream}`}`
                             }
                           </td>
                           <td className="font-medium px-2 xl:px-0">

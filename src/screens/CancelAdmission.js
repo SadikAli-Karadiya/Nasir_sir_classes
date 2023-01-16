@@ -297,6 +297,7 @@ function CancelAdmission() {
             setStudentDetails({
                 full_name: student_Details.personal.basic_info_id.full_name,
                 class_name: student_Details.academic.class_id.class_name,
+                batch_duration: student_Details.academic.class_id.batch_duration,
                 medium: student_Details.academic.class_id.medium,
                 stream: student_Details.academic.class_id.stream,
                 net_fees: student_Details.fees.net_fees,
@@ -313,7 +314,8 @@ function CancelAdmission() {
     let academicDate = new Date(studentDetails.academic_date);
 
     const daysStudied = Math.round( ( new Date().getTime() - academicDate.getTime() ) / (1000 * 3600 * 24) );
-    const feesPerDay = Math.round(studentDetails.net_fees / 365);
+    const totalDays = studentDetails.batch_duration * 30;
+    const feesPerDay = Math.round(studentDetails.net_fees / totalDays);
     const daysStudiedAmount = daysStudied * feesPerDay;
     const feesPaid = (studentDetails.net_fees) - studentDetails.pending_fees;
 

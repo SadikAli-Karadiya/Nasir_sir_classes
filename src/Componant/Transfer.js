@@ -11,7 +11,6 @@ import { getActiveClasses, transferStudent } from "../hooks/usePost";
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
 import { IoIosArrowBack } from 'react-icons/io';
-
 import {AxiosError} from 'axios';
 import { scrollToTop } from '../hooks/helper';
 

@@ -56,9 +56,9 @@ function Receipt_teacher() {
   let date = new Date(facultyhistory?.date);
   date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
 
-  //   // --------------------------------
-  //   // ----  Number To Word  ----------
-  //   // -------------------------------
+  // --------------------------------
+  // ----- Number To Word -----------
+  // -------------------------------
 
   function inWords(num) {
     let a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
@@ -89,12 +89,11 @@ function Receipt_teacher() {
   const onSubmit = async (data, e) => {
     e.preventDefault();
     try {
-      const admin_details = await getAdminVerification({ username: data.Username, password: data.Password });
-      if (admin_details.data.success) {
-        Toaster()
+      // const admin_details = await getAdminVerification({ username: data.Username, password: data.Password });
+      // if (admin_details.data.success) {
         navigate(`/salary/Salarydetails/${params.id}`);
         return
-      }
+      // }
     }
     catch (error) {
       if (error instanceof AxiosError) {
@@ -152,6 +151,7 @@ function Receipt_teacher() {
                                 <input
                                   type="text"
                                   id="Username"
+                                  autoFocus={true}
                                   placeholder="Enter Username"
                                   onChange={(e) => setPin(e.target.value)}
                                   className={`w-60 mt-1 block py-2 pl-9 pr-3 bg-white border border-2 border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.oldpassword && "border-red-600"
@@ -257,7 +257,7 @@ function Receipt_teacher() {
                 <ReceiptMainDiv className={`border-4 rounded-3xl border-red-600 mx-auto mt-4`} ref={printRef} >
                   <div className="p-5">
                     <div className="flex justify-between">
-                      <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
+                      <img src="images/receipt_logo.png" style={{ maxWidth: "420px", height: "100px" }} alt="" />
                       <div className={`${receiptTextColor} w-48 font-bold`}>
                         <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023.</p>
                         <p className="pt-2">Mobile: 9173603705</p>
@@ -341,7 +341,7 @@ function Receipt_teacher() {
                             :
                               null
                           }
-                          Admin: <span className="text-black capitalize">{admin.username}</span></p>
+                          Admin: <span className="text-black capitalize">{admin.username}{" Sir"}</span></p>
                       </div>
                       <div>
 
@@ -354,7 +354,7 @@ function Receipt_teacher() {
                 <ReceiptMainDiv className={`border-4 rounded-3xl border-red-600 mx-auto mt-10`} >
                   <div className="p-5">
                     <div className="flex justify-between">
-                      <img src="images/logo.png" style={{ maxWidth: '250px' }} alt="" />
+                      <img src="images/receipt_logo.png" style={{ maxWidth: "420px", height: "100px" }} alt="" />
                       <div className={`${receiptTextColor} w-48 font-bold`}>
                         <p>E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial, Ahmedabad 380023.</p>
                         <p className="pt-2">Mobile: 9173603705</p>
@@ -442,7 +442,7 @@ function Receipt_teacher() {
                             :
                               null
                           }
-                          Admin: <span className="text-black capitalize">{facultyhistory.admin_id?.username}</span></p>
+                          Admin: <span className="text-black capitalize">{facultyhistory.admin_id?.username}{" Sir"}</span></p>
                       </div>
                       <div>
 

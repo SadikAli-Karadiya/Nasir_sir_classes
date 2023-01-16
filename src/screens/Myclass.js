@@ -8,7 +8,7 @@ import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
-import { NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import {
   AddClass,
   updateClass,
@@ -27,6 +27,7 @@ import '../Styles/MyClass.css'
 
 const Myclass = () => {
   const { section } = React.useContext(NasirContext);
+  const navigate = useNavigate();
 
   //----------------------------
   //----------API Work----------
@@ -85,7 +86,7 @@ const Myclass = () => {
   };
 
   const handleMouseEnterDelete = () => {
-    setIsHoverDelete(true);
+    setIsHoverDelete(true); 
   };
 
   const handleMouseLeaveDelete = () => {
@@ -195,7 +196,7 @@ const Myclass = () => {
   const handleDeleteClass = async (class_id) => {
     Swal.fire({
       title: "Are you sure to delete class?",
-      text: "",
+      text: "Class will be deleted permanentely and will never be seen",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -226,6 +227,7 @@ const Myclass = () => {
       return;
     }
     setIsAddingClass(true)
+    
     const response = await AddClass(data);
 
     setIsAddingClass(false)
@@ -292,8 +294,8 @@ const Myclass = () => {
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div className=" w-full grid grid-cols-1 rounded-lg  truncate  pb-5 pt-10 bg-white ">
-                        <div className=" flex flex-col items-center gap-4">
-                          <div className="flex lg:flex-row md:flex-col gap-4 ">
+                        <div className=" flex flex-col items-center gap-6">
+                          <div className="flex lg:flex-row md:flex-col gap-6 ">
                             <div className="class_name">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
@@ -303,7 +305,7 @@ const Myclass = () => {
                                 <input
                                   type="text"
                                   placeholder="Enter class name"
-                                  className={`w-full 2xl:w-60 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
+                                  className={`w-full 2xl:w-54 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
                                     ${errors.class_name && "border-red-600"}
                                   `}
                                   {...register("class_name", {
@@ -337,7 +339,7 @@ const Myclass = () => {
                                         type="text"
                                         placeholder="Starting year"
                                         defaultValue={new Date().getFullYear()}
-                                        className={`w-full 2xl:w-60  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
+                                        className={`w-full 2xl:w-54  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
                                        ${
                                          errors.batch_start_year &&
                                          "border-red-600"
@@ -388,13 +390,43 @@ const Myclass = () => {
                                 </div>
                               </label>
                             </div>
+                            <div className="Batch-duration">
+                              <label className="block">
+                                <span className="block text-sm font-medium text-slate-700">
+                                  Batch Duration *
+                                </span>
+                                <select
+                                  className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                    errors.batch_duration && "border-red-600"
+                                  }`}
+                                  {...register("batch_duration", {
+                                    required: "Batch duration is required",
+                                  })}
+                                  onKeyUp={() => {
+                                    trigger("batch_duration");
+                                  }}
+                                >
+                                  <option value="">Select</option>
+                                  <option value={3}>3 Months</option>
+                                  <option value={6}>6 Months</option>
+                                  <option value={12}>1 Year</option>
+                                  <option value={18}>1.5 Years</option>
+                                  <option value={24}>2 Years</option>
+                                </select>
+                                {errors.batch_duration && (
+                                  <small className="text-red-700">
+                                    {errors.batch_duration.message}
+                                  </small>
+                                )}
+                              </label>
+                            </div>
                             <div className="Section">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
                                   Section *
                                 </span>
                                 <select
-                                  className={`2xl:w-[240px] w-[180px]  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                  className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                     errors.is_primary && "border-red-600"
                                   }`}
                                   {...register("is_primary", {
@@ -416,14 +448,14 @@ const Myclass = () => {
                               </label>
                             </div>
                           </div>
-                          <div className="flex lg:flex-row md:flex-col gap-4 items-center">
+                          <div className="flex lg:flex-row md:flex-col gap-6 items-center">
                             <div className="Medium">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
                                   Medium *
                                 </span>
                                 <select
-                                  className={`2xl:w-[240px] w-[180px] mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none 
+                                  className={`2xl:w-54 w-[180px] mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none 
                                     ${errors.medium && "border-red-600"}
                                   `}
                                   {...register("medium", {
@@ -436,8 +468,9 @@ const Myclass = () => {
                                 >
                                   <option value="">Select</option>
                                   <option value="english">English</option>
-                                  <option value="gujarati">Gujarati</option>
                                   <option value="hindi">Hindi</option>
+                                  <option value="gujarati">Gujarati</option>
+                                  <option value="urdu">Urdu</option>
                                 </select>
                                 {errors.medium && (
                                   <small className="text-red-700">
@@ -452,7 +485,7 @@ const Myclass = () => {
                                   Stream *
                                 </span>
                                 <select
-                                  className={`2xl:w-[240px] w-[180px]  mt-1 block px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                  className={`2xl:w-54 w-[180px]  mt-1 block px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                     errors.stream && "border-red-600"
                                   }`}
                                   {...register("stream", {
@@ -483,7 +516,7 @@ const Myclass = () => {
                                 <input
                                   type="text"
                                   placeholder="Enter fees"
-                                  className={`2xl:w-[240px] w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                  className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                     errors.fees && "border-red-600"
                                   }`}
                                   {...register("fees", {
@@ -538,7 +571,7 @@ const Myclass = () => {
       {editClassModel && (
         <div className="absolute w-full h-full z-30 left-0 top-0">
           <div className="flex justify-center opacity-100 ">
-            <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-2/3 z-50">
+            <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-3/4 z-50">
               {classes.map((item, index) => {
                 if (edit_class_id == item._id)
                   return (
@@ -565,8 +598,8 @@ const Myclass = () => {
                             onSubmit={handleSubmit(onEditSubmit)}
                           >
                             <div className=" w-full grid grid-cols-1 rounded-lg drop-shadow-md truncate bg-white pb-5 pt-10 ">
-                              <div className=" flex flex-col items-center gap-4">
-                                <div className="flex lg:flex-row md:flex-col gap-4 ">
+                              <div className=" flex flex-col items-center gap-6">
+                                <div className="flex lg:flex-row md:flex-col gap-6 ">
                                   <div className="class_name">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
@@ -577,7 +610,7 @@ const Myclass = () => {
                                         defaultValue={item.class_name}
                                         type="text"
                                         placeholder="Enter class name"
-                                        className="xl:w-52 2xl:w-60 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
+                                        className="w-44 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
                                         {...register("class_name", {
                                           required: "Classname is required",
                                           pattern: {
@@ -609,7 +642,7 @@ const Myclass = () => {
                                             type="text"
                                             disabled={true}
                                             placeholder="Starting year"
-                                            className={`w-full 2xl:w-60 block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                            className={`xl:w-44 2xl:w-44 block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                               errors.batch_start_year &&
                                               "border-red-600"
                                             }`}
@@ -648,13 +681,44 @@ const Myclass = () => {
                                       </div>
                                     </label>
                                   </div>
+                                   <div className="Batch-duration">
+                                    <label className="block">
+                                      <span className="block text-sm font-medium text-slate-700">
+                                        Batch Duration *
+                                      </span>
+                                      <select
+                                        className={`w-44  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                          errors.batch_duration && "border-red-600"
+                                        }`}
+                                        {...register("batch_duration", {
+                                          required: "Batch duration is required",
+                                        })}
+                                        onKeyUp={() => {
+                                          trigger("batch_duration");
+                                        }}
+                                        defaultValue={item.batch_duration}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value={3}>3 Months</option>
+                                        <option value={6}>6 Months</option>
+                                        <option value={12}>1 Year</option>
+                                        <option value={18}>1.5 Years</option>
+                                        <option value={24}>2 Years</option>
+                                      </select>
+                                      {errors.batch_duration && (
+                                        <small className="text-red-700">
+                                          {errors.batch_duration.message}
+                                        </small>
+                                      )}
+                                    </label>
+                                  </div>
                                   <div className="Section">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
                                         Section
                                       </span>
                                       <select
-                                        className={`xl:w-52 2xl:w-60  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                        className={`w-44  mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                           errors.is_primary && "border-red-600"
                                         }`}
                                         {...register("is_primary", {
@@ -689,14 +753,14 @@ const Myclass = () => {
                                     </label>
                                   </div>
                                 </div>
-                                <div className="flex lg:flex-row md:flex-col gap-4 items-center">
+                                <div className="flex lg:flex-row md:flex-col gap-6 items-center">
                                   <div className="Medium">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
                                         Medium
                                       </span>
                                       <select
-                                        className="xl:w-52 2xl:w-60 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
+                                        className="w-44 mt-1 block  px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
                                         {...register("medium", {
                                           required: "Medium is required",
                                         })}
@@ -715,6 +779,16 @@ const Myclass = () => {
                                           English
                                         </option>
                                         <option
+                                          value="hindi"
+                                          selected={
+                                            item.medium == "hindi"
+                                              ? true
+                                              : false
+                                          }
+                                        >
+                                          Hindi
+                                        </option>
+                                        <option
                                           value="gujarati"
                                           selected={
                                             item.medium == "gujarati"
@@ -724,15 +798,16 @@ const Myclass = () => {
                                         >
                                           Gujarati
                                         </option>
+
                                         <option
-                                          value="hindi"
+                                          value="urdu"
                                           selected={
-                                            item.medium == "hindi"
+                                            item.medium == "urdu"
                                               ? true
                                               : false
                                           }
                                         >
-                                          Hindi
+                                          Urdu
                                         </option>
                                       </select>
                                       {errors.medium && (
@@ -748,7 +823,7 @@ const Myclass = () => {
                                         Stream
                                       </span>
                                       <select
-                                        className={`xl:w-52 2xl:w-60  mt-1 block px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                        className={`w-44  mt-1 block px-3 py-2  border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                           errors.stream && "border-red-600"
                                         }`}
                                         {...register("stream", {
@@ -814,7 +889,7 @@ const Myclass = () => {
                                         defaultValue={item.fees}
                                         type="text"
                                         placeholder="Enter fees"
-                                        className={`xl:w-52 2xl:w-60  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                        className={`xl:w-44 2xl:w-44  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                           errors.fees && "border-red-600"
                                         }`}
                                         {...register("fees", {
@@ -875,13 +950,13 @@ const Myclass = () => {
                 >
                   Select Year
                 </label>
-                <button className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg  space-x-1 ">
+                <div className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg  space-x-1 ">
                   <select
                     name=""
                     id="selectYear"
                     value={selectYear}
                     onChange={handleYearChange}
-                    className="cursor-pointer text-darkblue-500  text-base outline-none"
+                    className="cursor-pointer text-darkblue-500  text-base"
                   >
                     {
                       classesByYear && classesByYear[0] ? (
@@ -904,7 +979,7 @@ const Myclass = () => {
                       //null
                     }
                   </select>
-                </button>
+                </div>
               </div>
               <div className="medium ">
                 <label
@@ -913,20 +988,21 @@ const Myclass = () => {
                 >
                   Medium
                 </label>
-                <button className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg  space-x-1 ">
+                <div className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg  space-x-1 ">
                   <select
                     name=""
                     id="medium"
                     value={medium}
                     onChange={handleMediumChange}
-                    className="cursor-pointer text-darkblue-500 text-base outline-none"
+                    className="cursor-pointer text-darkblue-500 text-base"
                   >
                     <option value="">All</option>
                     <option value="english">English</option>
-                    <option value="gujarati">Gujarati</option>
                     <option value="hindi">Hindi</option>
+                    <option value="gujarati">Gujarati</option>
+                    <option value="urdu">Urdu</option>
                   </select>
-                </button>
+                </div>
               </div>
               <div className="stream">
                 <label
@@ -935,13 +1011,13 @@ const Myclass = () => {
                 >
                   Stream
                 </label>
-                <button className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg space-x-1 ">
+                <div className=" flex items-center border bg-white p-2 md:p-2 md:py-1 rounded-lg space-x-1 ">
                   <select
                     name=""
                     id="stream"
                     value={stream}
                     onChange={handleStreamChange}
-                    className="cursor-pointer text-darkblue-500 text-base outline-none"
+                    className="cursor-pointer text-darkblue-500 text-base"
                   >
                     <option value="">All</option>
                     <option value="none">None</option>
@@ -949,7 +1025,7 @@ const Myclass = () => {
                     <option value="commerce">Commerce</option>
                     <option value="arts">Arts</option>
                   </select>
-                </button>
+                </div>
               </div>
             </div>
             <div className="right">
@@ -959,7 +1035,7 @@ const Myclass = () => {
                   placement="bottom-end"
                   className="text-white bg-black rounded p-2"
                 >
-                  <div
+                  <button
                     onClick={(e) => {setModel(true); scrollToTop(); stopScroll()}}
                     className="btn cursor-pointer  h-12 w-12 rounded-full bg-white hover:bg-darkblue-300 hover:text-white text-darkblue-500 text-left border  overflow-hidden "
                     id="btn"
@@ -970,7 +1046,7 @@ const Myclass = () => {
                     >
                       <BiFolderPlus className="text-2xl " />
                     </div>
-                  </div>
+                  </button>
                 </Tooltip>
                 {
                   allClasses && allClasses?.length > 0 ? (
@@ -978,41 +1054,31 @@ const Myclass = () => {
                     <button
                       className="btn cursor-pointer h-11 w-44 rounded-full bg-white hover:bg-darkblue-500 hover:text-white text-darkblue-500 text-left border  overflow-hidden"
                       id="btn"
+                      onClick={()=> navigate('class/deactivate', {state:{allClasses}})}
                     >
-                      <NavLink
-                        className="nav-link"
-                        to="class/deactivate"
-                        state={{ allClasses }}
+                      <div
+                        className="icons  h-11 w-44 flex justify-center items-center"
+                        id="icons"
                       >
-                        <div
-                          className="icons  h-11 w-44 flex justify-center items-center"
-                          id="icons"
-                        >
-                          <span className=" text-lg font-semibold">
-                            Deactivate Class
-                          </span>
-                        </div>
-                      </NavLink>
+                        <span className=" text-lg font-semibold">
+                          Deactivate Class
+                        </span>
+                      </div>
                     </button>
                     <button
                       className="btn cursor-pointer h-11 w-40 rounded-full bg-white hover:bg-darkblue-500 hover:text-white text-darkblue-500 text-left border  overflow-hidden"
                       id="btn"
+                      onClick={()=> navigate('class/ChangeYear', {state:{ allClasses }})}
                     >
-                      <NavLink
-                        className="nav-link"
-                        to="class/ChangeYear"
-                        state={{ allClasses }}
+                      <div
+                        className="icons h-11 w-40 flex ml-3 items-center"
+                        id="icons"
                       >
-                        <div
-                          className="icons h-11 w-40 flex ml-3 items-center"
-                          id="icons"
-                        >
-                          <FaArrowRight className="text-xl" />
-                          <span className="ml-2 text-lg font-semibold">
-                            Change Year
-                          </span>
-                        </div>
-                      </NavLink>
+                        <FaArrowRight className="text-xl" />
+                        <span className="ml-2 text-lg font-semibold">
+                          Change Year
+                        </span>
+                      </div>
                     </button>
                   </>
                  ) : null
@@ -1042,14 +1108,22 @@ const Myclass = () => {
                             key={index}
                           >
                             <div
-                              className="class_card drop-shadow-lg rounded-lg p-2 pr-0 h-40"
+                              className="class_card drop-shadow-lg rounded-lg p-2 pr-0 xl:h-[170px]"
                               style={{
                                 backgroundColor: bgColors[index % bgColors.length],
                               }}
                             >
-                              <div className=" h-6 flex justify-end items-center space-x-2 mr-2 ">
+                              <div className="h-6 flex justify-between items-center mx-2 mb-2">
+                                <div className="text-sm text-gray-700 italic ml-1 capitalize">
+                                  <span>
+                                    {item.medium}
+                                  </span>
+                                  <span className="capitalize">
+                                    {item.stream == 'none' ? '' : ` | ${item.stream}`}
+                                  </span>
+                                </div>
                                 {item.is_active ? (
-                                  <>
+                                  <div className="flex justify-end items-center space-x-2">
                                     <div
                                       className="edit_delete_btns px-1 py-1 rounded-md"
                                       style={{
@@ -1066,7 +1140,7 @@ const Myclass = () => {
                                       }}
                                       onMouseEnter={handleMouseEnterEdit}
                                       onMouseLeave={handleMouseLeaveEdit}
-                                      onClick={() => {handleEditClass(item._id); stopScroll()}}
+                                      onClick={() => {handleEditClass(item._id); scrollToTop(); stopScroll()}}
                                     >
                                       <MdModeEdit />
                                     </div>
@@ -1091,50 +1165,52 @@ const Myclass = () => {
                                     >
                                       <MdDelete />
                                     </div>
-                                  </>
+                                  </div>
                                 ) : null}
                               </div>
                               <NavLink className="nav-link" to={`class/${item._id}`}>
-                                <div className="flex  space-x-2 items-center ml-3 ">
+                                <div className="flex flex-col">
+                                  <div className="flex  space-x-2 items-center ml-3 ">
+                                    <div
+                                      className="rounded-md"
+                                      style={{
+                                        backgroundColor:
+                                          headingBgColor[index % headingBgColor.length],
+                                      }}
+                                    >
+                                      <RiFolderUserFill className="text-white text-4xl md:text-5xl xl:text-7xl " />
+                                    </div>
+                                    <div className="flex flex-1 justify-center items-center">
+                                      <h1
+                                        style={{
+                                          color:
+                                            headingBgColor[
+                                              index % headingBgColor.length
+                                            ],
+                                        }}
+                                        className={`capitalize font-bold ${
+                                          item.class_name.length < 8 && "text-4xl"
+                                        }  ${
+                                          item.class_name.length <= 2 && "text-7xl"
+                                        }   `}
+                                      >
+                                        {item.class_name}
+                                      </h1>
+                                    </div>
+                                  </div>
                                   <div
-                                    className="rounded-md"
+                                    className="total h-8 ml-1 mr-2 md:mr-2 xl:mr-0 rounded-md  flex  justify-center items-center mt-4"
                                     style={{
                                       backgroundColor:
                                         headingBgColor[index % headingBgColor.length],
+                                      minWidth: '220px',
+                                      maxWidth: '240px',
                                     }}
                                   >
-                                    <RiFolderUserFill className="text-white text-4xl md:text-5xl xl:text-7xl " />
+                                    <p className="text-white">
+                                      Total Student : {item.total_student}
+                                    </p>
                                   </div>
-                                  <div className="flex flex-1 justify-center items-center">
-                                    <h1
-                                      style={{
-                                        color:
-                                          headingBgColor[
-                                            index % headingBgColor.length
-                                          ],
-                                      }}
-                                      className={`capitalize font-bold ${
-                                        item.class_name.length < 8 && "text-4xl"
-                                      }  ${
-                                        item.class_name.length <= 2 && "text-7xl"
-                                      }   `}
-                                    >
-                                      {item.class_name}
-                                    </h1>
-                                  </div>
-                                </div>
-                                <div
-                                  className="total h-8 ml-1 mr-2 md:mr-2 xl:mr-0 rounded-md  flex  justify-center items-center mt-4 "
-                                  style={{
-                                    backgroundColor:
-                                      headingBgColor[index % headingBgColor.length],
-                                    minWidth: '220px',
-                                    maxWidth: '240px',
-                                  }}
-                                >
-                                  <p className="text-white">
-                                    Total Student : {item.total_student}
-                                  </p>
                                 </div>
                               </NavLink>
                             </div>

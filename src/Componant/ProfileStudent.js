@@ -362,6 +362,7 @@ const Profilestudent = () => {
 
                         if (res.data.success) {
                             Toaster("success", res.data.message);
+                            startScroll();
                             navigate('/');
                             return;
                         }
@@ -930,7 +931,7 @@ const Profilestudent = () => {
                                     </div>
                                 </div>
                                 <div className="flex justify-center 2xl:justify-end items-center h-20 w-full mt-5">
-                                    <button className={`border rounded-md w-24 h-11 bg-darkblue-500 
+                                    <button type="button" className={`border rounded-md w-24 h-11 bg-darkblue-500 
                                         ${!showUpdateButton ? null : "hidden"}
                                         drop-shadow-lg text-white hover:bg-white 
                                         border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
@@ -940,7 +941,7 @@ const Profilestudent = () => {
                                         }} >
                                         Print
                                     </button>
-                                    <button className={`border rounded-md w-24 h-11 ml-2 bg-darkblue-500 
+                                    <button type="button" className={`border rounded-md w-24 h-11 ml-2 bg-darkblue-500 
                                         ${!showUpdateButton ? null : "hidden"}
                                         drop-shadow-lg text-white hover:bg-white 
                                         border-2 hover:border-darkblue-500 hover:text-darkblue-500`}
@@ -956,7 +957,7 @@ const Profilestudent = () => {
                                         studDetails?.personal.is_cancelled == 0
                                             ?
                                             <>
-                                                <button className={`border rounded-md ml-2 mr-2 w-36 h-11 bg-darkblue-500 ${!showUpdateButton ? null : "hidden"} drop-shadow-lg text-white border-2 hover:bg-white hover:border-darkblue-500 hover:text-darkblue-500`} onClick={handleAdmissionCancel}>
+                                                <button type="button" className={`border rounded-md ml-2 mr-2 w-36 h-11 bg-darkblue-500 ${!showUpdateButton ? null : "hidden"} drop-shadow-lg text-white border-2 hover:bg-white hover:border-darkblue-500 hover:text-darkblue-500`} onClick={handleAdmissionCancel}>
                                                     Cancel Admission
                                                 </button>
 

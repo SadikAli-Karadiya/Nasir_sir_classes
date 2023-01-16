@@ -128,7 +128,7 @@ const Facultyheader = () => {
             />
             <button
               id=""
-              className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+              className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
               onClick={(e) => {
                 setDate("");
                 setNextDate("");
@@ -162,20 +162,17 @@ const Facultyheader = () => {
               </Tooltip>
             ) : null}
             <div className="flex w-2/5  items-center justify-end ">
-              {" "}
-              <div className="flex flex-col items-center p-1 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
+              <div className="flex flex-col items-center py-1 px-2 rounded-md text-sm mx-2 shadow-xl justify-end bg-green-200">
                 <span className="font-semibold"> Total : {transaction} </span>
                 <span className="italic">
-                  {" "}
-                  Transaction :{transaction === "?" ? "?" : data?.length}{" "}
+                  Transactions : {transaction === "?" ? "?" : " "+data?.length}
                 </span>
               </div>
               <button
                 onClick={calcaulateTotal}
-                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:shadow rounded-md  space-x-1 "
+                className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
               >
-                {" "}
-                Calculate Total{" "}
+                Calculate Total
               </button>
             </div>
           </div>

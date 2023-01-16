@@ -43,6 +43,9 @@ export default function Salary() {
   const [PIN, setpin] = React.useState();
   const [hourRateError, setHourRateError] = React.useState(false);
   const [hourRateEmptyError, setHourRateEmptyError] = React.useState(false);
+  let todayDate = new Date();
+  todayDate = `${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? "0" + (todayDate.getMonth() + 1) : todayDate.getMonth() + 1}-${todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate()}`;
+  const [receiptDate, setReceiptDate] = React.useState(todayDate);
   const [salaryData, setSalaryData] = React.useState({
     hour: "",
     amount: "",
@@ -73,17 +76,6 @@ export default function Salary() {
     }
     fetchfacultdata()
   }, [])
-
-  // --------------------------------
-  // ----- Corrent_Date_formate ------
-  // -------------------------------
-  var today = new Date();
-  var date =
-    today.getDate() +
-    " / " +
-    (today.getMonth() + 1) +
-    " / " +
-    today.getFullYear();
 
   // ------------------------
   // ----- Payment_type ------
@@ -171,6 +163,10 @@ export default function Salary() {
     setChequeDate(e.target.value)
   }
 
+  const handleChangeDate = (e) => {
+    setReceiptDate(e.target.value);
+  }
+
   // ------------------------------------
   // ----- Chaque_number Validation ------
   // ------------------------------------
@@ -238,6 +234,7 @@ export default function Salary() {
       total_amount: fee,
       total_hours: salaryData.hour,
       rate_per_hour: salaryData.amount,
+      date: receiptDate
     });
     
     const SPIN = PIN;
@@ -294,7 +291,7 @@ export default function Salary() {
 
                   </div>
                   <div className="text-sm">
-                    <h4>Date : {date}</h4>
+                    <h4>Date : {receiptDate.split('-').reverse().join('-')}</h4>
                   </div>
                 </div>
 
@@ -320,6 +317,7 @@ export default function Salary() {
                     <div className="border-2 mx-8 mt-6  w-fit flex items-center border-secondory-text">
                       <input
                         type="password"
+                        autoFocus={true}
                         className="p-1 px-3 outline-none "
                         placeholder="Enter Security PIN"
                       onChange={(e) => {setPin(e.target.value); setError(false)}}
@@ -362,8 +360,9 @@ export default function Salary() {
 
                 <h2 className="font-bold text-lg uppercase ">Name : {faculty?.basic_info_id.full_name} </h2>
               </div>
-              <div className="p-6 pt-0 font-serif">
-                <h3 className=""> Date : {date}</h3>
+              <div className="flex p-6 pt-0 font-serif">
+                  <h3 className=""> Date:</h3>
+                  <input type="date" className="ml-2" name="date" id="" value={receiptDate} onChange={handleChangeDate} />
               </div>
             </div>
             <div className="flex justify-between ">
@@ -474,6 +473,7 @@ export default function Salary() {
                       type="text"
                       name="amount"
                       id="amount"
+                      autoFocus={true}
                       placeholder="Enter amount"
                       disabled={amount}
                       className=" text-xl font-bold outline-none rounded-r-full w-36 pr-2"
@@ -545,6 +545,7 @@ export default function Salary() {
                           placeholder="Enter UPI Number"
                           className=" placeholder-black p-1 outline-none rounded-md"
                           name="upi_no"
+                          autoFocus={true}
                           value={upino}
                           onChange={(e) => { 
                             setupino(e.target.value); 
@@ -566,6 +567,7 @@ export default function Salary() {
                           <h1> </h1>
                           <input
                             type="text"
+                            autoFocus={true}
                             placeholder="Enter Cheque Number"
                             className=" placeholder-black p-1 outline-none rounded-md"
                             name="cheque_no"

@@ -17,7 +17,7 @@ function Receipt_student({receiptDetails, forOffice}) {
     >
       <div className="p-5">
         <div className="flex justify-between">
-          <img src="images/logo.png" style={{ maxWidth: "250px" }} alt="" />
+          <img src="images/receipt_logo.png" style={{ maxWidth: "420px", height: "100px" }} alt="" />
           <div className={`${receiptTextColor} w-48 font-bold`}>
             <p>
               E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial,
@@ -151,7 +151,7 @@ function Receipt_student({receiptDetails, forOffice}) {
                   :
                     null
                 }
-                Admin: <span className="text-black capitalize">{receiptDetails?.admin}</span>
+                Admin: <span className="text-black capitalize">{receiptDetails?.admin}{" Sir"}</span>
               </p>
             </div>
           </div>

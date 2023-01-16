@@ -16,7 +16,7 @@ export default function Salarydetails() {
     const Toaster = () => { toast.success('Receipt updated successfully') }
     const errtoast = () => { toast.error("Invalid UserID / Password") }
     const params = useParams();
-    const [isloading, setloading] = React.useState(true)
+    const [isloading, setloading] = React.useState(true);
     const [faculty, setfaculty] = React.useState();
     const [salary, setsalary] = React.useState();
     const [is_hourly, setishourly] = React.useState();
@@ -44,7 +44,9 @@ export default function Salarydetails() {
     });
     const [hourRateEmptyError, setHourRateEmptyError] = React.useState(false);
     const [isLoadingOnSubmit, setIsLoadingOnSubmit] = React.useState(false);
-
+    let todayDate = new Date();
+    todayDate = `${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? "0" + (todayDate.getMonth() + 1) : todayDate.getMonth() + 1}-${todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate()}`;
+    const [receiptDate, setReceiptDate] = React.useState(todayDate);
 
     // --------------------------------
     // --------  API WORK -------------
@@ -93,15 +95,6 @@ export default function Salarydetails() {
         }
         fetchfacultdata()
     }, [])
-
-
-    var receiptDate = new Date(faculty?.date);
-    var date =
-        receiptDate.getDate() +
-        " / " +
-        (receiptDate.getMonth() + 1) +
-        " / " +
-        receiptDate.getFullYear();
 
     // ------------------------
     // ----- Payment_type ------
@@ -193,6 +186,10 @@ export default function Salarydetails() {
         setChequeDate(e.target.value)
     }
 
+    const handleChangeDate = (e) => {
+        setReceiptDate(e.target.value);
+    }
+
     // ------------------------------------
     // ----- Chaque_number Validation ------
     // ------------------------------------
@@ -244,7 +241,7 @@ export default function Salarydetails() {
             total_amount: salary_amount,
             total_hours: salaryData.hour,
             rate_per_hour: salaryData.amount,
-
+            date: receiptDate
         });
         if (pin == admin.security_pin) {
             setIsLoadingOnSubmit(true)
@@ -313,7 +310,7 @@ export default function Salarydetails() {
                                         <h1 className="font-bold uppercase">Name : {faculty.staff_id.basic_info_id.full_name}</h1>
                                     </div>
                                     <div className="text-sm">
-                                        <h4>Date : {date} </h4>
+                                        <h4>Date : {receiptDate.split('-').reverse().join('-')} </h4>
                                     </div>
                                 </div>
 
@@ -339,6 +336,7 @@ export default function Salarydetails() {
                                         <div className="border-2 mx-8 mt-6  w-fit flex items-center border-secondory-text">
                                             <input
                                                 type="password"
+                                                autoFocus={true}
                                                 className="p-1 px-3 outline-none "
                                                 placeholder="Enter Security PIN"
                                                 onChange={(e) => { setPin(e.target.value); setError(false) }}
@@ -383,8 +381,9 @@ export default function Salarydetails() {
                                     Receipt No : {faculty.salary_receipt_id}
                                 </h1>
                             </div>
-                            <div className="p-6 pt-0 font-serif">
-                                <h3 className=""> Date : {date}</h3>
+                            <div className="flex p-6 pt-0 font-serif">
+                                <h3 className=""> Date:</h3>
+                                <input type="date" className="ml-2" name="date" id="" value={receiptDate} onChange={handleChangeDate} />
                             </div>
                         </div>
                         <div className="flex items-center px-6">
@@ -498,6 +497,7 @@ export default function Salarydetails() {
                                         </span>
                                         <input
                                             type="text"
+                                            autoFocus={true}
                                             name="amount"
                                             id="amount"
                                             placeholder="Enter amount"
@@ -568,6 +568,7 @@ export default function Salarydetails() {
                                                 <h1></h1>
                                                 <input
                                                     type="text"
+                                                    autoFocus={true}
                                                     placeholder="Enter UPI Number"
                                                     className=" placeholder-black p-1 outline-none rounded-md"
                                                     name="upi_no"
@@ -589,6 +590,7 @@ export default function Salarydetails() {
                                                     <h1> </h1>
                                                     <input
                                                         type="text"
+                                                        autoFocus={true}
                                                         placeholder="Enter Cheque Number"
                                                         className=" placeholder-black p-1 outline-none rounded-md"
                                                         name="cheque_no"

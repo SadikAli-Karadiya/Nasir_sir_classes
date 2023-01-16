@@ -42,6 +42,10 @@ export default function Dashboard() {
     async function fetchFeesPendingData() {
       const res = await Alloverstudent(section);
       const StudentsWithPendingFees = res.data?.filter((student) => {
+        if( student.academics[0].class.length == 0){
+          return false;
+        }
+        
         let isPending = false;
 
         const studentAcademicStartDate = new Date(student.academics[0].date);
@@ -49,7 +53,8 @@ export default function Dashboard() {
 
         const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
 
-        const perDayFee = student.academics[0].fees[0].net_fees / 365
+        const totalDays = student.academics[0].class[0].batch_duration * 30;
+        const perDayFee = student.academics[0].fees[0].net_fees / totalDays
 
         const feesToBePaid = daysDifferent * perDayFee;
 
@@ -60,7 +65,6 @@ export default function Dashboard() {
         }
 
         return (
-          student.academics[0].class[0] != undefined &&
           isPending
         );
       });
@@ -192,9 +196,9 @@ export default function Dashboard() {
                 className=" w-full shadow-xl px-3 py-2 rounded-l-lg outline-none    "
                 placeholder="Search Student"
               ></input>
-              <button className="bg-class2-50 px-2 py-1 rounded-r-lg shadow-2xl transition duration-200 hover:text-gray-300">
-                <AiOutlineSearch className="text-3xl font-bold hover:scale-125  text-white transition duration-400" />
-              </button>
+              <div className="bg-class2-50 px-2 py-1 rounded-r-lg shadow-2xl">
+                <AiOutlineSearch className="text-3xl font-bold  text-white" />
+              </div>
             </div>
             <div className="flex">
               {
@@ -409,6 +413,7 @@ export default function Dashboard() {
                                     pending_amount: item.academics[0].fees[0].pending_amount,
                                     medium: item.academics[0].class[0].medium,
                                     stream: item.academics[0].class[0].stream,
+                                    batch_duration: item.academics[0].class[0].batch_duration,
                                     batch: `${item.academics[0].class[0].batch_start_year}`,
                                   }}
                                 >

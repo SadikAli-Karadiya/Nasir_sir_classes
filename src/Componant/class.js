@@ -165,7 +165,13 @@ const Class = () => {
         <div className="flex justify-between  items-center px-5 pt-3  space-y-5">
           <h1 className="ml-5 text-xl lg:text-3xl xl:text-4xl  text-darkblue-500 xl:text-left font-bold text-darkblue-50 capitalize">
             {classDetails.class_name}
-            <span className="capitalize text-md lg:text-lg ml-2">({classDetails.medium})</span>
+            {
+              classDetails.medium 
+              ?
+                <span className="capitalize text-md lg:text-lg ml-2">({`${classDetails.medium}${classDetails.stream == 'none' ? '' : ` | ${classDetails.stream}`}`})</span>
+              :
+                null
+            }
           </h1>
           <div className="button flex mr-6">
             <NavLink
@@ -287,15 +293,15 @@ const Class = () => {
                   className=" w-full shadow-xl px-3 py-2 rounded-l-lg outline-none    "
                   placeholder="Search Student"
                 ></input>
-                <button className="bg-class3-50 px-2 py-1 rounded-r-lg shadow-2xl transition duration-200 hover:text-gray-300">
-                  <AiOutlineSearch className="text-3xl font-bold hover:scale-125  text-white transition duration-400" />
-                </button>
+                <div className="bg-class3-50 px-2 py-1 rounded-r-lg shadow-2xl">
+                  <AiOutlineSearch className="text-3xl font-bold text-white" />
+                </div>
               </div>
               {
                 allClassStudents.length > 0
                 ?
                   <div className="right flex items-center space-x-3 pr-6">
-                    <button
+                    <div
                       id="year-btn"
                       className=" flex items-center border bg-white p-2 xl:p-2 xl:py-1 rounded-lg shadow-2xl space-x-1 "
                     >
@@ -303,13 +309,13 @@ const Class = () => {
                         onChange={handlePendingPaidUpClick}
                         name=""
                         id=""
-                        className="cursor-pointer text-darkblue-500 text-base outline-none"
+                        className="cursor-pointer text-darkblue-500 text-base"
                       >
                         <option value={0}>All</option>
                         <option value={1}>Pending</option>
                         <option value={2}>Paidup</option>
                       </select>
-                    </button>
+                    </div>
                     <Tooltip
                       content="Print"
                       placement="bottom-end"
@@ -518,6 +524,7 @@ const Class = () => {
                                             pending_amount: item.fees_id.pending_amount,
                                             medium: classDetails.medium,
                                             stream: classDetails.stream,
+                                            batch_duration: classDetails.batch_duration,
                                             batch: `${classDetails.batch_start_year}`,
                                           }}
                                         >

@@ -35,8 +35,7 @@ const Studentregister = () => {
         clearErrors
     } = useForm();
 
-    const onSubmit = async (data, e) => {
-        e.preventDefault();
+    const onSubmit = async (e) => {
 
         const formdata = new FormData(form.current);
         setIsLoadingOnSubmit(true);
@@ -66,7 +65,7 @@ const Studentregister = () => {
 
     const onError = (errors, e) => Toaster('error', errors.message);
 
-    const handleClick = () => {
+    const handleClick = (e) => {
         reset();
         setMedium('--');
         setStream('--');
@@ -270,7 +269,7 @@ const Studentregister = () => {
                                                         type="radio"
                                                         id="male"
                                                         name="gender"
-                                                        value="Male"
+                                                        value="male"
                                                         className="  hover:cursor-pointer"
                                                         {...register("gender", { required: "Gender is required" })}
                                                     />
@@ -283,7 +282,7 @@ const Studentregister = () => {
                                                         type="radio"
                                                         id="female"
                                                         name="gender"
-                                                        value="Female"
+                                                        value="female"
                                                         className="   hover:cursor-pointer"
                                                         {...register("gender", { required: "Gender is required" })}
                                                     />
@@ -555,14 +554,13 @@ const Studentregister = () => {
                             </div>
                         </div>
                         <div className="flex justify-center items-center h-20 w-full ">
-                            <button type="clear" disabled={isLoadingOnSubmit} className="mt-9 px-8 mr-4 h-10  border-darkblue-500 hover:bg-darkblue border-2 hover:bg-darkblue-500 text-darkblue-500 hover:text-white font-medium rounded-md tracking-wider flex justify-center items-center" onClick={handleClick}>
+                            <button type="button" disabled={isLoadingOnSubmit} className="mt-9 px-8 mr-4 h-10  border-darkblue-500 hover:bg-darkblue border-2 hover:bg-darkblue-500 text-darkblue-500 hover:text-white font-medium rounded-md tracking-wider flex justify-center items-center" onClick={handleClick}>
                                 CLEAR
                             </button>
                             <button type="submit" disabled={isLoadingOnSubmit} className={`mt-9 px-8 h-10 ${isLoadingOnSubmit ? 'opacity-40' : 'opacity-100'} bg-darkblue-500 border-2 border-darkblue-500 text-white font-medium rounded-md tracking-wider flex justify-center items-center`}>
                                 {isLoadingOnSubmit ? 'Loading...' : 'SUBMIT'}
                             </button>
                         </div>
-
                     </div>
                 </form>
             </section>

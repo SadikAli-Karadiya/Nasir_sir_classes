@@ -41,8 +41,22 @@ export default function ReciptScreen() {
             Toaster("error", err.message);
         }
     }
-    
   }
+
+  React.useEffect(()=>{
+    const listener = async (event) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault();
+        await searchAllReceipts(event);
+      }
+    };
+
+    document.addEventListener("keydown", listener);
+
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  })
   
   return (
     <div className="bg-student-100 py-10 px-14" style={{minHeight: "calc(100vh - 70px)"}}>
@@ -53,6 +67,7 @@ export default function ReciptScreen() {
         <div className="px-2 py-2 flex mt-7 items-center justify-center">
           <input
             type="search"
+            autoFocus={true}
             className="w-2/3 shadow-xl px-3 py-2 rounded-l-lg outline-none    "
             placeholder="Search Receipt  (BY : Receipt ID, Rollno , Name , Whatsapp Number)"
             value={searchValue}
@@ -95,11 +110,14 @@ export default function ReciptScreen() {
                                 <thead>
                                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
                                     <th className="font-normal text-left pl-10">Date</th>
-                                    <th className="font-normal text-left  px-2 xl:px-0">
+                                    <th className="font-normal text-left  xl:px-0">
                                       Reciept No
                                     </th>
                                     <th className="font-normal text-left px-2 xl:px-0">
                                       Name
+                                    </th>
+                                    <th className="font-normal text-left px-2 xl:px-0">
+                                      Class
                                     </th>
                                     <th className="font-normal text-left px-2 xl:px-0">
                                       Paid
@@ -121,9 +139,9 @@ export default function ReciptScreen() {
                                 <tbody className="w-full">
                                   {
                                     studentReceipts.map((item) => {
-                                      console.log(item)
                                       return (
                                         item.academics.map((data) => {
+                                          console.log(data)
                                           return (
                                             data.fees[0].fees_receipt.length > 0 
                                             ?
@@ -134,11 +152,14 @@ export default function ReciptScreen() {
                                                 return(
                                                   <tr key={index} className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100">
                                                     <td className="pl-8">{date}</td>
-                                                    <td className=" px-2 font-bold xl:px-0">
+                                                    <td className=" font-bold xl:px-0">
                                                       {receipt.fees_receipt_id}
                                                     </td>
                                                     <td className="px-2 xl:px-0 capitalize">
                                                       {item.basic_info[0].full_name}
+                                                    </td>
+                                                    <td className="px-2 xl:px-0 capitalize">
+                                                      {data.class[0].class_name} {`${data.class[0].medium}${data.class[0].stream == 'none' ? '' : ` | ${data.class[0].stream}`}`}
                                                     </td>
                                                     <td className="font-medium px-2 xl:px-0">
                                                       <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
