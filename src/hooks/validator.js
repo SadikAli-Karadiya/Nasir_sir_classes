@@ -189,7 +189,6 @@ export default class Validator{
             return;
         }   
 
-        
         const regex = new RegExp(pattern)
         //checking the Regex
         if(pattern != null && !regex.test(value)){

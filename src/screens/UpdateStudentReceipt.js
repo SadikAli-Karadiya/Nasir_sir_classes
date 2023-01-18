@@ -73,14 +73,6 @@ export default function UpdateStudentReceipt() {
   });
 
 
-  var today = new Date();
-  var date =
-    today.getDate() +
-    " / " +
-    (today.getMonth() + 1) +
-    " / " +
-    today.getFullYear();
-
   function handleDiscount(e) {
     if(discount == '' ){
         setErrors((prevData)=>{
@@ -217,8 +209,26 @@ export default function UpdateStudentReceipt() {
   }
 
   const handleMonthChange = (e) => {
-    const feesPerMonth = student.net_fees / student.batch_duration;
-    const selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value))
+
+    if(e.target.value == ''){
+      setTotalMonths('')
+      setFee(0)
+      return;
+    }
+
+    let remainder = student.net_fees % student.batch_duration;
+    let feesPerMonth = (student.net_fees - remainder) / student.batch_duration
+
+    let selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value));
+    
+    let monthsInDecimal = (newPendingAmount/feesPerMonth) - Math.floor((newPendingAmount/feesPerMonth));
+
+    if(newPendingAmount == student.net_fees && student.net_fees % student.batch_duration != 0){
+      selectedFeesTotal += remainder;
+    }
+    else if(monthsInDecimal > 0){
+      selectedFeesTotal += Math.round(monthsInDecimal * feesPerMonth);
+    }
 
     if(selectedFeesTotal > newPendingAmount){
       setErrors((prevData) => {
@@ -229,7 +239,7 @@ export default function UpdateStudentReceipt() {
       })
     }
     else{
-      setFee(Math.round(selectedFeesTotal))
+      setFee(Math.round(selectedFeesTotal) - deduction)
       setErrors((prevData) => {
           return {
             ...prevData,
@@ -577,7 +587,7 @@ export default function UpdateStudentReceipt() {
                   className={`mr-[-2px] px-4 py-1 rounded-r ${isAuthenticating ? 'bg-darkblue-300' : 'bg-darkblue-500'} text-white`}
                   onClick={handlePINsubmit}
                 >
-                  {isAuthenticating ? 'verifying...' : 'Submit'}
+                  {isAuthenticating ? 'Loading...' : 'Submit'}
                 </button>
               </div>
 
@@ -660,7 +670,7 @@ export default function UpdateStudentReceipt() {
                     <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
                       <option value="" className="text-gray-400">select</option>
                       {
-                        _.times(student.batch_duration, (i)=>(
+                        _.times(Math.floor(newPendingAmount / Math.floor(student.net_fees / student.batch_duration)), (i)=>(
                           <option value={i+1}>{i+1}</option>
                         ))
                       }

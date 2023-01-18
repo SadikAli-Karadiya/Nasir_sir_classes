@@ -185,19 +185,36 @@ export default function FeesDetail() {
   }
 
   const handleMonthChange = (e) => {
-    const feesPerMonth = student.net_fees / student.batch_duration;
-    const selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value))
+    if(e.target.value == ''){
+      setTotalMonths('')
+      setFee(0)
+      return;
+    }
+
+    let remainder = student.net_fees % student.batch_duration;
+    let feesPerMonth = (student.net_fees - remainder) / student.batch_duration
+
+    let selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value));
+    
+    let monthsInDecimal = (student.pending_amount/feesPerMonth) - Math.floor((student.pending_amount/feesPerMonth));
+
+    if(student.net_fees == student.pending_amount && student.net_fees % student.batch_duration != 0){
+      selectedFeesTotal += remainder
+    }
+    else if(monthsInDecimal > 0){
+      selectedFeesTotal += Math.round(monthsInDecimal * feesPerMonth);
+    }
     
     if(selectedFeesTotal > student.pending_amount){
       setErrors((prevData) => {
         return {
           ...prevData,
-          month: '*Months are  more than pending fees'
+          month: '*Months are more than pending fees'
         }
       })
     }
     else{
-      setFee(Math.round(selectedFeesTotal))
+      setFee(Math.round(selectedFeesTotal) - deduction)
       setErrors((prevData) => {
           return {
             ...prevData,
@@ -664,7 +681,8 @@ export default function FeesDetail() {
                     <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
                       <option value="" className="text-gray-400">select</option>
                       {
-                        _.times(student.batch_duration, (i)=>(
+                        //calculating the remaining months
+                        _.times(Math.floor((student.pending_amount) / Math.floor(student.net_fees / student.batch_duration)), (i)=>(
                           <option value={i+1}>{i+1}</option>
                         ))
                       }
