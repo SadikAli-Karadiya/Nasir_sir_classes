@@ -159,7 +159,7 @@ export default function ReciptScreen() {
                                                       {item.basic_info[0].full_name}
                                                     </td>
                                                     <td className="px-2 xl:px-0 capitalize">
-                                                      {data.class[0].class_name} {`${data.class[0].medium}${data.class[0].stream == 'none' ? '' : ` | ${data.class[0].stream}`}`}
+                                                      {data.class[0].class_name} {`| ${data.class[0].medium}${data.class[0].stream == 'none' ? '' : ` | ${data.class[0].stream}`}`}
                                                     </td>
                                                     <td className="font-medium px-2 xl:px-0">
                                                       <span className="bg-green-200 px-4 text-green-900 font-bold rounded">

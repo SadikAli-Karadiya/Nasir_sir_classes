@@ -14,6 +14,7 @@ export default function UpdateStudentReceipt() {
   const { admin, section } = React.useContext(NasirContext);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
     let cheque_date = new Date(location.state.receiptDetails.cheque_date);
         cheque_date = `${cheque_date.getFullYear()}-${cheque_date.getMonth() + 1 < 10 ? "0" + (cheque_date.getMonth() + 1) : cheque_date.getMonth() + 1}-${cheque_date.getDate() < 10 ? "0" + cheque_date.getDate() : cheque_date.getDate()}`
@@ -35,8 +36,8 @@ export default function UpdateStudentReceipt() {
         upi_no: location.state.receiptDetails.upi_no,
         cheque_no: location.state.receiptDetails.cheque_no,
         cheque_date,
-        from_month: location.state.receiptDetails.from_month,
-        to_month: location.state.receiptDetails.to_month,
+        from_month: Number(location.state.receiptDetails.from_month.split(" ")[0]),
+        to_month: Number(location.state.receiptDetails.to_month.split(" ")[0]),
         paid_upto: location.state.receiptDetails.paid_upto,
         net_fees: location.state.receiptDetails.net_fees,
         pending_amount: location.state.receiptDetails.pending_amount,
@@ -254,20 +255,20 @@ export default function UpdateStudentReceipt() {
       const regex = new RegExp(/^[0-9]+$/)
     if(e.target.value != ''){
         if(regex.test(e.target.value)){
-            setErrors((prevData) => {
-                return {
-                ...prevData,
-                discount: ''
-                }
-            })
+          setErrors((prevData) => {
+            return {
+              ...prevData,
+              discount: ''
+            }
+          })
         }
         else{
-            setErrors((prevData) => {
-                return {
-                    ...prevData,
-                    discount: '*Enter only numbers'
-                }
-            })
+          setErrors((prevData) => {
+            return {
+              ...prevData,
+              discount: '*Enter only numbers'
+            }
+          })
         }
     }
     else{
@@ -449,57 +450,81 @@ export default function UpdateStudentReceipt() {
     setReceiptDate(e.target.value);
   }
 
-
-  const navigate = useNavigate();
+  console.log(totalMonths)
   async function handlePINsubmit() {
-      try{
-        const feesData = {
-            fees_receipt_id: student.receipt_no,
-            is_by_cash: toggleCash ? 1 : 0,
-            is_by_cheque: toggleCheque ? 1 : 0,
-            is_by_upi: toggleUpi ? 1 : 0,
-            cheque_no: chequeNo,
-            cheque_date: chequeDate,
-            upi_no: upiNo,
-            amount: Number(fee) + Number(deduction),
-            discount: deduction,
-            method: payment,
-            admin_id: admin?._id,
-            security_pin: pin,
-            last_paid: student.from_month,
-            total_months: Number(totalMonths),
-            date: receiptDate
-        };
+    try{
+      const feesData = {
+          fees_receipt_id: student.receipt_no,
+          is_by_cash: toggleCash ? 1 : 0,
+          is_by_cheque: toggleCheque ? 1 : 0,
+          is_by_upi: toggleUpi ? 1 : 0,
+          cheque_no: chequeNo,
+          cheque_date: chequeDate,
+          upi_no: upiNo,
+          amount: Number(fee) + Number(deduction),
+          discount: deduction,
+          method: payment,
+          admin_id: admin?._id,
+          security_pin: pin,
+          last_paid: student.from_month,
+          total_months: Number(totalMonths),
+          date: receiptDate
+      };
 
-        setIsAuthenticating(true)
-        
-        const res = await updateStudentReceipt(feesData)
+      setIsAuthenticating(true)
+      
+      const res = await updateStudentReceipt(feesData)
 
-        if (res.data.success == true) {
-            Toaster('success', 'Receipt updated successfully')
-            navigate("/receipt/receipt", {state:{isStaff: false, fees_receipt_id: student.receipt_no, prevPath: location.pathname, is_cancelled: 0}});
-        } else {
-            setErrors({
-                invalid_pin: res.data.message
-            });
+      if (res.data.success == true) {
+          Toaster('success', 'Receipt updated successfully')
+          navigate("/receipt/receipt", {state:{isStaff: false, fees_receipt_id: student.receipt_no, prevPath: location.pathname, is_cancelled: 0}});
+      } else {
+          setErrors({
+              invalid_pin: res.data.message
+          });
+      }
+      setIsAuthenticating(false)
+    }
+    catch(err){
+      setIsAuthenticating(false)
+        if(err instanceof AxiosError){
+          setErrors({
+              invalid_pin: err.response?.data?.message
+          });
         }
-        setIsAuthenticating(false)
-      }
-      catch(err){
-        setIsAuthenticating(false)
-          if(err instanceof AxiosError){
+        else{
             setErrors({
-                invalid_pin: err.response?.data?.message
-            });
-          }
-          else{
-              setErrors({
-                invalid_pin: err.response?.data?.message
-            });
-          }
-      }
+              invalid_pin: err.message
+          });
+        }
+    }
   }
 
+  React.useEffect(() => {
+    let monthCounter = 0;
+    let k = Number(location.state.receiptDetails.from_month.split(" ")[0]);
+    const fromYear = Number(location.state.receiptDetails.from_month.split(" ")[1]);
+    const toYear = Number(location.state.receiptDetails.to_month.split(" ")[1]);
+    let i=fromYear;
+    
+    while(1){
+      monthCounter++;
+
+      if(k == Number(location.state.receiptDetails.to_month.split(" ")[0]) && i == toYear){
+        break;
+      }
+
+      if(k == 12){
+        i++; 
+        k=1;
+      }
+  
+      k++;
+      console.log(monthCounter)
+    }
+
+    setTotalMonths(monthCounter)
+  },[])
   return (
     <div className="relative bg-student-100 py-3 ">
       
@@ -667,11 +692,11 @@ export default function UpdateStudentReceipt() {
                 ?
                   <div className="ml-10 flex flex-col">
                       <h2 className="text-[14px]">No. of Months</h2>
-                    <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange}>
+                    <select className="w-28 border-2 mt-2 px-2 py-1 outline-none rounded-md" onChange={handleMonthChange} value={totalMonths}>
                       <option value="" className="text-gray-400">select</option>
                       {
                         _.times(Math.floor(newPendingAmount / Math.floor(student.net_fees / student.batch_duration)), (i)=>(
-                          <option value={i+1}>{i+1}</option>
+                          <option key={i} value={i+1}>{i+1}</option>
                         ))
                       }
                     </select>

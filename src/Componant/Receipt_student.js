@@ -5,6 +5,8 @@ import {NasirContext} from '../NasirContext'
 
 function Receipt_student({receiptDetails, forOffice}) {
   const {section} = React.useContext(NasirContext);
+  const [fromMonth, setFromMonth] = React.useState(Number(receiptDetails.from_month.split(" ")[0]))
+  const [toMonth, setToMonth] = React.useState(Number(receiptDetails.to_month.split(" ")[0]))
 
   const Months = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -38,11 +40,11 @@ function Receipt_student({receiptDetails, forOffice}) {
               <div className={`border-2 border-red-600 w-26 rounded-md flex justify-center items-center`}>
                 <p className="text-red-600 font-semibold px-4">
                   {
-                    receiptDetails.from_month == receiptDetails.to_month 
+                    fromMonth == toMonth 
                     ?
-                      <span>{Months[receiptDetails.from_month]}</span>
+                      <span>{Months[fromMonth]}</span>
                     :
-                      <span className="">{Months[receiptDetails.from_month]}-{Months[receiptDetails.to_month]}</span>
+                      <span className="">{Months[fromMonth]}-{Months[toMonth]}</span>
                   }
                 </p>
               </div>

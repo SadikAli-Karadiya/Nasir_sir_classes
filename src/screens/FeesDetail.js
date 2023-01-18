@@ -34,6 +34,7 @@ export default function FeesDetail() {
   const [model, setModel] = React.useState(false);
   const [pin, setPin] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [paidUpto, setPaidUpto] = React.useState(Number(student?.paid_upto.split(" ")[0]));
   let todayDate = new Date();
   todayDate = `${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? "0" + (todayDate.getMonth() + 1) : todayDate.getMonth() + 1}-${todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate()}`;
   const [receiptDate, setReceiptDate] = React.useState(todayDate);
@@ -439,7 +440,7 @@ export default function FeesDetail() {
         discount: deduction,
         admin_id: admin?._id,
         security_pin: pin,
-        last_paid: student.paid_upto,
+        last_paid: paidUpto,
         total_months: totalMonths,
         student_id: student.rollno,
         date: receiptDate
@@ -528,9 +529,9 @@ export default function FeesDetail() {
                       ?
                         <h2 className="text-sm">Last Paid Upto:  
                           {
-                            student.paid_upto > 0 
+                            paidUpto > 0 
                             ?
-                              <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
+                              <span className="ml-2 bg-orange-100 rounded-sm px-2">{`${Months[paidUpto]} ${student.paid_upto.split(' ')[1]}`}</span>
                             :
                               <span className="text-[16px] ml-2 font-semibold">--</span>
                           } 
@@ -634,9 +635,9 @@ export default function FeesDetail() {
                   ?
                     <h2 className="text-[16px] tracking-wide">Last Paid Upto:  
                       {
-                        student.paid_upto > 0 
+                        paidUpto > 0 
                         ?
-                          <span className="ml-2 bg-orange-100 rounded-sm px-2">{Months[student.paid_upto]}</span>
+                          <span className="ml-2 bg-orange-100 rounded-sm px-2">{`${Months[paidUpto]} ${student.paid_upto.split(' ')[1]}`}</span>
                         :
                           <span className="text-[16px] ml-2 font-semibold">--</span>
                       } 

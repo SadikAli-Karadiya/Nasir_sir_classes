@@ -7,7 +7,7 @@ import { IoMdLock } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import { MdModeEditOutline } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ReactToPrint from "react-to-print";
 import Receipt_student from "../Componant/Receipt_student";
 import Receipt_teacher from "../Componant/Receipt_teacher";
@@ -137,10 +137,10 @@ const Reciept = () => {
         catch(err){
           setLoading(false);
           if(err instanceof AxiosError){
-            Toaster('success', err.response?.data?.message)
+            Toaster('error', err.response?.data?.message)
           }
           else{
-             Toaster('success', err.message)
+             Toaster('error', err.message)
           }
         }
       }
