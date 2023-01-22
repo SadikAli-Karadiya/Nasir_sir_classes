@@ -87,13 +87,22 @@ export default function ReciptScreen() {
           <LoaderSmall/>
         :
           <div className="p-4 mt-8 ">
-            {console.log(studentReceipts)}
             {
-              (studentReceipts?.length > 0 &&  studentReceipts[0]?.academics[0]?.fees[0]?.fees_receipt?.length > 0 ) || (staffReceipts?.length > 0 && staffReceipts[0]?.salary_receipt?.length > 0)
+              (
+                studentReceipts?.length > 0 
+                &&  
+                studentReceipts[0]?.academics[0]?.fees[0]?.fees_receipt?.length > 0 
+              ) 
+              || 
+              (
+                staffReceipts?.length > 0 
+                && 
+                staffReceipts[0]?.salary_receipt?.length > 0
+              )
               ? (
                 <div className="p-4 bg-whrounded  ">
                   <h1 className="font-bold text-2xl text-darkblue-500"> </h1>
-                  {/* Recipet table  */}
+                  {/* Receipt table  */}
                   <div className="">
                     {
                       studentReceipts?.length > 0 
@@ -141,62 +150,66 @@ export default function ReciptScreen() {
                                     studentReceipts.map((item) => {
                                       return (
                                         item.academics.map((data) => {
-                                          console.log(data)
                                           return (
                                             data.fees[0].fees_receipt.length > 0 
                                             ?
                                               data.fees[0].fees_receipt.map((receipt, index)=>{
-                                                let dt = new Date(receipt.date);
-                                                let date = `${dt.getDate() < 10 ? "0"+dt.getDate() : dt.getDate() }/${dt.getMonth() + 1 < 10 ? "0"+(dt.getMonth() + 1) : dt.getMonth() + 1 }/${dt.getFullYear()}`
-    
-                                                return(
-                                                  <tr key={index} className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100">
-                                                    <td className="pl-8">{date}</td>
-                                                    <td className=" font-bold xl:px-0">
-                                                      {receipt.fees_receipt_id}
-                                                    </td>
-                                                    <td className="px-2 xl:px-0 capitalize">
-                                                      {item.basic_info[0].full_name}
-                                                    </td>
-                                                    <td className="px-2 xl:px-0 capitalize">
-                                                      {data.class[0].class_name} {`| ${data.class[0].medium}${data.class[0].stream == 'none' ? '' : ` | ${data.class[0].stream}`}`}
-                                                    </td>
-                                                    <td className="font-medium px-2 xl:px-0">
-                                                      <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
-                                                        {" "}
-                                                        {receipt.transaction[0].amount}{" "}
-                                                      </span>
-                                                    </td>
-                                                    <td className="px-2 xl:px-0">
-                                                      <p className="">
-                                                        <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
-                                                          {receipt.discount}{" "}
+                                                if(receipt.is_deleted){
+                                                  return null
+                                                }
+                                                else{
+                                                  let dt = new Date(receipt.date);
+                                                  let date = `${dt.getDate() < 10 ? "0"+dt.getDate() : dt.getDate() }/${dt.getMonth() + 1 < 10 ? "0"+(dt.getMonth() + 1) : dt.getMonth() + 1 }/${dt.getFullYear()}`
+      
+                                                  return(
+                                                    <tr key={index} className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100">
+                                                      <td className="pl-8">{date}</td>
+                                                      <td className=" font-bold xl:px-0">
+                                                        {receipt.fees_receipt_id}
+                                                      </td>
+                                                      <td className="px-2 xl:px-0 capitalize">
+                                                        {item.basic_info[0].full_name}
+                                                      </td>
+                                                      <td className="px-2 xl:px-0 capitalize">
+                                                        {data.class[0].class_name} {`| ${data.class[0].medium}${data.class[0].stream == 'none' ? '' : ` | ${data.class[0].stream}`}`}
+                                                      </td>
+                                                      <td className="font-medium px-2 xl:px-0">
+                                                        <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
+                                                          {" "}
+                                                          {receipt.transaction[0].amount}
                                                         </span>
-                                                      </p>
-                                                    </td>
-                                                    <td>
-                                                      <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                                                        {receipt.transaction[0].amount + receipt.discount}
-                                                      </span>
-                                                    </td>
-                                                    <td>
-                                                      <span className="capitalize">{receipt.admin[0].username}</span>
-                                                    </td>
-                                                    <td className="px-5  ">
-                                                        <NavLink className="nav-link" to="/receipt/receipt" state={{is_cancelled: item.is_cancelled,isStaff: false, fees_receipt_id: receipt.fees_receipt_id}}>
-                                                          <Tooltip
-                                                            content="Show Receipt"
-                                                            placement="bottom-end"
-                                                            className="text-white bg-black rounded p-2"
-                                                          >
-                                                              <span>
-                                                                <AiFillEye className="text-xl cursor-pointer" />
-                                                              </span>
-                                                          </Tooltip>
-                                                        </NavLink>
-                                                    </td>
-                                                  </tr>
-                                                )
+                                                      </td>
+                                                      <td className="px-2 xl:px-0">
+                                                        <p className="">
+                                                          <span className="bg-red-200 px-4 text-red-900 font-bold rounded">
+                                                            {receipt.discount}
+                                                          </span>
+                                                        </p>
+                                                      </td>
+                                                      <td>
+                                                        <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
+                                                          {receipt.transaction[0].amount + receipt.discount}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                        <span className="capitalize">{receipt.admin[0].username}</span>
+                                                      </td>
+                                                      <td className="px-5  ">
+                                                          <NavLink className="nav-link" to="/receipt/receipt" state={{is_cancelled: item.is_cancelled,isStaff: false, fees_receipt_id: receipt.fees_receipt_id}}>
+                                                            <Tooltip
+                                                              content="Show Receipt"
+                                                              placement="bottom-end"
+                                                              className="text-white bg-black rounded p-2"
+                                                            >
+                                                                <span>
+                                                                  <AiFillEye className="text-xl cursor-pointer" />
+                                                                </span>
+                                                            </Tooltip>
+                                                          </NavLink>
+                                                      </td>
+                                                    </tr>
+                                                  )
+                                                }
                                               })
                                             : 
                                               null
@@ -254,41 +267,46 @@ export default function ReciptScreen() {
                                       data.salary_receipt.length > 0 
                                       ?
                                         data.salary_receipt.map((receipt, key)=>{
-                                          let dt = new Date(receipt.date);
-                                          let date = `${dt.getDate() < 10 ? "0"+dt.getDate() : dt.getDate() }/${dt.getMonth() + 1 < 10 ? "0"+(dt.getMonth() + 1) : dt.getMonth() + 1 }/${dt.getFullYear()}`
-                                          
-                                          return(
-                                            <tr key={key} className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100">
-                                              <td className="pl-8">{date}</td>
-                                              <td className=" px-2 font-bold xl:px-0">
-                                                {receipt.salary_receipt_id}
-                                              </td>
-                                              <td className="px-2 xl:px-0 capitalize">
-                                                {data.basic_info[0].full_name}
-                                              </td>
-                                              <td className="px-2 xl:px-4 ">
-                                                <span className="">
-                                                  {receipt.is_hourly ? 'Hourly' : 'Monthly'}
-                                                </span>
-                                              </td>
+                                          if(receipt.is_deleted){
+                                            return null;
+                                          }
+                                          else{
+                                            let dt = new Date(receipt.date);
+                                            let date = `${dt.getDate() < 10 ? "0"+dt.getDate() : dt.getDate() }/${dt.getMonth() + 1 < 10 ? "0"+(dt.getMonth() + 1) : dt.getMonth() + 1 }/${dt.getFullYear()}`
                                             
-                                              <td>
-                                                <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                                                  {receipt.transaction[0].amount}
-                                                </span>
-                                              </td>
-                                              <td>
-                                                <span className="capitalize">{receipt.admin[0].username}</span>
-                                              </td>
-                                              <td className="px-5  ">
-                                                <span>
-                                                  <NavLink to={`/salary/Receipt_teacher/${receipt.salary_receipt_id}`}>
-                                                    <AiFillEye className="text-xl cursor-pointer" />
-                                                  </NavLink>
-                                                </span>
-                                              </td>
-                                            </tr>
-                                          )
+                                            return(
+                                              <tr key={key} className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100">
+                                                <td className="pl-8">{date}</td>
+                                                <td className=" px-2 font-bold xl:px-0">
+                                                  {receipt.salary_receipt_id}
+                                                </td>
+                                                <td className="px-2 xl:px-0 capitalize">
+                                                  {data.basic_info[0].full_name}
+                                                </td>
+                                                <td className="px-2 xl:px-4 ">
+                                                  <span className="">
+                                                    {receipt.is_hourly ? 'Hourly' : 'Monthly'}
+                                                  </span>
+                                                </td>
+                                              
+                                                <td>
+                                                  <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
+                                                    {receipt.transaction[0].amount}
+                                                  </span>
+                                                </td>
+                                                <td>
+                                                  <span className="capitalize">{receipt.admin[0].username}</span>
+                                                </td>
+                                                <td className="px-5  ">
+                                                  <span>
+                                                    <NavLink to={`/salary/Receipt_teacher/${receipt.salary_receipt_id}`}>
+                                                      <AiFillEye className="text-xl cursor-pointer" />
+                                                    </NavLink>
+                                                  </span>
+                                                </td>
+                                              </tr>
+                                            )
+                                          }
                                         })
                                       :
                                         null

@@ -233,12 +233,12 @@ const Studenthearder = () => {
                     <th className="font-normal text-left px-2 xl:px-0">
                       Class
                     </th>
-                    <th className="font-normal text-left px-2 xl:px-0">Paid</th>
+                    {/* <th className="font-normal text-left px-2 xl:px-0">Paid</th>
                     <th className="font-normal text-left px-2 xl:px-0">
                       Discount
-                    </th>
+                    </th> */}
                     <th className="font-normal text-left px-2 xl:px-0">
-                      total
+                      Total Amount
                     </th>
                     <th className="font-normal text-left px-2 xl:px-0">
                       Admin
@@ -261,7 +261,7 @@ const Studenthearder = () => {
                           ...
                         </span>
                       </td>
-                      <td className="font-medium px-2 xl:px-0">
+                      {/* <td className="font-medium px-2 xl:px-0">
                         <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
                           ...
                         </span>
@@ -272,7 +272,7 @@ const Studenthearder = () => {
                             ..
                           </span>
                         </p>
-                      </td>
+                      </td> */}
                       <td>
                         <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
                           ...
@@ -317,7 +317,7 @@ const Studenthearder = () => {
                               ` ${m.fees[0].academics[0].class[0].medium}${m.fees[0].academics[0].class[0].stream == 'none' ? '' : ` | ${m.fees[0].academics[0].class[0].stream}`}`
                             }
                           </td>
-                          <td className="font-medium px-2 xl:px-0">
+                          {/* <td className="font-medium px-2 xl:px-0">
                             <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
                               {m.transaction[0].amount}
                             </span>
@@ -328,14 +328,14 @@ const Studenthearder = () => {
                                 {m.discount}
                               </span>
                             </p>
-                          </td>
+                          </td> */}
                           <td>
                             <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
                               {m.transaction[0]?.amount + m.discount}
                             </span>
                           </td>
                           <td>
-                            <span>{m.admin[0]?.username}</span>
+                            <span className="capitalize">{m.admin[0]?.username}</span>
                           </td>
                         </tr>
                       );
@@ -372,7 +372,7 @@ const Studenthearder = () => {
                               ` ${m.fees[0].academics[0].class[0].medium}${m.fees[0].academics[0].class[0].stream == 'none' ? '' : ` | ${m.fees[0].academics[0].class[0].stream}`}`
                             }
                           </td>
-                          <td className="font-medium px-2 xl:px-0">
+                          {/* <td className="font-medium px-2 xl:px-0">
                             <span className="bg-green-200 px-4 text-green-900 font-bold rounded">
                               {m.transaction[0].amount}
                             </span>
@@ -383,14 +383,14 @@ const Studenthearder = () => {
                                 {m.discount}
                               </span>
                             </p>
-                          </td>
+                          </td> */}
                           <td>
                             <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
                               {m.transaction[0]?.amount + m.discount}
                             </span>
                           </td>
                           <td>
-                            <span>{m.admin[0]?.username}</span>
+                            <span className="capitalize">{m.admin[0]?.username}</span>
                           </td>
                           <td className="px-5  ">
                             <span>

@@ -229,7 +229,7 @@ const Facultyheader = () => {
                               </p>
                             </td>
                             <td>
-                              <span className="flex justify-center">
+                              <span className="flex justify-center capitalize">
                                 {report?.admin[0].username}
                               </span>
                             </td>
@@ -286,7 +286,7 @@ const Facultyheader = () => {
                               </p>
                             </td>
                             <td>
-                              <span className="flex justify-center">
+                              <span className="flex justify-center capitalize">
                                 {report?.admin[0].username}
                               </span>
                             </td>

@@ -13,7 +13,7 @@ import { IoClose } from "react-icons/io5";
 import Toaster from '../hooks/showToaster';
 import SweetAlert from '../hooks/sweetAlert';
 import {NasirContext} from '../NasirContext'
-import { scrollToTop, startScroll, stopScroll } from '../hooks/helper';
+import { scrollToTop } from '../hooks/helper';
 
 function CancelAdmission() {
     const location = useLocation();
@@ -91,7 +91,6 @@ function CancelAdmission() {
 
     const handleCloseAmountModel = () =>{
         setAmountModel(false);
-        startScroll()
         setErrors({
             amount: '',
             security_pin: ''
@@ -164,12 +163,11 @@ function CancelAdmission() {
 
     const handlePayBtnClick = (student) =>{
         scrollToTop();
-        stopScroll();
         setPayeeDetails(student)
         setAmountModel(true)
 
         if(student.academic.class_id.is_primary){
-            const feesPerMonth = Math.floor(student.fees.net_fees / 12);
+            const feesPerMonth = Math.floor(student.fees.net_fees / student.academic.class_id.batch_duration);
 
             if(amountToPay < student.fees.pending_amount){
                 setAmount(Math.floor(amountToPay/feesPerMonth) * feesPerMonth)
@@ -235,6 +233,7 @@ function CancelAdmission() {
 
         try{
             setLoading(true);
+
             const res = await tranferFees({
                 payer_fees_id: location.state.studDetails.fees._id,
                 payee_id: payeeDetails.personal.student_id, 
@@ -242,8 +241,11 @@ function CancelAdmission() {
                 admin_id,
                 security_pin: securityPin,
                 payeeIsPrimary: payeeDetails.academic.class_id.is_primary,
-                NoOfMonths : Math.floor(amountToPay / (payeeDetails.fees.net_fees / 12)),
-                last_paid: payeeDetails.fees.paid_upto
+                NoOfMonths : Math.floor(amount / (payeeDetails.fees.net_fees / payeeDetails.academic.class_id.batch_duration)),
+                last_paid: payeeDetails.fees.paid_upto,
+                payer_last_paid: location.state.studDetails.fees.paid_upto,
+                payer_net_fees: studentDetails.net_fees,
+                payer_batch_duration: location.state.studDetails.academic.class_id.batch_duration
             })
 
             setLoading(false);
@@ -270,7 +272,6 @@ function CancelAdmission() {
                 setdata([]);
                 setAmountModel(false);
                 setSearchModel(false);
-                startScroll();
             }
             else{
                 Toaster("error", res.data.message);
@@ -319,7 +320,7 @@ function CancelAdmission() {
     const daysStudiedAmount = daysStudied * feesPerDay;
     const feesPaid = (studentDetails.net_fees) - studentDetails.pending_fees;
 
-    let amountToPay = feesPaid - daysStudiedAmount;
+    let amountToPay = feesPaid - (daysStudiedAmount < 0 ? 0 : daysStudiedAmount) ;
 
     return (
         <section className="relative">
@@ -343,7 +344,8 @@ function CancelAdmission() {
                                     <input 
                                         type="text" 
                                         value={amount} 
-                                        disabled={ payeeDetails.academic.class_id.is_primary ? true : false } className="w-full text-lg px-3 py-1 rounded-md mt-2 border border-gray-500 focus:outline-none focus:ring-2" placeholder="Enter amount" 
+                                        // disabled={ payeeDetails.academic.class_id.is_primary ? true : false } 
+                                        className="w-full text-lg px-3 py-1 rounded-md mt-2 border border-gray-500 focus:outline-none focus:ring-2" placeholder="Enter amount" 
                                         onChange={handleAmountChange} 
                                     />
                                     {

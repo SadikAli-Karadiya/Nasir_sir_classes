@@ -232,22 +232,16 @@ export default function UpdateStudentReceipt() {
     }
 
     if(selectedFeesTotal > newPendingAmount){
-      setErrors((prevData) => {
+      selectedFeesTotal = newPendingAmount;
+    }
+    
+    setFee(Math.round(selectedFeesTotal) - deduction)
+    setErrors((prevData) => {
         return {
           ...prevData,
-          month: '*Pending fees is lesser than no. of months'
+          month: ''
         }
-      })
-    }
-    else{
-      setFee(Math.round(selectedFeesTotal) - deduction)
-      setErrors((prevData) => {
-          return {
-            ...prevData,
-            month: ''
-          }
-      })
-    }
+    })
     setTotalMonths(e.target.value);
   }
 
@@ -450,7 +444,6 @@ export default function UpdateStudentReceipt() {
     setReceiptDate(e.target.value);
   }
 
-  console.log(totalMonths)
   async function handlePINsubmit() {
     try{
       const feesData = {
@@ -466,7 +459,7 @@ export default function UpdateStudentReceipt() {
           method: payment,
           admin_id: admin?._id,
           security_pin: pin,
-          last_paid: student.from_month,
+          last_paid: location.state.receiptDetails.from_month,
           total_months: Number(totalMonths),
           date: receiptDate
       };
@@ -518,9 +511,10 @@ export default function UpdateStudentReceipt() {
         i++; 
         k=1;
       }
+      else{
+        k++;
+      }
   
-      k++;
-      console.log(monthCounter)
     }
 
     setTotalMonths(monthCounter)

@@ -2,10 +2,10 @@ import React, { useRef, useState } from "react";
 import { TbCurrencyRupee } from 'react-icons/tb';
 import styled from 'styled-components';
 import { useParams, useLocation } from "react-router-dom";
-import { Facultyreciept, getAdminVerification, usegetAdmin } from "../hooks/usePost"
+import { Facultyreciept, getAdminVerification, delete_faculty_receipt } from "../hooks/usePost"
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from 'react-icons/io';
-import { MdModeEditOutline } from "react-icons/md";
+import { MdModeEditOutline, MdDelete } from "react-icons/md";
 import ReactToPrint from "react-to-print";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useForm } from "react-hook-form";
@@ -15,12 +15,15 @@ import Loader from './Loader';
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { NasirContext } from "../NasirContext"
+import SweetAlert from '../hooks/sweetAlert'
+import Toaster from '../hooks/showToaster'
+import { scrollToTop } from '../hooks/helper';
+
 
 function Receipt_teacher() {
   const { admin } = React.useContext(NasirContext);
   const receiptBgColor = 'bg-red-600';
   const receiptTextColor = 'text-red-600';
-  const Toaster = () => { toast.success('Authentication Successfull') }
   const errtoast = () => { toast.error("Invalid UserID / Password") }
   //   // --------------------------------
   //   // -----   API Works    ----------
@@ -38,6 +41,8 @@ function Receipt_teacher() {
   const [feesData, setFeesData] = React.useState({});
   const [pin, setPin] = React.useState("");
   const [error, setError] = React.useState('');
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isDelete, setIsDelete] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchfacultdata() {
@@ -89,11 +94,47 @@ function Receipt_teacher() {
   const onSubmit = async (data, e) => {
     e.preventDefault();
     try {
-      // const admin_details = await getAdminVerification({ username: data.Username, password: data.Password });
-      // if (admin_details.data.success) {
-        navigate(`/salary/Salarydetails/${params.id}`);
-        return
-      // }
+      const admin_details = await getAdminVerification({ username: data.Username, password: data.Password });
+      if (admin_details.data.success == 'verified') {
+
+        if(isDelete){ //If delete button clicked
+          try{ 
+            setIsDeleting(true)
+            
+            const res = await delete_faculty_receipt(facultyhistory.salary_receipt_id)
+
+            setIsDeleting(false)
+            
+            if(res.data.success){
+              Toaster("success", res.data.message);
+              navigate(-1);
+              return;
+            }
+            else{
+                Toaster("error", res.data.message);
+            }
+          }
+          catch(err){
+              setIsDeleting(false)
+
+              if(err instanceof AxiosError){
+                if(err.response){
+                  Toaster("error",err?.response?.data?.message);
+                }
+                else{
+                  Toaster("error",err.message);
+                }
+              }
+              else{
+                  Toaster("error", err.message);
+              }
+          }
+        }
+        else{
+          navigate(`/salary/Salarydetails/${params.id}`);
+          return
+        }
+      }
     }
     catch (error) {
       if (error instanceof AxiosError) {
@@ -112,6 +153,17 @@ function Receipt_teacher() {
     setError('')
   }
 
+  const handleDeleteReceipt = () =>{
+    SweetAlert('Are you sure to delete?', 'Receipt will be permanently deleted')
+    .then(async (res)=>{
+      if(res.isConfirmed){
+        setModel(true);
+        scrollToTop();
+        setIsDelete(true);
+      }
+    })
+  }
+
 
   if (isloading) {
     return <Loader />
@@ -119,7 +171,6 @@ function Receipt_teacher() {
 
   return (
     <>
-
       <section className="relative">
         {model && (
           <div className='absolute w-full h-full  z-30 ' >
@@ -206,9 +257,10 @@ function Receipt_teacher() {
                               <div className="btn mt-5 flex justify-center w-60">
                                 <button
                                   type="submit"
+                                  disabled={isDeleting}
                                   className="mt-5 bg-blue-900 drop-shadow-2xl hover:bg-white border-2 hover:border-blue-900 text-white hover:text-blue-900 font-medium h-10 w-24 rounded-md tracking-wider"
                                 >
-                                  SUBMIT
+                                  {isDeleting ? 'Loading...' : 'SUBMIT'}
                                 </button>
                               </div>
                             </div>
@@ -454,15 +506,23 @@ function Receipt_teacher() {
                 }
               </div>
               <div className="flex justify-center items-center">
-                <button className="flex justify-center items-center my-5 bg-indigo-900 py-1 px-3 rounded-md hover:bg-indigo-800" onClick={(e) => setModel(true)}>
-                  <MdModeEditOutline className="text-white text-lg my-1" />
+                <button className="flex justify-center items-center my-5 bg-darkblue-500 py-1 px-3 rounded-md hover:opacity-60" onClick={(e) => {setModel(true); scrollToTop()}}>
+                  <MdModeEditOutline className="text-blue-300 text-lg my-1" />
 
                   <span className="text-white text-sm pl-1">Edit</span>
 
                 </button>
+                
+                <button className="flex justify-center items-center my-5 bg-darkblue-500 mx-4 py-1 px-3 rounded-md hover:opacity-60"  onClick={handleDeleteReceipt}>
+                  <MdDelete className="text-blue-300 text-lg my-1" />
+                  
+                    <span className="text-white text-sm pl-1">Delete</span>
+                
+                </button>
+
                 <ReactToPrint
                   trigger={() => (
-                    <button className="mx-5 bg-indigo-900 py-1 px-3 rounded-md hover:bg-indigo-800">
+                    <button className="bg-darkblue-500 py-1 px-3 rounded-md hover:opacity-60">
                       <span className="text-white text-sm">Download/Print</span>
                     </button>
                   )}

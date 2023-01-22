@@ -14,7 +14,7 @@ import { AxiosError } from 'axios';
 import Validator from '../hooks/validator';
 import { useParams } from "react-router-dom";
 import { NasirContext } from "../NasirContext";
-import { scrollToTop, stopScroll, startScroll } from "../hooks/helper";
+import { scrollToTop } from "../hooks/helper";
 
 const valid = new Validator();
 valid.register({
@@ -211,6 +211,8 @@ const Profilestudent = () => {
 
                 //Loading classes
                 const activeClasses = await getActiveClasses()
+
+                //Can't transfer to same class
                 setClasses(activeClasses.data.data.filter((data) => {
                     return data._id != student_details.academic.class_id._id
                 }));
@@ -362,7 +364,6 @@ const Profilestudent = () => {
 
                         if (res.data.success) {
                             Toaster("success", res.data.message);
-                            startScroll();
                             navigate('/');
                             return;
                         }
@@ -373,7 +374,6 @@ const Profilestudent = () => {
                     catch (err) {
                         setIsProcessing(false)
                         setClassSelectionModel(false)
-                        startScroll()
                         if (err instanceof AxiosError) {
                             Toaster("error", err.response.data.message);
                         }
@@ -448,7 +448,7 @@ const Profilestudent = () => {
                             <div className='absolute mx-auto  opacity-100 shadow-2xl rounded mt-32 bg-white w-1/3 z-50'>
                                 <div className=''>
                                     <div className='flex justify-end '>
-                                        <button onClick={(e) => {setClassSelectionModel(!classSelectionModel); startScroll(); setClassNotSelectedError(false) }} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
+                                        <button onClick={(e) => {setClassSelectionModel(!classSelectionModel); setClassNotSelectedError(false) }} className='absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700'>
 
                                             <AiFillCloseCircle />
                                         </button>
@@ -948,7 +948,6 @@ const Profilestudent = () => {
                                         onClick={(e) => {
                                             e.preventDefault()
                                             setClassSelectionModel(true);
-                                            stopScroll();
                                             scrollToTop();
                                         }} >
                                         Transfer

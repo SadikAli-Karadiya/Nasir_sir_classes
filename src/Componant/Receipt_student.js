@@ -5,8 +5,10 @@ import {NasirContext} from '../NasirContext'
 
 function Receipt_student({receiptDetails, forOffice}) {
   const {section} = React.useContext(NasirContext);
-  const [fromMonth, setFromMonth] = React.useState(Number(receiptDetails.from_month.split(" ")[0]))
-  const [toMonth, setToMonth] = React.useState(Number(receiptDetails.to_month.split(" ")[0]))
+  const [fromMonth, setFromMonth] = React.useState(Number(receiptDetails?.from_month?.split(" ")[0]))
+  const [fromYear, setFromYear] = React.useState(Number(receiptDetails?.from_month?.split(" ")[1]))
+  const [toMonth, setToMonth] = React.useState(Number(receiptDetails?.to_month?.split(" ")[0]))
+  const [toYear, setToYear] = React.useState(Number(receiptDetails?.to_month?.split(" ")[1]))
 
   const Months = ['','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -42,9 +44,9 @@ function Receipt_student({receiptDetails, forOffice}) {
                   {
                     fromMonth == toMonth 
                     ?
-                      <span>{Months[fromMonth]}</span>
+                      <span>{Months[fromMonth]} {fromYear}</span>
                     :
-                      <span className="">{Months[fromMonth]}-{Months[toMonth]}</span>
+                      <span className="">{Months[fromMonth]} {fromYear}-{Months[toMonth] } {toYear}</span>
                   }
                 </p>
               </div>
@@ -61,6 +63,16 @@ function Receipt_student({receiptDetails, forOffice}) {
           <div>
             <p className={`${receiptTextColor} font-bold italic`}>
               Stream: <span className="text-black">{receiptDetails?.stream?.toUpperCase()}</span>
+            </p>
+          </div>
+          <div>
+            <p className={`${receiptTextColor} font-bold italic`}>
+              Total Fees: <span className="text-black">{receiptDetails?.net_fees}</span>
+            </p>
+          </div>
+          <div>
+            <p className={`${receiptTextColor} font-bold italic`}>
+              Pending Fees: <span className="text-black">{receiptDetails?.pending_amount}</span>
             </p>
           </div>
           <div>

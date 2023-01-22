@@ -238,6 +238,12 @@ export async function updateStudentReceipt(data) {
   );
 }
 
+export async function deleteStudentReceipt(fees_receipt_id) {
+  return await axios.put(
+    `${SERVER}/receipt/delete/student/${fees_receipt_id}`
+  );
+}
+
 export async function cancelAdmission(student_id) {
   return await axios.get(`${SERVER}/students/cancel-admission/${student_id}`);
 }
@@ -288,12 +294,7 @@ export const getAllFaculty = async () => {
 }
 
 // -----------------------------------------------------------------------
-// ------------------------All_Faculty -----------------------------------
-// -----------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------
-// ------------------------All_Faculty -----------------------------------
+// ------------------------Export All Faculty -----------------------------------
 // -----------------------------------------------------------------------
 export const Exportallfaculty = async () => {
   try {
@@ -366,7 +367,7 @@ export const recieptdetails = async () => {
     const { data } = await axios.get(`${SERVER}/salary`);
     return data;
   } catch (error) {
-    throw error("data is not fatched");
+    return error
   }
 };
 
@@ -378,7 +379,7 @@ export async function Facultyhistory(id) {
     const res = await axios.get(`${SERVER}/salary/Staffhistory/` + id);
     return res;
   } catch (error) {
-    
+    return error
   }
 }
 
@@ -390,7 +391,7 @@ export async function Facultyreciept(id) {
     const res = await axios.get(`${SERVER}/salary/receipt/` + id);
     return res;
   } catch (error) {
-    
+    return error
   }
 }
 
@@ -411,6 +412,19 @@ export async function Update_faculty_reciept(data) {
   }
 }
 
+// ------------------------------------------------------------------------
+// ------------------------ Delete_faculty_receipt ------------------------
+// ------------------------------------------------------------------------
+export async function delete_faculty_receipt(salary_receipt_id) {
+  try {
+    return await axios.put(
+      `${SERVER}/salary/delete/${salary_receipt_id}`
+    );
+  } catch (error) {
+    return error;
+  }
+}
+
 // -----------------------------------------------------------------------
 // ------------------------ All_Over Student------------------------------
 // -----------------------------------------------------------------------
@@ -421,8 +435,7 @@ export const Alloverstudent = async (section) => {
     });
     return data;
   } catch (error) {
-    
-    throw new Error("data is not fatched");
+    return error;
   }
 };
 

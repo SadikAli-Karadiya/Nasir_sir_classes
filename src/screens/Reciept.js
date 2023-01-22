@@ -5,15 +5,17 @@ import "../Styles/Studentform.css";
 import { FaUserAlt } from "react-icons/fa";
 import { IoMdLock } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
-import { MdModeEditOutline } from "react-icons/md";
+import { MdModeEditOutline, MdDelete } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useNavigate, useLocation } from "react-router-dom";
 import ReactToPrint from "react-to-print";
 import Receipt_student from "../Componant/Receipt_student";
 import Receipt_teacher from "../Componant/Receipt_teacher";
-import { searchReceipt, getAdminVerification } from '../hooks/usePost';
-import { AxiosError } from "axios";
+import { searchReceipt, getAdminVerification, deleteStudentReceipt } from '../hooks/usePost';
+import { scrollToTop } from '../hooks/helper';
+import SweetAlert from '../hooks/sweetAlert'
 import Toaster from '../hooks/showToaster';
+import { AxiosError } from "axios";
 import Loader from "../Componant/Loader";
 import { NasirContext } from "../NasirContext";
 
@@ -41,20 +43,56 @@ const Reciept = () => {
   const [error, setError] = React.useState('');
   const [receiptDetails, setReceiptDetails] = React.useState({});
   const [loading, setLoading] = React.useState(true);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isDelete, setIsDelete] = React.useState(false);
+
   const { admin, section } = React.useContext(NasirContext);
 
   const onSubmit = async (data, e) => {
     e.preventDefault();
-
-
-    const admin_id = admin._id;
     
     try{
       const admin_details = await getAdminVerification({username: data.Username, password: data.Password});
       
       if(admin_details.data.success == 'verified'){
-         navigate("/receipt/update/student", {state: {receiptDetails}});  
-         return
+        if(isDelete){ //If delete button clicked
+          try{ 
+            setIsDeleting(true)
+            
+            const res = await deleteStudentReceipt(receiptDetails.receipt_no)
+
+            setIsDeleting(false)
+            
+            if(res.data.success){
+              Toaster("success", res.data.message);
+              navigate(-1);
+              return;
+            }
+            else{
+                Toaster("error", res.data.message);
+            }
+          }
+          catch(err){
+            setIsDeleting(false)
+
+            if(err instanceof AxiosError){
+              if(err.response){
+                Toaster("error",err?.response?.data?.message);
+              }
+              else{
+                Toaster("error",err.message);
+              }
+            }
+            else{
+                Toaster("error", err.message);
+            }
+          }
+        }
+        else{ //if edit button clicked
+          navigate("/receipt/update/student", {state: {receiptDetails}});  
+          return
+        }
+
       }
     }
     catch(error){
@@ -72,6 +110,18 @@ const Reciept = () => {
     setError(''); 
     clearErrors()
     setModel(!model); 
+    setIsDelete(false);
+  }
+
+  const handleDelete = () =>{
+    SweetAlert('Are you sure to delete?', 'Receipt will be permanently deleted')
+    .then(async (res)=>{
+      if(res.isConfirmed){
+        setModel(true);
+        scrollToTop();
+        setIsDelete(true);
+      }
+    })
   }
 
   function inWords (num) {
@@ -92,59 +142,57 @@ const Reciept = () => {
 
   useEffect(()=>{
     async function getReceiptDetails(){
-      if(isStaff){
-        //call staff receipt api
+     
+      try{
+        let receipt_details = await searchReceipt(location.state.fees_receipt_id, section == 'primary' ? 1 : 0);
+        receipt_details = receipt_details.data.student_receipts[0]
+        setReceiptDetails(()=>{
+          let date = new Date(receipt_details?.academics[0].fees[0].fees_receipt[0].date);
+          date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
+
+          let amountInWords = inWords(receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount)
+          
+          return {
+            receipt_no: receipt_details?.academics[0].fees[0].fees_receipt[0].fees_receipt_id,
+            stream: receipt_details?.academics[0].class[0].stream,
+            medium: receipt_details?.academics[0].class[0].medium,
+            date,
+            roll_no: receipt_details?.student_id,
+            class_name: receipt_details?.academics[0].class[0].class_name,
+            batch: receipt_details?.academics[0].class[0].batch_start_year,
+            batch_duration: receipt_details?.academics[0].class[0].batch_duration,
+            full_name: receipt_details?.basic_info[0].full_name,
+            amount_in_words: amountInWords,
+            is_by_cash: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cash,
+            is_by_upi: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_upi,
+            is_by_cheque: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cheque,
+            upi_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].upi_no,
+            cheque_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_no,
+            cheque_date: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_date,
+            amount: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount,
+            discount: receipt_details?.academics[0].fees[0].fees_receipt[0].discount,
+            admin: receipt_details?.academics[0].fees[0].fees_receipt[0].admin[0].username,
+            is_edited: receipt_details?.academics[0].fees[0].fees_receipt[0].is_edited,
+            from_month: receipt_details?.academics[0].fees[0].fees_receipt[0].from_month,
+            to_month: receipt_details?.academics[0].fees[0].fees_receipt[0].to_month,
+            net_fees: receipt_details?.academics[0].fees[0].net_fees,
+            pending_amount: receipt_details?.academics[0].fees[0].pending_amount,
+            paid_upto: receipt_details?.academics[0].fees[0].paid_upto,
+          }
+        });
+        setLoading(false);
       }
-      else{
-        try{
-          let receipt_details = await searchReceipt(location.state.fees_receipt_id, section == 'primary' ? 1 : 0);
-          receipt_details = receipt_details.data.student_receipts[0]
-          setReceiptDetails(()=>{
-            let date = new Date(receipt_details?.academics[0].fees[0].fees_receipt[0].date);
-            date = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getFullYear()}`
-  
-            let amountInWords = inWords(receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount)
-            return {
-              receipt_no: receipt_details?.academics[0].fees[0].fees_receipt[0].fees_receipt_id,
-              stream: receipt_details?.academics[0].class[0].stream,
-              medium: receipt_details?.academics[0].class[0].medium,
-              date,
-              roll_no: receipt_details?.student_id,
-              class_name: receipt_details?.academics[0].class[0].class_name,
-              batch: receipt_details?.academics[0].class[0].batch_start_year,
-              batch_duration: receipt_details?.academics[0].class[0].batch_duration,
-              full_name: receipt_details?.basic_info[0].full_name,
-              amount_in_words: amountInWords,
-              is_by_cash: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cash,
-              is_by_upi: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_upi,
-              is_by_cheque: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].is_by_cheque,
-              upi_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].upi_no,
-              cheque_no: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_no,
-              cheque_date: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].cheque_date,
-              amount: receipt_details?.academics[0].fees[0].fees_receipt[0].transaction[0].amount,
-              discount: receipt_details?.academics[0].fees[0].fees_receipt[0].discount,
-              admin: receipt_details?.academics[0].fees[0].fees_receipt[0].admin[0].username,
-              is_edited: receipt_details?.academics[0].fees[0].fees_receipt[0].is_edited,
-              from_month: receipt_details?.academics[0].fees[0].fees_receipt[0].from_month,
-              to_month: receipt_details?.academics[0].fees[0].fees_receipt[0].to_month,
-              net_fees: receipt_details?.academics[0].fees[0].net_fees,
-              pending_amount: receipt_details?.academics[0].fees[0].pending_amount,
-              paid_upto: receipt_details?.academics[0].fees[0].paid_upto,
-            }
-          });
-          setLoading(false);
+      catch(err){
+        setLoading(false);
+        if(err instanceof AxiosError){
+          Toaster('error', err.response?.data?.message)
         }
-        catch(err){
-          setLoading(false);
-          if(err instanceof AxiosError){
-            Toaster('error', err.response?.data?.message)
-          }
-          else{
-             Toaster('error', err.message)
-          }
+        else{
+            Toaster('error', err.message)
         }
       }
     }
+    
     getReceiptDetails()
   },[])
 
@@ -243,9 +291,10 @@ const Reciept = () => {
                           
                               <button
                                 type="submit"
+                                disabled={isDeleting}
                                 className="mt-5 bg-blue-900 drop-shadow-2xl hover:bg-white border-2 hover:border-blue-900 text-white hover:text-blue-900 font-medium h-10 w-24 rounded-md tracking-wider"
                               >
-                                SUBMIT
+                                {isDeleting ? 'Loading...' : 'SUBMIT'}
                               </button>
                             </div>
                           </div>
@@ -301,8 +350,8 @@ const Reciept = () => {
         {
           location?.state?.is_cancelled == 0
           ?
-            <button className="flex justify-center items-center my-5 bg-indigo-900 py-1 px-3 rounded-md hover:bg-indigo-800"  onClick={(e) => setModel(true)}>
-              <MdModeEditOutline className="text-white text-lg my-1" />
+            <button className="flex justify-center items-center my-5 bg-darkblue-500 py-1 px-3 rounded-md hover:opacity-60"  onClick={(e) => {setModel(true); scrollToTop()}}>
+              <MdModeEditOutline className="text-blue-300 text-lg my-1" />
               
                 <span className="text-white text-sm pl-1">Edit</span>
             
@@ -310,9 +359,21 @@ const Reciept = () => {
           :
             null
         }
+        {
+          location?.state?.is_cancelled == 0
+          ?
+            <button className="flex justify-center items-center my-5 bg-darkblue-500 mx-4 py-1 px-3 rounded-md hover:opacity-60"  onClick={handleDelete}>
+              <MdDelete className="text-blue-300 text-lg my-1" />
+              
+                <span className="text-white text-sm pl-1">Delete</span>
+            
+            </button>
+          :
+            null
+        }
         <ReactToPrint
           trigger={() => (
-            <button className="mx-5 bg-indigo-900 my-5 py-1 px-3 rounded-md hover:bg-indigo-800">
+            <button className="bg-darkblue-500 my-8 py-1 px-3 rounded-md hover:opacity-60">
               <span className="text-white text-sm">Download/Print</span>
             </button>
           )}

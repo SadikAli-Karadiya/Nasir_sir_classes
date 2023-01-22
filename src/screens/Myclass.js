@@ -21,7 +21,7 @@ import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import { NasirContext } from "../NasirContext";
 import LoaderSmall from "../Componant/LoaderSmall";
-import {scrollToTop, startScroll, stopScroll} from '../hooks/helper'
+import {scrollToTop} from '../hooks/helper'
 import '../Styles/MyClass.css'
 
 
@@ -233,7 +233,6 @@ const Myclass = () => {
     setIsAddingClass(false)
     if (response.data.success) {
       fetchClasses();
-      startScroll();
       setModel(false);
       reset();
       return notify();
@@ -246,7 +245,6 @@ const Myclass = () => {
   const onEditSubmit = async (data) => {
     const editClassResponse = await updateClass(edit_class_id, data);
     if (editClassResponse) {
-      startScroll();
       setCall(() => !call);
       setEditClassModel(false);
       reset();
@@ -277,7 +275,6 @@ const Myclass = () => {
                     onClick={(e) => {
                       setModel(!model);
                       handleClear();
-                      startScroll()
                     }}
                     className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                   >
@@ -581,7 +578,6 @@ const Myclass = () => {
                           onClick={(e) => {
                             setEditClassModel(!editClassModel);
                             reset();
-                            startScroll()
                           }}
                           className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                         >
@@ -1036,7 +1032,7 @@ const Myclass = () => {
                   className="text-white bg-black rounded p-2"
                 >
                   <button
-                    onClick={(e) => {setModel(true); scrollToTop(); stopScroll()}}
+                    onClick={(e) => {setModel(true); scrollToTop()}}
                     className="btn cursor-pointer  h-12 w-12 rounded-full bg-white hover:bg-darkblue-300 hover:text-white text-darkblue-500 text-left border  overflow-hidden "
                     id="btn"
                   >
@@ -1114,7 +1110,7 @@ const Myclass = () => {
                               }}
                             >
                               <div className="h-6 flex justify-between items-center mx-2 mb-2">
-                                <div className="text-sm text-gray-700 italic ml-1 capitalize">
+                                <div className="text-sm text-gray-700 ml-1 capitalize">
                                   <span>
                                     {item.medium}
                                   </span>
@@ -1140,7 +1136,7 @@ const Myclass = () => {
                                       }}
                                       onMouseEnter={handleMouseEnterEdit}
                                       onMouseLeave={handleMouseLeaveEdit}
-                                      onClick={() => {handleEditClass(item._id); scrollToTop(); stopScroll()}}
+                                      onClick={() => {handleEditClass(item._id); scrollToTop()}}
                                     >
                                       <MdModeEdit />
                                     </div>

@@ -46,6 +46,9 @@ const ChangeYear = () => {
         classesNewData[index].class_name = target;
     }
 
+    function handleBatchDuration(target, index) {
+        classesNewData[index].batch_duration = target;
+    }
     function handleMedium(target, index) {
         classesNewData[index].medium = target;
     }
@@ -118,6 +121,7 @@ const ChangeYear = () => {
                                     <th scope="col" className="w-16 h-16">Select</th>
                                     <th scope="col" className="w-16 h-16">Class</th>
                                     <th scope="col" className="w-16 h-16">Batch</th>
+                                    <th scope="col" className="w-16 h-16">Batch Duration</th>
                                     <th scope="col" className="w-16 h-16">Medium</th>
                                     <th scope="col" className="w-16 h-16">Section</th>
                                     <th scope="col" className="w-16 h-16">Stream</th>
@@ -148,6 +152,18 @@ const ChangeYear = () => {
                                     </td>
                                     <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
+                                        onChange={(e)=> handleBatchDuration(e.target.value, index)} className=' rounded-md w-20 h-7 text-center'
+                                        defaultValue={item.batch_duration} 
+                                        style={{border: item.is_disabled?false:'2px solid #f8b26a'}}>
+                                            <option value={3}  defaultValue={item.batch_duration == 3 ? true:false}>3 Months</option>
+                                            <option value={6} defaultValue={item.batch_duration == 6 ? true:false}>6 Months</option>
+                                            <option value={12} defaultValue={item.batch_duration == 12 ? true:false}>1 Year</option>
+                                            <option value={18} defaultValue={item.batch_duration == 18 ? true:false}>1.5 Years</option>
+                                            <option value={24} defaultValue={item.batch_duration == 24 ? true:false}>2 Years</option>                                        
+                                        </select>
+                                    </td>
+                                    <td className="w-16 h-16">
+                                        <select name="" disabled={item.is_disabled} 
                                         onChange={(e)=> handleMedium(e.target.value, index)} className=' rounded-md w-20 h-7 text-center'
                                         defaultValue={item.medium} 
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}>
@@ -155,12 +171,13 @@ const ChangeYear = () => {
                                             <option value="english"  defaultValue={item.medium == "english" ? true:false}>English</option>
                                             <option value="gujarati" defaultValue={item.medium == "gujarati" ? true:false}>Gujarati</option>
                                             <option value="hindi" defaultValue={item.medium == "hindi" ? true:false}>Hindi</option>
+                                            <option value="urdu" defaultValue={item.medium == "urdu" ? true:false}>Urdu</option>
                                         
                                         </select>
                                     </td>
                                     <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
-                                        className=' rounded-md w-20 h-7 text-center' defaultValue={item.is_primary} 
+                                        className=' rounded-md w-20 h-7 text-center' value={item.is_primary} 
                                         onChange={(e)=>{ handleSection(e.target.value, index)}} 
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}>
                                         
@@ -171,7 +188,7 @@ const ChangeYear = () => {
                                     </td>
                                     <td className="w-16 h-16">
                                         <select name="" disabled={item.is_disabled} 
-                                        className=' rounded-md w-24 h-7 text-center'  defaultValue={item.stream} 
+                                        className=' rounded-md w-24 h-7 text-center'  value={item.stream} 
                                         onChange={(e)=>{ handleStream(e.target.value, index)}} 
                                         style={{border: item.is_disabled?false:'2px solid #f8b26a'}}>
                                          

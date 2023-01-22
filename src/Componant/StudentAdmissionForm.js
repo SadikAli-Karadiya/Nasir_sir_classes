@@ -9,7 +9,6 @@ const StudentAdmissionForm = () => {
     const navigate = useNavigate();
 
     const studentDetails = location.state.studentDetails;
-    console.log(studentDetails)
     
     return (
         <>

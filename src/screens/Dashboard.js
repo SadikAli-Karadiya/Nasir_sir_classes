@@ -69,7 +69,7 @@ export default function Dashboard() {
         );
       });
 
-      if (StudentsWithPendingFees.length > 0) {
+      if (StudentsWithPendingFees?.length > 0) {
         setIsStudentNotFound(false);
       }
 
@@ -118,13 +118,12 @@ export default function Dashboard() {
     }
     else{
       Toaster('error', 'Failed to send message');
-
     }
   }
 
-  // // -------------------------------
-  // // -------- Pagination -----------
-  // // -------------------------------
+  // -------------------------------
+  // -------- Pagination -----------
+  // -------------------------------
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
     setcurrentItems(Student.slice(itemOffset, endOffset));
@@ -179,7 +178,7 @@ export default function Dashboard() {
                 </p>
 
                 <h1 className="text-white text-lg ">
-                  Fees Pending <span>Students</span>
+                  Total Fees Pending
                 </h1>
               </div>
             </div>

@@ -206,23 +206,17 @@ export default function FeesDetail() {
       selectedFeesTotal += Math.round(monthsInDecimal * feesPerMonth);
     }
     
-    if(selectedFeesTotal > student.pending_amount){
-      setErrors((prevData) => {
+   if(selectedFeesTotal > student.pending_amount){
+      selectedFeesTotal = student.pending_amount;
+    }
+
+    setFee(Math.round(selectedFeesTotal) - deduction)
+    setErrors((prevData) => {
         return {
           ...prevData,
-          month: '*Months are more than pending fees'
+          month: ''
         }
-      })
-    }
-    else{
-      setFee(Math.round(selectedFeesTotal) - deduction)
-      setErrors((prevData) => {
-          return {
-            ...prevData,
-            month: ''
-          }
-      })
-    }
+    })
     setTotalMonths(e.target.value);
   }
 
@@ -440,7 +434,7 @@ export default function FeesDetail() {
         discount: deduction,
         admin_id: admin?._id,
         security_pin: pin,
-        last_paid: paidUpto,
+        last_paid: student?.paid_upto,
         total_months: totalMonths,
         student_id: student.rollno,
         date: receiptDate
@@ -683,7 +677,13 @@ export default function FeesDetail() {
                       <option value="" className="text-gray-400">select</option>
                       {
                         //calculating the remaining months
-                        _.times(Math.floor((student.pending_amount) / Math.floor(student.net_fees / student.batch_duration)), (i)=>(
+                        _.times(
+                          student.pending_amount / Math.floor(student.net_fees / student.batch_duration) > 0 && student.pending_amount / Math.floor(student.net_fees / student.batch_duration) < 1
+                          ?
+                            1
+                          :
+                            Math.floor(student.pending_amount / Math.floor(student.net_fees / student.batch_duration))
+                          , (i)=>(
                           <option value={i+1}>{i+1}</option>
                         ))
                       }
