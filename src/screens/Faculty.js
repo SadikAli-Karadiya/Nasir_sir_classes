@@ -290,7 +290,7 @@ const Faculty = () => {
                                   type="text"
                                   placeholder="Enter Your Address"
                                   className={`w-full 2xl:w-60 mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.address && 'border-red-600'}`}
-                                  {...register("address", { required: "Address is required", pattern: { value: /^[A-Za-z ]+$/, message: "Please enter only characters" } })}
+                                  {...register("address", { required: "Address is required" })}
                                   onKeyUp={() => {
                                     trigger('address')
                                   }}

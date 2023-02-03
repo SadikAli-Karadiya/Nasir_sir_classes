@@ -268,7 +268,7 @@ const Myclass = () => {
       {model && (
         <div className="absolute w-full h-full z-30 left-0 top-0">
           <div className="w-full flex justify-center opacity-100">
-            <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-10 2xl:mt-24  bg-white w-3/4 z-50">
+            <div className="h-2/3 mx-auto xl:px-5  opacity-100 shadow-2xl rounded mt-10 2xl:mt-24  bg-white w-3/4 lg:w-11/12 xl:w-3/4 z-50">
               <div className="">
                 <div className="flex justify-end ">
                   <button
@@ -276,7 +276,7 @@ const Myclass = () => {
                       setModel(!model);
                       handleClear();
                     }}
-                    className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
+                    className="absolute translate-x-4 xl:translate-x-8 -translate-y-4 font-bold text-2xl p-2 text-red-700"
                   >
                     <AiFillCloseCircle />
                   </button>
@@ -568,7 +568,7 @@ const Myclass = () => {
       {editClassModel && (
         <div className="absolute w-full h-full z-30 left-0 top-0">
           <div className="flex justify-center opacity-100 ">
-            <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-3/4 z-50">
+            <div className="h-2/3 mx-auto  opacity-100 shadow-2xl rounded mt-24 bg-white w-3/4 lg:w-11/12 xl:w-3/4 z-50">
               {classes.map((item, index) => {
                 if (edit_class_id == item._id)
                   return (
@@ -593,9 +593,9 @@ const Myclass = () => {
                             className="flex justify-center items-center "
                             onSubmit={handleSubmit(onEditSubmit)}
                           >
-                            <div className=" w-full grid grid-cols-1 rounded-lg drop-shadow-md truncate bg-white pb-5 pt-10 ">
-                              <div className=" flex flex-col items-center gap-6">
-                                <div className="flex lg:flex-row md:flex-col gap-6 ">
+                            <div className=" w-full grid grid-cols-1 rounded-lg truncate bg-white pb-5 pt-10">
+                              <div className=" flex flex-col items-center gap-6 xl:gap-4 2xl:gap-6">
+                                <div className="flex lg:flex-row md:flex-col gap-6 xl:gap-4 2xl:gap-6">
                                   <div className="class_name">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
