@@ -244,7 +244,7 @@ const Studenthearder = () => {
                       Discount
                     </th> */}
                     <th className="font-normal text-left px-2 xl:px-0">
-                      Total Amount
+                      Amount
                     </th>
                     <th className="font-normal text-left px-2 xl:px-0">
                       Admin
@@ -337,7 +337,7 @@ const Studenthearder = () => {
                           </td> */}
                           <td>
                             <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                              {m.transaction[0]?.amount + m.discount}
+                              {m.transaction[0]?.amount}
                             </span>
                           </td>
                           <td>
@@ -392,7 +392,7 @@ const Studenthearder = () => {
                           </td> */}
                           <td>
                             <span className="bg-blue-200 px-4 text-darkblue-500 font-bold rounded">
-                              {m.transaction[0]?.amount + m.discount}
+                              {m.transaction[0]?.amount}
                             </span>
                           </td>
                           <td>
