@@ -110,22 +110,28 @@ const Facultyheader = () => {
               Staff Transaction List
             </p>
           </div>
-          <div className="print-btn flex items-center space-x-3">
-            <input
-              id=""
-              value={date}
-              type="Date"
-              onChange={(e) => handleDate(e)}
-              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
-            />
-            <input
-              id=""
-              value={nextDate}
-              type="Date"
-              onChange={(e) => handleNextDate(e.target.value)}
-              disabled={date ? false : true}
-              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
-            />
+          <div className="print-btn flex items-end space-x-3">
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-gray-400">From</label>
+              <input
+                id=""
+                value={date}
+                type="Date"
+                onChange={(e) => handleDate(e)}
+                className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-gray-400">To</label>
+              <input
+                id=""
+                value={nextDate}
+                type="Date"
+                onChange={(e) => handleNextDate(e.target.value)}
+                disabled={date ? false : true}
+                className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+              />
+            </div>
             <button
               id=""
               className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
@@ -145,7 +151,7 @@ const Facultyheader = () => {
               >
                 <span
                   href="#"
-                  className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer"
+                  className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer mb-1"
                 >
                   <ReactToPrint
                     trigger={() => <MdLocalPrintshop />}
@@ -181,11 +187,11 @@ const Facultyheader = () => {
               <table className="w-full whitespace-nowrap">
                 <thead>
                   <tr className="bg-gray-100 h-16 w-full text-sm leading-none font-bold text-darkblue-500">
-                    <th className="font-normal text-center px-2">ID</th>
+                    <th className="font-normal text-center px-2">Date</th>
+                    <th className="font-normal text-center px-2">Receipt No</th>
                     <th className="font-normal text-center px-2 ">Name</th>
-                    <th className="font-normal text-center px-2">ROLE</th>
-                    <th className="font-normal text-center px-2">DATE</th>
-                    <th className="font-normal text-center px-2">LASTPAID</th>
+                    <th className="font-normal text-center px-2">Role</th>
+                    <th className="font-normal text-center px-2">Last Paid</th>
                     <th className="font-normal text-center px-2">Admin</th>
                     {!isPrint ? (
                       <th className="font-normal text-center px-2">Action</th>
@@ -200,6 +206,16 @@ const Facultyheader = () => {
                             key={key}
                             className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
                           >
+                            <td className="px-2 xl:px-0">
+                              <p className="text-center">
+                                {new Date(report.date)
+                                  ?.toISOString()
+                                  .slice(0, 10)
+                                  .split("-")
+                                  .reverse()
+                                  .join("-")}
+                              </p>
+                            </td>
                             <td className=" px-2 text-center font-bold xl:px-0">
                               {report?.salary_receipt_id}
                             </td>
@@ -209,16 +225,6 @@ const Facultyheader = () => {
                             <td className="font-medium px-2 xl:px-0">
                               <p className="text-center">
                                 {report?.staff[0].role}
-                              </p>
-                            </td>
-                            <td className="px-2 xl:px-0">
-                              <p className="text-center">
-                                {new Date(report.date)
-                                  ?.toISOString()
-                                  .slice(0, 10)
-                                  .split("-")
-                                  .reverse()
-                                  .join("-")}
                               </p>
                             </td>
                             <td>
@@ -257,6 +263,16 @@ const Facultyheader = () => {
                             key={key}
                             className="h-20 text-sm leading-none text-gray-800 border-b border-gray-100"
                           >
+                            <td className="px-2 xl:px-0">
+                              <p className="text-center">
+                                {new Date(report.date)
+                                  ?.toISOString()
+                                  .slice(0, 10)
+                                  .split("-")
+                                  .reverse()
+                                  .join("-")}
+                              </p>
+                            </td>
                             <td className=" px-2 text-center font-bold xl:px-0">
                               {report?.salary_receipt_id}
                             </td>
@@ -266,16 +282,6 @@ const Facultyheader = () => {
                             <td className="font-medium px-2 xl:px-0">
                               <p className="text-center">
                                 {report?.staff[0].role}
-                              </p>
-                            </td>
-                            <td className="px-2 xl:px-0">
-                              <p className="text-center">
-                                {new Date(report.date)
-                                  ?.toISOString()
-                                  .slice(0, 10)
-                                  .split("-")
-                                  .reverse()
-                                  .join("-")}
                               </p>
                             </td>
                             <td>

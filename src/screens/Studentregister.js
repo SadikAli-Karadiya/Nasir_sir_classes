@@ -35,6 +35,15 @@ const Studentregister = () => {
         clearErrors
     } = useForm();
 
+    function dateDiffInDays(startDate, currentDate) {
+        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        const utc1 = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        const utc2 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+        return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+    }
+
     const onSubmit = async (e) => {
 
         const formdata = new FormData(form.current);
@@ -105,7 +114,15 @@ const Studentregister = () => {
             }
         })
         setTotalFees(()=> selectedClass?.fees ? selectedClass?.fees : 0)
-        totalDis(selectedClass?.fees ? selectedClass?.fees : '')
+        
+        if(section == 'primary'){
+            const daysDifferent = dateDiffInDays(new Date(selectedClass.date), new Date())
+            const feesPerMonth = selectedClass.fees / selectedClass.batch_duration
+            const discount = Math.ceil(daysDifferent * (feesPerMonth / 30))
+            document.getElementById('discount').value = discount
+        }
+
+        totalDis(selectedClass?.fees ? selectedClass?.fees : 0)
     }
 
     useEffect(()=>{

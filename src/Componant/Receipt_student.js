@@ -81,7 +81,7 @@ function Receipt_student({receiptDetails, forOffice}) {
             </p>
           </div>
         </div>
-        <div className="flex justify-between items-center mt-5">
+        <div className="flex justify-between items-center mt-3">
           <div>
             <p className={`${receiptTextColor} font-bold italic`}>
               Student ID: <span className="text-black">{receiptDetails?.roll_no}</span>
@@ -98,18 +98,18 @@ function Receipt_student({receiptDetails, forOffice}) {
             </p>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           <p className={`${receiptTextColor} font-bold italic`}>
             Name: <span className="text-black">{receiptDetails?.full_name?.toUpperCase()}</span>
           </p>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           <p className={`${receiptTextColor} font-bold italic`}>
             The sum of Rupees:
             <span className="text-black"> {receiptDetails?.amount_in_words}</span>
           </p>
         </div>
-        <div className="mt-5">  
+        <div className="mt-3">  
           <p className={`${receiptTextColor} font-bold italic`}>
             By {
               receiptDetails?.is_by_upi 

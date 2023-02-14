@@ -332,7 +332,7 @@ const Reciept = () => {
         }
       </div>
      
-      <div ref={printRef}>
+      <div ref={printRef} className={`${print ? 'mt-10' : ''}`}>
         {isStaff ? <Receipt_teacher isSalaried={isSalaried}/> : <Receipt_student receiptDetails={receiptDetails} forOffice=''/>}
         { print 
           ? 

@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^3.36.3",
     "axios": "^0.27.2",
+    "caniuse-lite": "^1.0.30001450",
     "concurrently": "^7.3.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",

@@ -142,23 +142,29 @@ const Studenthearder = () => {
               Transactions List
             </p>
           </div>
-          <div className="print-btn flex items-center space-x-3">
-            <input
-              id=""
-              value={date}
-              type="Date"
-              onChange={(e) => handle_data(e)}
-              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
-            />
+          <div className="print-btn flex items-end space-x-3">
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-gray-400">From</label>
+              <input
+                id=""
+                value={date}
+                type="Date"
+                onChange={(e) => handle_data(e)}
+                className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+              />
+            </div>
 
-            <input
-              id=""
-              value={nextDate}
-              type="Date"
-              onChange={(e) => handleNextDate(e.target.value)}
-              disabled={date ? false : true}
-              className="outline-none bg-white border rounded-md p-2 cursor-pointer"
-            />
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-gray-400">To</label>
+              <input
+                id=""
+                value={nextDate}
+                type="Date"
+                onChange={(e) => handleNextDate(e.target.value)}
+                disabled={date ? false : true}
+                className="outline-none bg-white border rounded-md p-2 cursor-pointer"
+              />
+            </div>
             <button
               id=""
               className=" flex items-center border outline-none bg-white py-2 px-4 xl:p-4 xl:py-2 shadow-lg hover:bg-blue-100 rounded-md  space-x-1 "
@@ -179,7 +185,7 @@ const Studenthearder = () => {
                 >
                   <span
                     href="#"
-                    className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer"
+                    className="text-3xl bg-green-200 rounded-md text-green-900  w-10 h-8 flex justify-center  cursor-pointer mb-1"
                   >
                     <ReactToPrint
                       trigger={() => <MdLocalPrintshop />}
@@ -196,7 +202,7 @@ const Studenthearder = () => {
                 </Tooltip>
                 <button
                   id=""
-                  className=" flex items-center border outline-none bg-gray-400 hover:bg-gray-300 px-4 xl:px-4 xl:py-1 shadow-lg rounded-md  space-x-1 "
+                  className=" flex items-center border outline-none bg-gray-400 hover:bg-gray-300 px-4 xl:px-4 xl:py-1 shadow-lg rounded-md  space-x-1  mb-1"
                   onClick={handleExportClick}
                 >
                   Export
