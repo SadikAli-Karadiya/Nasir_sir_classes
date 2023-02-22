@@ -237,6 +237,7 @@ export default function Fess() {
                                             class_name: m.academic.class_id.class_name,
                                             medium: m.academic.class_id.medium,
                                             paid_upto: m.fees.paid_upto,
+                                            class_fees: m.academic.class_id.fees,
                                             net_fees: m.fees.net_fees,
                                             pending_amount: m.fees.pending_amount,
                                             stream: m.academic.class_id.stream,

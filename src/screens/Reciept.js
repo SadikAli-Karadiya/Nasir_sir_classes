@@ -159,6 +159,7 @@ const Reciept = () => {
             date,
             roll_no: receipt_details?.student_id,
             class_name: receipt_details?.academics[0].class[0].class_name,
+            class_fees: receipt_details?.academics[0].class[0].fees,
             batch: receipt_details?.academics[0].class[0].batch_start_year,
             batch_duration: receipt_details?.academics[0].class[0].batch_duration,
             full_name: receipt_details?.basic_info[0].full_name,

@@ -29,7 +29,7 @@ function createWindow() {
       `file://${path.join(__dirname, "/index.html")}`
     );
   })
-  mainWindow.on("closed", () => (mainWindow = null));
+  mainWindow.on( "closed", () => { mainWindow = null; localStorage.clear() } );
 }
 
 app.on("ready", createWindow);
@@ -37,6 +37,7 @@ app.on("ready", createWindow);
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+    localStorage.clear()
   }
 });
 

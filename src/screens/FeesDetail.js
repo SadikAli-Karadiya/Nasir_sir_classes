@@ -186,27 +186,22 @@ export default function FeesDetail() {
   }
 
   const handleMonthChange = (e) => {
-    if(e.target.value == ''){
+    let value = e.target.value;
+    if(value == ''){
       setTotalMonths('')
       setFee(0)
       return;
     }
 
-    let remainder = student.net_fees % student.batch_duration;
-    let feesPerMonth = (student.net_fees - remainder) / student.batch_duration
-
-    let selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value));
-    
-    let monthsInDecimal = (student.pending_amount/feesPerMonth) - Math.floor((student.pending_amount/feesPerMonth));
-
-    if(student.net_fees == student.pending_amount && student.net_fees % student.batch_duration != 0){
-      selectedFeesTotal += remainder
+    let feesPerMonth = student.class_fees / student.batch_duration
+    const months = student.pending_amount/feesPerMonth
+    const monthsInDecimal = months - Math.floor(months);
+    if(monthsInDecimal > 0){
+      value -= 1
     }
-    else if(monthsInDecimal > 0){
-      selectedFeesTotal += Math.round(monthsInDecimal * feesPerMonth);
-    }
+    let selectedFeesTotal = Math.round(feesPerMonth * Number(value)) + (monthsInDecimal * feesPerMonth)
     
-   if(selectedFeesTotal > student.pending_amount){
+    if(selectedFeesTotal > student.pending_amount){
       selectedFeesTotal = student.pending_amount;
     }
 
@@ -678,11 +673,11 @@ export default function FeesDetail() {
                       {
                         //calculating the remaining months
                         _.times(
-                          student.pending_amount / Math.floor(student.net_fees / student.batch_duration) > 0 && student.pending_amount / Math.floor(student.net_fees / student.batch_duration) < 1
+                          student.pending_amount / Math.floor(student.class_fees / student.batch_duration) > 0 && student.pending_amount / Math.floor(student.class_fees / student.batch_duration) < 1
                           ?
                             1
                           :
-                            Math.floor(student.pending_amount / Math.floor(student.net_fees / student.batch_duration))
+                            Math.ceil(student.pending_amount / Math.floor(student.class_fees / student.batch_duration))
                           , (i)=>(
                           <option value={i+1}>{i+1}</option>
                         ))

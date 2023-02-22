@@ -29,8 +29,7 @@ const Class = () => {
   const [classStudents, setClassStudents] = React.useState([]);
   const [totalStudents, setTotalStudents] = React.useState(0);
   const [classDetails, setClassDetails] = React.useState("");
-  const [totalPendingStudents, setTotalPendingStudents] = React.useState(0);
-  const [totalPendingFees, setTotalPendingFees] = React.useState(0);
+  const [totalPendingFees, setTotalPendingFees] = React.useState([]);
   const [paginationData, setPaginationData] = React.useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -38,25 +37,30 @@ const Class = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [Serialno, setserialno] = useState(1);
   const [selectedPage, setSelectedPage] = useState(0);
+  const [pendingFees, setPendingFees] = useState(0)
   const itemsPerPage = 12;
   const Toaster = () => {
     toast.success("All Students Exported. Check your download folder");
   };
   const errtoast = () => {
-    toast.error("Something Wrong");
+    toast.error("Something went wrong");
   };
   const ToasterPending = () => {
     toast.success("Fees Pending Student Exported. Check your download folder");
   };
 
-  let calculateTotalPendingFees = 0;
-  for (let i = 0; i < totalPendingFees.length; i++) {
-    calculateTotalPendingFees += totalPendingFees[i].fees_id.pending_amount;
-  }
-
   const componentRef = useRef();
 
   const [allClassStudents, setAllClassStudents] = React.useState([]);
+
+  function dateDiffInDays(startDate, currentDate) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+    const utc1 = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const utc2 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  }
 
   useEffect(() => {
     async function fetchClassStudents() {
@@ -67,14 +71,39 @@ const Class = () => {
         setClassStudents(() => res.data.studentDetails);
         setAllClassStudents(() => res.data.studentDetails);
         setTotalStudents(() => res.data.classDetails.total_student);
-        setTotalPendingStudents(() =>
-          res.data.studentDetails.filter((data) => {
-            return data.fees_id.pending_amount != 0;
-          })
-        );
         setTotalPendingFees(() =>
-          res.data.studentDetails.filter((data) => {
-            return data.fees_id.pending_amount != 0;
+          res.data.studentDetails.filter((item) => {            
+            let isPending = false;
+
+            const studentAcademicStartDate = new Date(item.date);
+            const currentDate = new Date();
+
+            const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
+
+            const totalDays = res.data.classDetails.batch_duration * 30;
+            const perDayFee = item.fees_id.net_fees / totalDays
+
+            const feesToBePaid = daysDifferent * perDayFee;
+
+            const paidAmount = item.fees_id.net_fees - item.fees_id.pending_amount;
+
+            if(feesToBePaid > paidAmount){
+              isPending = true;
+              let feesPerMonth = res.data.classDetails.fees / res.data.classDetails.batch_duration
+              const months = item.fees_id.pending_amount/feesPerMonth
+              const monthsInDecimal = months - Math.floor(months);
+              
+              let pending_fees = 0;
+
+              if(monthsInDecimal > 0){
+                pending_fees = monthsInDecimal * feesPerMonth;
+              }
+              else{
+                pending_fees = feesPerMonth;
+              }
+              setPendingFees( value => value + Math.round(pending_fees))
+            }
+            return isPending;
           })
         );
       }
@@ -89,13 +118,30 @@ const Class = () => {
   }, [itemOffset, itemsPerPage, classStudents]);
 
   const handlePendingPaidUpClick = (e) => {
-    const filteredStudents = allClassStudents?.filter((data) => {
-      if (e.target.value == 2) {
-        return data.fees_id.pending_amount == 0;
-      } else if (e.target.value == 1) {
-        return data.fees_id.pending_amount != 0;
-      } else {
-        return data;
+    const filteredStudents = allClassStudents?.filter((item) => {
+      const studentAcademicStartDate = new Date(item.date);
+      const currentDate = new Date();
+
+      const daysDifferent = dateDiffInDays(studentAcademicStartDate, currentDate);
+
+      const totalDays = classDetails.batch_duration * 30;
+      const perDayFee = item.fees_id.net_fees / totalDays
+
+      const feesToBePaid = daysDifferent * perDayFee;
+
+      const paidAmount = item.fees_id.net_fees - item.fees_id.pending_amount;
+
+      // 0 == all
+      // 1 == pending
+      // 2 == paidup
+      if(e.target.value == 1 && feesToBePaid > paidAmount){
+        return item
+      }
+      else if(e.target.value == 2 && feesToBePaid <= paidAmount){
+        return item
+      }
+      else if(e.target.value == 0){
+        return item
       }
     });
     setserialno(1);
@@ -187,18 +233,18 @@ const Class = () => {
                   id="btn"
                 >
                   <div
-                    className="icons h-10 w-40 flex ml-3 items-center"
+                    className="icons h-10 w-40 flex ml-4 items-center"
                     id="icons"
                   >
                     <FaArrowRight
-                      className={`text-2xl ${
+                      className={`text-xl ${
                         totalStudents > 0 && classDetails.is_active == 0
                           ? "text-darkblue-500"
                           : "text-gray-400"
                       } `}
                     />
                     <span
-                      className={`ml-3 text-lg ${
+                      className={`ml-2 text-lg ${
                         totalStudents > 0 && classDetails.is_active == 0
                           ? "text-darkblue-500"
                           : "text-gray-400"
@@ -256,7 +302,7 @@ const Class = () => {
                   <div className="flex items-center text-center justify-center space-x-5  ">
                     <MdPendingActions className=" text-class1-50 rounded-full xl:text-5xl text-5xl  xl:p-1 p-1 bg-white" />
                     <p className="text-white text-4xl">
-                      {totalPendingStudents ? totalPendingStudents?.length : 0}
+                      {totalPendingFees.length > 0 ? totalPendingFees?.length : 0}
                     </p>
                   </div>
                   <h1 className="text-white text-lg  ">
@@ -273,7 +319,7 @@ const Class = () => {
                 <div className="flex items-center text-center justify-center space-x-5  ">
                   <FcMoneyTransfer className="text-class2-50 rounded-full text-5xl  xl:p-1 p-2 bg-white" />
                   <p className="text-white text-4xl">
-                    {calculateTotalPendingFees}
+                    {pendingFees}
                   </p>
                 </div>
                 <h1 className="text-white text-lg ">
@@ -521,6 +567,7 @@ const Class = () => {
                                             class_name: classDetails.class_name,
                                             paid_upto: item.fees_id.paid_upto,
                                             net_fees: item.fees_id.net_fees,
+                                            class_fees: classDetails.fees,
                                             pending_amount: item.fees_id.pending_amount,
                                             medium: classDetails.medium,
                                             stream: classDetails.stream,

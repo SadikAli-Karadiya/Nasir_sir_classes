@@ -17,8 +17,10 @@ const Studentregister = () => {
     const [stream, setStream] = useState('--');
     const [netFees, setNetFees] = useState(0);
     const [totalFees, setTotalFees] = useState(0);
+    const [selectedClassDetails, setSelectedClassDetails] = useState({})
     const [classes, setClasses] = useState([]);
     const [isLoadingOnSubmit, setIsLoadingOnSubmit] = useState(false);
+    const [admissionDate, setAdmissionDate] = useState(new Date().toLocaleDateString('en-CA'))
     const navigate = useNavigate();
     
     const onImageChange = (e) => {
@@ -79,6 +81,7 @@ const Studentregister = () => {
         setMedium('--');
         setStream('--');
         setNetFees(0);
+        setAdmissionDate(new Date().toLocaleDateString('en-CA'))
         setTotalFees(0)
         setImg(defaultImage);
         document.getElementById('file').value = '';
@@ -107,6 +110,7 @@ const Studentregister = () => {
                 return;
             }
             if(item._id == e.target.value){
+                setSelectedClassDetails(item)
                 setMedium(item.medium);
                 setStream(item.stream);
                 selectedClass = item
@@ -115,14 +119,26 @@ const Studentregister = () => {
         })
         setTotalFees(()=> selectedClass?.fees ? selectedClass?.fees : 0)
         
-        if(section == 'primary'){
-            const daysDifferent = dateDiffInDays(new Date(selectedClass.date), new Date())
-            const feesPerMonth = selectedClass.fees / selectedClass.batch_duration
-            const discount = Math.ceil(daysDifferent * (feesPerMonth / 30))
-            document.getElementById('discount').value = discount
-        }
+        const daysDifferent = dateDiffInDays(new Date(selectedClass.date), new Date(admissionDate))
+        const feesPerMonth = selectedClass.fees / selectedClass.batch_duration
+        const discount = Math.ceil(daysDifferent * (feesPerMonth / 30))
+        document.getElementById('discount').value = discount
 
         totalDis(selectedClass?.fees ? selectedClass?.fees : 0)
+    }
+
+    const handleAdmissionDateChange = (e) => {
+        trigger('admission_date')
+        setAdmissionDate(e.target.value)
+
+        if(selectedClassDetails._id){
+             const daysDifferent = dateDiffInDays(new Date(selectedClassDetails.date), new Date(e.target.value))
+            const feesPerMonth = selectedClassDetails.fees / selectedClassDetails.batch_duration
+            const discount = Math.ceil(daysDifferent * (feesPerMonth / 30))
+            document.getElementById('discount').value = discount
+
+            totalDis(selectedClassDetails?.fees ? selectedClassDetails?.fees : 0)
+        }
     }
 
     useEffect(()=>{
@@ -409,13 +425,15 @@ const Studentregister = () => {
                                     <div className="admissiondate">
                                         <label className="block">
                                             <span className="block text-sm font-medium text-slate-700">
-                                                Admission Date *
+                                                Admission Date
                                             </span>
                                             <input
                                                 type="date"
                                                 name="admission_date"
                                                 className={`2xl:w-60 w-[185px] hover:cursor-pointer mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${errors.admission_date && 'border-red-600'}`}
                                                 {...register("admission_date", { required: "Admission date is required" })}
+                                                value={admissionDate}
+                                                onChange={handleAdmissionDateChange}  
                                             />
                                             {errors.admission_date && (<small className="text-red-700">{errors.admission_date.message}</small>)}
                                         </label>

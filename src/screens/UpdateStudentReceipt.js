@@ -22,6 +22,7 @@ export default function UpdateStudentReceipt() {
         name: location.state.receiptDetails.full_name,
         fees: location.state.receiptDetails.amount,
         class_name: location.state.receiptDetails.class_name,
+        class_fees: location.state.receiptDetails.class_fees,
         stream: location.state.receiptDetails.stream,
         rollno: location.state.receiptDetails.roll_no,
         batch: location.state.receiptDetails.batch,
@@ -210,27 +211,21 @@ export default function UpdateStudentReceipt() {
   }
 
   const handleMonthChange = (e) => {
-
-    if(e.target.value == ''){
+    let value = Number(e.target.value);
+    if(value == ''){
       setTotalMonths('')
       setFee(0)
       return;
     }
 
-    let remainder = student.net_fees % student.batch_duration;
-    let feesPerMonth = (student.net_fees - remainder) / student.batch_duration
-
-    let selectedFeesTotal = Math.round(feesPerMonth * Number(e.target.value));
+    let feesPerMonth = student.class_fees / student.batch_duration
+    const months = newPendingAmount/feesPerMonth
+    const monthsInDecimal = months - Math.floor(months);
+    if(monthsInDecimal > 0){
+      value -= 1
+    }
+    let selectedFeesTotal = Math.round(feesPerMonth * Number(value)) + (monthsInDecimal * feesPerMonth)
     
-    let monthsInDecimal = (newPendingAmount/feesPerMonth) - Math.floor((newPendingAmount/feesPerMonth));
-
-    if(newPendingAmount == student.net_fees && student.net_fees % student.batch_duration != 0){
-      selectedFeesTotal += remainder;
-    }
-    else if(monthsInDecimal > 0){
-      selectedFeesTotal += Math.round(monthsInDecimal * feesPerMonth);
-    }
-
     if(selectedFeesTotal > newPendingAmount){
       selectedFeesTotal = newPendingAmount;
     }

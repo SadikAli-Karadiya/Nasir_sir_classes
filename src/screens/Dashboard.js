@@ -41,6 +41,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchFeesPendingData() {
       const res = await Alloverstudent(section);
+      console.log(res.data)
       const StudentsWithPendingFees = res.data?.filter((student) => {
         if( student.academics[0].class.length == 0){
           return false;
@@ -82,7 +83,21 @@ export default function Dashboard() {
 
   let calculatepending = 0;
   for (let i = 0; i < allStudent.length; i++) {
-    calculatepending += allStudent[i].academics[0].fees[0].pending_amount;
+
+    let feesPerMonth = allStudent[i].academics[0].class[0].fees / allStudent[i].academics[0].class[0].batch_duration
+    const months = allStudent[i].academics[0].fees[0].pending_amount/feesPerMonth
+    const monthsInDecimal = months - Math.floor(months);
+
+    let pending_fees = 0;
+
+    if(monthsInDecimal > 0){
+      pending_fees = monthsInDecimal * feesPerMonth;
+    }
+    else{
+      pending_fees = feesPerMonth;
+    }
+
+    calculatepending += Math.round(pending_fees);
   }
 
   const handleSearchStudents = (e) => {
@@ -408,6 +423,7 @@ export default function Dashboard() {
                                     full_name: item.basic_info[0].full_name,
                                     class_name: item.academics[0].class[0].class_name,
                                     paid_upto: item.academics[0].fees[0].paid_upto,
+                                    class_fees: item.academics[0].class[0].fees,
                                     net_fees: item.academics[0].fees[0].net_fees,
                                     pending_amount: item.academics[0].fees[0].pending_amount,
                                     medium: item.academics[0].class[0].medium,
