@@ -1,13 +1,10 @@
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const EventEmitter = require('events')
-
 
 const path = require("path");
 
 let mainWindow;
-const loadingEvents = new EventEmitter()
 
 function createWindow() {
   mainWindow = new BrowserWindow({ 
@@ -29,7 +26,11 @@ function createWindow() {
       `file://${path.join(__dirname, "/index.html")}`
     );
   })
-  mainWindow.on( "closed", () => { mainWindow = null; localStorage.clear() } );
+  
+  mainWindow.on( "closed", () => { 
+    // mainWindow.webContents.session.clearStorageData([{storages:['localstorage']}])
+    mainWindow = null
+  });
 }
 
 app.on("ready", createWindow);
@@ -37,7 +38,6 @@ app.on("ready", createWindow);
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-    localStorage.clear()
   }
 });
 
