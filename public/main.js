@@ -28,7 +28,6 @@ function createWindow() {
   })
   
   mainWindow.on( "closed", () => { 
-    // mainWindow.webContents.session.clearStorageData([{storages:['localstorage']}])
     mainWindow = null
   });
 }

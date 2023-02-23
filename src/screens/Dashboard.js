@@ -41,7 +41,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchFeesPendingData() {
       const res = await Alloverstudent(section);
-      console.log(res.data)
+      
       const StudentsWithPendingFees = res.data?.filter((student) => {
         if( student.academics[0].class.length == 0){
           return false;
