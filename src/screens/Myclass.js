@@ -47,7 +47,7 @@ const Myclass = () => {
   const [model, setModel] = React.useState(false);
   const [editClassModel, setEditClassModel] = React.useState(false);
   const [edit_class_id, setEdit_class_id] = React.useState();
-  const [isClassYearError, setIsClassYearError] = React.useState(false);
+  const [isClassDateError, setIsClassDateError] = React.useState(false);
   const bgColors = [
     "#ffd6d6",
     "#bfdbfe",
@@ -223,7 +223,7 @@ const Myclass = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    if(isClassYearError){
+    if(isClassDateError){
       return;
     }
     setIsAddingClass(true)
@@ -253,13 +253,14 @@ const Myclass = () => {
   };
 
   const handleClear = () => {
-    resetField("batch_start_year");
+    resetField("batch_start_date");
+    resetField("batch_duration");
     resetField("class_name");
     resetField("medium");
     resetField("is_primary");
     resetField("fees");
     resetField("stream");
-    setIsClassYearError(false)
+    setIsClassDateError(false)
   };
 
   return (
@@ -324,67 +325,44 @@ const Myclass = () => {
                                 )}
                               </label>
                             </div>
-                            <div className="Batch">
+                            <div className="Batch Start Date">
                               <label className="block">
                                 <span className="block text-sm font-medium text-slate-700">
-                                  Batch Starting Year *
+                                  Batch Start Date *
                                 </span>
-                                <div className=" mt-1 ">
-                                  <div className="input flex items-center space-x-4">
-                                    <div className="">
-                                      <input
-                                        type="text"
-                                        placeholder="Starting year"
-                                        defaultValue={new Date().getFullYear()}
-                                        className={`w-full 2xl:w-54  block  px-3 py-2 bg-white rounded-md text-sm shadow-sm placeholder-slate-400 border border-slate-300 outline-none
-                                       ${
-                                         errors.batch_start_year &&
-                                         "border-red-600"
-                                       }`}
-                                        {...register("batch_start_year", {
-                                          required: "Starting year is required",
-                                          pattern: {
-                                            value: /^[0-9]*$/,
-                                            message:
-                                              "Please enter only numbers",
-                                          },
-                                          minLength: {
-                                            value: 4,
-                                            message:
-                                              "Please enter four digits only",
-                                          },
-                                          maxLength: {
-                                            value: 4,
-                                            message:
-                                              "Please enter four digits only",
-                                          },
-                                        })}
-                                        onKeyUp={(e) => {
-                                          if(Number(e.target.value) > new Date().getFullYear()){
-                                            setIsClassYearError(true)
-                                          }
-                                          else{
-                                            setIsClassYearError(false)
-                                          }
-                                          trigger("batch_start_year");
-                                        }}
-                                      />
-                                      {errors.batch_start_year && (
-                                        <small className="text-red-700">
-                                          {errors.batch_start_year.message}
-                                        </small>
-                                      )}
-                                      {isClassYearError 
-                                        ?
-                                          <small className="text-red-700">
-                                            Not be greater than current year
-                                          </small>
-                                        :
-                                          null
-                                      }
-                                    </div>
-                                  </div>
-                                </div>
+                                <input
+                                  type="date"
+                                  defaultValue={new Date().toLocaleDateString('en-CA')}
+                                  className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                    errors.batch_start_date && "border-red-600"
+                                  }`}
+                                  {...register("batch_start_date", {
+                                    required: "Batch start date is required"
+                                  })}
+                                  onChange={(e) => {
+                                    trigger("batch_start_date")
+                                    if( new Date(e.target.value).getFullYear() > new Date().getFullYear()){
+                                      setIsClassDateError(true)
+                                    }
+                                    else{
+                                      setIsClassDateError(false)
+                                    }
+                                  }}
+                                />
+                                {errors.batch_start_date && (
+                                  <small className="text-red-700">
+                                    {errors.batch_start_date.message}
+                                  </small>
+                                )}
+                                {
+                                  isClassDateError 
+                                  ?
+                                    <small className="text-red-700">
+                                      Not be greater than {`31-12-${new Date().getFullYear()}`}
+                                    </small>
+                                  :
+                                    null
+                                }
                               </label>
                             </div>
                             <div className="Batch-duration">
@@ -577,6 +555,7 @@ const Myclass = () => {
                         <button
                           onClick={(e) => {
                             setEditClassModel(!editClassModel);
+                            setIsClassDateError(false)
                             reset();
                           }}
                           className="absolute translate-x-4 -translate-y-4 font-bold text-2xl p-2 text-red-700"
@@ -626,7 +605,7 @@ const Myclass = () => {
                                       )}
                                     </label>
                                   </div>
-                                  <div className="Batch">
+                                  {/* <div className="Batch">
                                     <label className="block">
                                       <span className="block text-sm font-medium text-slate-700">
                                         Batch Starting Year
@@ -675,6 +654,45 @@ const Myclass = () => {
                                           )}
                                         </div>
                                       </div>
+                                    </label>
+                                  </div> */}
+                                  <div className="Batch Start Date">
+                                    <label className="block">
+                                      <span className="block text-sm font-medium text-slate-700">
+                                        Batch Start Date *
+                                      </span>
+                                      <input
+                                        type="date"
+                                        defaultValue={new Date(item.date).toLocaleDateString('en-CA')}
+                                        className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
+                                          errors.batch_start_date && "border-red-600"
+                                        }`}
+                                        {...register("batch_start_date", {
+                                          required: "Batch start date is required"
+                                        })}
+                                        onChange={(e) => {
+                                          trigger("batch_start_date")
+                                          if( new Date(e.target.value).getFullYear() > new Date().getFullYear()){
+                                            setIsClassDateError(true)
+                                          }
+                                          else{
+                                            setIsClassDateError(false)
+                                          }
+                                        }}
+                                      />
+                                      {errors.batch_start_date && (
+                                        <small className="text-red-700">
+                                          {errors.batch_start_date.message}
+                                        </small>
+                                      )}
+                                      {isClassDateError 
+                                        ?
+                                          <small className="text-red-700">
+                                            Not be greater than {`31-12-${new Date().getFullYear()}`}
+                                          </small>
+                                        :
+                                          null
+                                      }
                                     </label>
                                   </div>
                                    <div className="Batch-duration">
