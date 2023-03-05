@@ -30,8 +30,10 @@ export default function Searchbar({toggle, SetToggle}) {
   }
   return (
     <div className="w-full z-[101] sticky top-0 bg-white h-[70px] flex flex-row items-center justify-between shadow-[0_10px_10px_-15px_rgba(0,0,0,0.3)]">
-      <div className="left pl-5 w-1/4">
-        {/* This sectione empty for searchbar */}
+       <div className="flex flex-1 justify-end items-center pr-4 mr-4 border-r-2 h-10">
+        <span className="text-base text-gray-400 font-semibold capitalize">
+          {section == 'primary' ? 'Primary' : 'Secondary'}
+        </span>
       </div>
       <div className="right" onClick={handleToggle}>
         <div className="top grid grid-col-2 items-center cursor-pointer justify-right space-x-5 pr-5 static">
@@ -124,9 +126,6 @@ export default function Searchbar({toggle, SetToggle}) {
                     <div className="flex flex-col">
                       <span className="md:text-sm xl:text-base">
                         Change Section
-                      </span>
-                      <span className="text-sm text-gray-400 font-semibold capitalize">
-                        {section}
                       </span>
                     </div>
                   </div>
