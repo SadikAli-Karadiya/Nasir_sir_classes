@@ -332,7 +332,9 @@ const Myclass = () => {
                                 </span>
                                 <input
                                   type="date"
-                                  defaultValue={new Date().toLocaleDateString('en-CA')}
+                                  defaultValue={
+                                    `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? "0" + (new Date().getMonth() + 1) : new Date().getMonth() + 1}-${new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate()}`
+                                  }
                                   className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                     errors.batch_start_date && "border-red-600"
                                   }`}
@@ -663,7 +665,9 @@ const Myclass = () => {
                                       </span>
                                       <input
                                         type="date"
-                                        defaultValue={new Date(item.date).toLocaleDateString('en-CA')}
+                                        defaultValue={
+                                          `${new Date(item.date).getFullYear()}-${new Date(item.date).getMonth() + 1 < 10 ? "0" + (new Date(item.date).getMonth() + 1) : new Date(item.date).getMonth() + 1}-${new Date(item.date).getDate() < 10 ? "0" + new Date(item.date).getDate() : new Date(item.date).getDate()}`
+                                        }
                                         className={`2xl:w-54 w-[180px]  mt-1 block  px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none ${
                                           errors.batch_start_date && "border-red-600"
                                         }`}

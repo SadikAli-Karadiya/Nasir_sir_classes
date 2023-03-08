@@ -50,6 +50,10 @@ export default function FeesDetail() {
   });
 
   function handleDiscount(e) {
+    if(errors.discount != ''){
+      return;
+    }
+    
     if(discount == '' ){
         setErrors((prevData)=>{
             return{
@@ -59,6 +63,7 @@ export default function FeesDetail() {
         })
         return;
     }
+    
     if(Number(discount) > Number(fee)){
         return;
     }
