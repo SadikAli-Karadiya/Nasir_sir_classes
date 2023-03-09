@@ -27,7 +27,6 @@ root.render(
           pauseOnHover
         />
           <App />
-        <ToastContainer />
       </NasirProvider>
     </QueryClientProvider>
   </HashRouter>
