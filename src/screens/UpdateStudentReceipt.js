@@ -245,7 +245,7 @@ export default function UpdateStudentReceipt() {
   }
 
   const handleDiscountValidation = (e)=>{
-      const regex = new RegExp(/^[0-9]+$/)
+      const regex = new RegExp(/^[0-9\-]+$/)
     if(e.target.value != ''){
         if(regex.test(e.target.value)){
           setErrors((prevData) => {
