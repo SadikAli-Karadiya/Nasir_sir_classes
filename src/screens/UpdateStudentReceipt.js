@@ -16,6 +16,7 @@ export default function UpdateStudentReceipt() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log(location.state);
     let cheque_date = new Date(location.state.receiptDetails.cheque_date);
         cheque_date = `${cheque_date.getFullYear()}-${cheque_date.getMonth() + 1 < 10 ? "0" + (cheque_date.getMonth() + 1) : cheque_date.getMonth() + 1}-${cheque_date.getDate() < 10 ? "0" + cheque_date.getDate() : cheque_date.getDate()}`
     const student = {
@@ -493,30 +494,32 @@ export default function UpdateStudentReceipt() {
   }
 
   React.useEffect(() => {
-    let monthCounter = 0;
-    let k = Number(location.state.receiptDetails.from_month.split(" ")[0]);
-    const fromYear = Number(location.state.receiptDetails.from_month.split(" ")[1]);
-    const toYear = Number(location.state.receiptDetails.to_month.split(" ")[1]);
-    let i=fromYear;
+    if(section == 'primary'){
+      let monthCounter = 0;
+      let k = Number(location.state.receiptDetails.from_month.split(" ")[0]);
+      const fromYear = Number(location.state.receiptDetails.from_month.split(" ")[1]);
+      const toYear = Number(location.state.receiptDetails.to_month.split(" ")[1]);
+      let i=fromYear;
+      
+      while(1){
+        monthCounter++;
+  
+        if(k == Number(location.state.receiptDetails.to_month.split(" ")[0]) && i == toYear){
+          break;
+        }
+  
+        if(k == 12){
+          i++; 
+          k=1;
+        }
+        else{
+          k++;
+        }
     
-    while(1){
-      monthCounter++;
-
-      if(k == Number(location.state.receiptDetails.to_month.split(" ")[0]) && i == toYear){
-        break;
-      }
-
-      if(k == 12){
-        i++; 
-        k=1;
-      }
-      else{
-        k++;
       }
   
+      setTotalMonths(monthCounter)
     }
-
-    setTotalMonths(monthCounter)
   },[])
   return (
     <div className="relative bg-student-100 py-3 ">
