@@ -515,7 +515,6 @@ export default function UpdateStudentReceipt() {
         else{
           k++;
         }
-    
       }
   
       setTotalMonths(monthCounter)
