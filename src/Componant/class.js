@@ -212,7 +212,7 @@ const Class = () => {
           <h1 className="ml-5 text-xl lg:text-3xl xl:text-4xl  text-darkblue-500 xl:text-left font-bold text-darkblue-50 capitalize">
             {classDetails.class_name}
             {
-              classDetails.medium 
+              classDetails.medium
               ?
                 <span className="capitalize text-md lg:text-lg ml-2">({`${classDetails.medium}${classDetails.stream == 'none' ? '' : ` | ${classDetails.stream}`}`})</span>
               :

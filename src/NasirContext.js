@@ -9,7 +9,9 @@ const LOGOUT = "LOGOUT";
 const LOGIN = "LOGIN";
 const GET_ADMIN = "GET_ADMIN";
 const SET_SECTION = "SET_SECTION";
+const SET_BRANCH = "SET_BRANCH";
 const REMOVE_SECTION = "REMOVE_SECTION";
+const REMOVE_BRANCH = "REMOVE_BRANCH";
 // ##################  Reducer Section
 
 //  admin reducer for handling token
@@ -34,6 +36,16 @@ function userReducer(state, action) {
   }
 }
 
+//Branch reducer
+function branchReducer(state, action) {
+  if (action.type === SET_BRANCH) {
+    return (state = getToken("branch"));
+  }
+  if (action.type === REMOVE_BRANCH) {
+    return (state = action.payload);
+  }
+}
+
 //section reducer
 function sectionReducer(state, action) {
   if (action.type === SET_SECTION) {
@@ -51,6 +63,10 @@ export function NasirProvider({ children }) {
   const [section, dispatchSection] = React.useReducer(
     sectionReducer,
     getToken("section")
+  );
+  const [branch, dispatchBranch] = React.useReducer(
+    branchReducer,
+    getToken("branch")
   );
 
   const logout = React.useCallback(() => {
@@ -73,6 +89,13 @@ export function NasirProvider({ children }) {
     dispatchSection(
       { type: REMOVE_SECTION, payload: getToken("section") },
       dispatchSection
+      );
+  }, []);
+    
+  const changeBranch = React.useCallback(() => {
+    dispatchBranch(
+      { type: REMOVE_BRANCH, payload: getToken("branch") },
+      dispatchBranch
     );
   }, []);
 
@@ -83,7 +106,9 @@ export function NasirProvider({ children }) {
     admin,
     selectSection,
     changeSection,
+    changeBranch,
     section,
+    branch,
     setAdmin,
   };
 

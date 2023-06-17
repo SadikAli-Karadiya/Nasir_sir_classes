@@ -371,7 +371,7 @@ const Profilefaculty = () => {
                         value={facultyInputController.full_name}
                         placeholder="First Name, Middle Name, Last Name"
                         name="full_name"
-                        className={`w-60 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md 
+                        className={`w-60 mt-1 block px-3 py-2 bg-white border border-slate-300 rounded-md 
                         text-sm shadow-sm placeholder-slate-400 outline-none ${valid.errors?.full_name != '' && 'border-red-600'}`}
                         onChange={handleChange}
                       />
@@ -389,7 +389,7 @@ const Profilefaculty = () => {
                         placeholder="Enter Your Email"
                         name="email"
                         value={facultyInputController.email}
-                        className={`w-60 mt-1 block w-full px-3 py-2 bg-white border 
+                        className={`w-60 mt-1 block px-3 py-2 bg-white border 
                          border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
                          ${valid.errors?.email != '' && 'border-red-600'}
                          `}
@@ -409,7 +409,7 @@ const Profilefaculty = () => {
                         placeholder="Enter Your WhatsApp No"
                         name="whatsapp_no"
                         value={facultyInputController.whatsapp_no}
-                        className={`w-60 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
+                        className={`w-60 mt-1 block px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
                          placeholder-slate-400 outline-none 
                          ${valid.errors?.whatsapp_no != '' && 'border-red-600'}
                          `}
@@ -431,7 +431,7 @@ const Profilefaculty = () => {
                         placeholder="Enter Your Mobile No"
                         name="alternate_no"
                         value={facultyInputController.alternate_no}
-                        className={`w-60 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
+                        className={`w-60 mt-1 block px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
                          placeholder-slate-400 outline-none 
                          ${valid.errors?.alternate_no != '' && 'border-red-600'}
                          `}
@@ -450,7 +450,7 @@ const Profilefaculty = () => {
                         disabled={isEnable}
                         value={facultyInputController.dob}
                         name="dob"
-                        className="w-60 hover:cursor-pointer mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm  placeholder-slate-400 outline-none"
+                        className="w-60 hover:cursor-pointer mt-1 block px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm  placeholder-slate-400 outline-none"
                         onChange={handleChange}
                       />
                       {valid.errors?.dob != '' ? <small className="text-red-600 mt-3">*{valid.errors?.dob}</small> : null}
@@ -510,7 +510,7 @@ const Profilefaculty = () => {
                           value={facultyInputController.role}
                           placeholder="Enter Your Role"
                           name="role"
-                          className={`w-60 mt-1 block w-full px-3 py-2 bg-white border 
+                          className={`w-60 mt-1 block px-3 py-2 bg-white border 
                          border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
                           ${valid.errors?.role != '' && 'border-red-600'}`}
                           onChange={handleChange}
@@ -529,7 +529,7 @@ const Profilefaculty = () => {
                           placeholder="Enter Your Address"
                           value={facultyInputController.address}
                           name="address"
-                          className={`w-60 mt-1 block w-full px-3 py-2 bg-white border 
+                          className={`w-60 mt-1 block px-3 py-2 bg-white border 
                            border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none
                             ${valid.errors?.address != '' && 'border-red-600'}`}
                           onChange={handleChange}
@@ -547,7 +547,7 @@ const Profilefaculty = () => {
                           disabled={isEnable}
                           value={facultyInputController.joining_date}
                           name="joining_date"
-                          className="w-60 hover:cursor-pointer mt-1 block w-full px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
+                          className="w-60 hover:cursor-pointer mt-1 block px-3 py-2 bg-white border  border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 outline-none"
                           onChange={handleChange}
                         />
                         {valid.errors?.joining_date != '' ? <small className="text-red-600 mt-3">*{valid.errors?.joining_date}</small> : null}

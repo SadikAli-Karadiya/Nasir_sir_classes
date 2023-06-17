@@ -6,7 +6,7 @@ import {  setToken } from "../AuthProvider";
 import { NasirContext } from "../NasirContext";
 
 const Login = () => {
-  const { login } = React.useContext(NasirContext);
+  const { login, changeBranch } = React.useContext(NasirContext);
   const requestLogin = useLoginAdmmin();
 
   const {
@@ -90,8 +90,11 @@ const Login = () => {
             </div>
           </form>
           <div className="mt-5 flex justify-center">
-            <span className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
-              Forgot Password?
+            <span className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer" onClick={()=>{
+              localStorage.removeItem("branch");
+              changeBranch();
+            }}>
+              Go Back
             </span>
           </div>
         </div>

@@ -472,3 +472,12 @@ export async function getChequeNotifications(){
 export async function markAsReadNotification(notification_id){
   return  await axios.get(`${SERVER}/notifications/cheque/mark-as-deposited/${notification_id}`);
 }
+
+
+//-------------------------------------------------------
+//------------------Database Change API---------------------
+//-------------------------------------------------------
+
+export async function switchDatabase(branch){
+  return  await axios.get(`${SERVER}/database/switch/${branch}`);
+}

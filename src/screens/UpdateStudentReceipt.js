@@ -526,8 +526,8 @@ export default function UpdateStudentReceipt() {
       {model && (
         <div className='absolute w-full h-full  z-30 ' >
 
-        <div className="flex justify-center mt-4   bg-white ">
-          <div className="absolute h-2/3 mx-auto  opacity-100 shadow-2xl rounded      bg-white w-2/3 z-50">
+        <div className="flex justify-center mt-4 bg-white ">
+          <div className="absolute h-2/3 mx-auto  opacity-100 shadow-2xl rounded bg-white w-2/3 z-50">
             <div className="flex justify-end">
               <button
                 onClick={(e) => {

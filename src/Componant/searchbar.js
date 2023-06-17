@@ -11,13 +11,14 @@ import { NasirContext } from "../NasirContext";
 import { handleLogout } from "../AuthProvider";
 
 export default function Searchbar({toggle, SetToggle}) {
-  const { admin, section } = React.useContext(NasirContext);
-  const { logout, changeSection } = React.useContext(NasirContext);
+  const { admin, section, branch } = React.useContext(NasirContext);
+  const { logout, changeSection, changeBranch } = React.useContext(NasirContext);
   const myData = admin;
 
   function handleLogoutButton() {
     handleLogout();
     logout();
+    changeBranch();
     changeSection();
   }
   function handleToggle() {
@@ -28,9 +29,15 @@ export default function Searchbar({toggle, SetToggle}) {
     localStorage.removeItem("section");
     changeSection();
   }
+
   return (
     <div className="w-full z-[101] sticky top-0 bg-white h-[70px] flex flex-row items-center justify-between shadow-[0_10px_10px_-15px_rgba(0,0,0,0.3)]">
        <div className="flex flex-1 justify-end items-center pr-4 mr-4 border-r-2 h-10">
+          <span className="text-base text-gray-400 font-semibold capitalize">
+            {branch == 'ajitmil' ? 'NSC 1': 'NSC 2'}
+          </span>
+      </div>
+       <div className="flex justify-end items-center pr-4 mr-4 border-r-2 h-10">
         <span className="text-base text-gray-400 font-semibold capitalize">
           {section == 'primary' ? 'Primary' : 'Secondary'}
         </span>

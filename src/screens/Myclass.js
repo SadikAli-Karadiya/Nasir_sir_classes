@@ -101,6 +101,8 @@ const Myclass = () => {
     if(!res.data || res?.data?.length == 0){
       return;
     }
+
+    console.log(res?.data)
     const sortedClasses = res.data?.sort((a, b) =>
         a._id.batch_start_year < b._id.batch_start_year
           ? 1

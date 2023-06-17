@@ -39,6 +39,7 @@ import ErrorBoundary from "./Componant/ErrorBound";
 import StudentAdmissionForm from "./Componant/StudentAdmissionForm";
 import { handleLogout } from "./AuthProvider";
 import DeactivateClasses from "./Componant/DeactivateClasses";
+import BranchSelection from "./screens/BranchSelection";
 
 function DashboardMenu() {
   const { setAdmin, login } = React.useContext(NasirContext);
@@ -81,6 +82,11 @@ function DashboardMenu() {
                 exact
                 path="/dashboardsection"
                 element={<Dashboardsection />}
+              />
+              <Route
+                exact
+                path="/branch-selection"
+                element={<BranchSelection />}
               />
               <Route
                 exact

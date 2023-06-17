@@ -43,7 +43,7 @@ export default function Dashboard() {
       const res = await Alloverstudent(section);
       
       const StudentsWithPendingFees = res.data?.filter((student) => {
-        if( student.academics[0].class.length == 0){
+        if(student.academics[0]?.class == undefined || student.academics[0]?.class?.length == 0){
           return false;
         }
         
@@ -82,7 +82,7 @@ export default function Dashboard() {
   }, []);
 
   let calculatepending = 0;
-  for (let i = 0; i < allStudent.length; i++) {
+  for (let i = 0; i < allStudent?.length; i++) {
 
     let feesPerMonth = allStudent[i].academics[0].class[0].fees / allStudent[i].academics[0].class[0].batch_duration
     const months = allStudent[i].academics[0].fees[0].pending_amount/feesPerMonth

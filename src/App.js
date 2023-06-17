@@ -6,9 +6,10 @@ import { NasirContext } from "./NasirContext";
 import AdminLogin from "./screens/AdminLogin";
 import ErrorBoundary from "./Componant/ErrorBound";
 import NetworkError from "./Componant/NetworkError";
+import BranchSelection from "./screens/BranchSelection";
 
 function App() {
-  const { token, section } = React.useContext(NasirContext);
+  const { token, section, branch } = React.useContext(NasirContext);
   const [call, setCall] = React.useState(false)
 
   if(process.env.NODE_ENV == 'development'){
@@ -23,19 +24,27 @@ function App() {
     else{
       return (
         <div className="min-h-screen w-full">
-          {!token ? (
-            <div>
-              <ErrorBoundary>
-                <Routes>
-                  <Route path="/*" element={<AdminLogin />} />
-                </Routes>
-              </ErrorBoundary>
-            </div>
-          ) : !section ? (
-            <Dashboardsection />
-          ) : (
-            <DashboardMenu />
-          )}
+          {
+            !branch
+            ?
+              <BranchSelection />
+            :
+              !token 
+              ? 
+                <div>
+                  <ErrorBoundary>
+                    <Routes>
+                      <Route path="/*" element={<AdminLogin />} />
+                    </Routes>
+                  </ErrorBoundary>
+                </div>
+              : 
+                !section 
+                ? 
+                  <Dashboardsection />
+                : 
+                  <DashboardMenu />
+          }
         </div>
       );
     }
