@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {NasirContext} from '../NasirContext'
 
 function Receipt_student({receiptDetails, forOffice}) {
-  const {section} = React.useContext(NasirContext);
+  const {section, branch} = React.useContext(NasirContext);
   const [fromMonth, setFromMonth] = React.useState(Number(receiptDetails?.from_month?.split(" ")[0]))
   const [fromYear, setFromYear] = React.useState(Number(receiptDetails?.from_month?.split(" ")[1]))
   const [toMonth, setToMonth] = React.useState(Number(receiptDetails?.to_month?.split(" ")[0]))
@@ -21,7 +21,10 @@ function Receipt_student({receiptDetails, forOffice}) {
     >
       <div className="p-5">
         <div className="flex justify-between">
-          <img src="images/receipt_logo.png" style={{ maxWidth: "420px", height: "100px" }} alt="" />
+          <div>
+            <img src="images/receipt_logo.png" style={{ maxWidth: "420px", height: "100px" }} alt="" />
+            <h4 className="font-bold text-lg text-[#335998]">{branch == 'ajitmill' ? 'NSC 1' : 'NSC 2'}</h4>
+          </div>
           <div className={`${receiptTextColor} w-48 font-bold`}>
             <p>
               E-35, Sumel-8, Safal Market, Nr. Ajit Mill Char Rasta, Rakhial,
@@ -165,7 +168,7 @@ function Receipt_student({receiptDetails, forOffice}) {
                   :
                     null
                 }
-                Admin: <span className="text-black capitalize">{receiptDetails?.admin}{" Sir"}</span>
+                Admin: <span className="text-black capitalize">{receiptDetails?.admin} Sir</span>
               </p>
             </div>
           </div>

@@ -15,8 +15,6 @@ const BranchSelection = () => {
   const [loading, setLoading]= React.useState(false);
 
   async function handleBranchChange(branch) {
-    if(loading) return;
-
     setLoading(true)
     const res = await switchDatabase(branch)
     setLoading(false)

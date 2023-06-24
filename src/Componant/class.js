@@ -66,7 +66,9 @@ const Class = () => {
     async function fetchClassStudents() {
       const res = await getAllStudentsInClass(params.id);
       setIsLoading(false);
+      console.log(res?.data?.classDetails)
       setClassDetails(() => res?.data?.classDetails);
+
       if (res.success) {
         setClassStudents(() => res.data.studentDetails);
         setAllClassStudents(() => res.data.studentDetails);

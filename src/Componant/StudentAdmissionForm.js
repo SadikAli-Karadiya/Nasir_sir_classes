@@ -2,11 +2,13 @@ import React, { useRef } from "react";
 import ReactToPrint from "react-to-print";
 import {useLocation, useNavigate} from 'react-router-dom';
 import {BsCheckLg} from "react-icons/bs"
+import {NasirContext} from '../NasirContext'
 
 const StudentAdmissionForm = () => {
     const printRef = useRef();
     const location = useLocation();
     const navigate = useNavigate();
+    const {branch} = React.useContext(NasirContext);
 
     const studentDetails = location.state.studentDetails;
     
@@ -25,6 +27,7 @@ const StudentAdmissionForm = () => {
                                 <div className="middle-content flex">
                                     <div className="logo">
                                         <img className="h-36" src="images/logo.png" alt="logo"/>
+                                        <h4 className="ml-4 font-bold text-lg text-[#335998]">{branch == 'ajitmill' ? 'NSC 1' : 'NSC 2'}</h4>
                                     </div>
                                     <div className="content font-bold mt-11 mx-5">
                                         <p>K.G to 10th, 11th to 12th</p>

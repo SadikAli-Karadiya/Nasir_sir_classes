@@ -5,13 +5,15 @@ import { IoIosArrowBack } from "react-icons/io"
 import { AiFillEye } from 'react-icons/ai';
 import { Tooltip } from "@material-tailwind/react";
 import { FaUserEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { IoMdInformationCircle } from "react-icons/io";
 import '../Styles/Studentform.css';
 import { useParams } from "react-router-dom";
-import { Facultydetails, Facultyhistory, Update_faculty } from "../hooks/usePost";
+import { Facultydetails, Facultyhistory, Update_faculty, deleteFaculty } from "../hooks/usePost";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import Validator from '../hooks/validator';
+import Toaster from '../hooks/showToaster';
 import { AxiosError } from 'axios';
 
 
@@ -77,7 +79,6 @@ const Profilefaculty = () => {
   const [call, setcall] = React.useState(true)
   const defaultImage = "images/user_default@123.png";
   const [img, setImg] = useState('');
-  const Toaster = () => { toast.success('Profile updated successfully') }
   const navigate = useNavigate();
   const [toggle, setToggle] = React.useState(false)
   const [oldFacultyDetails, setOldFacultyDetails] = useState({});
@@ -269,7 +270,7 @@ const Profilefaculty = () => {
       const res = await Update_faculty(staff_id, formdata)
       setIsLoadingOnSubmit(false);
       if (res.data.success == true) {
-        Toaster()
+        Toaster('success', "Profile updated successfully");        
         setcall(!call)
         setIsEnable(true)
         setToggle(false);
@@ -299,6 +300,31 @@ const Profilefaculty = () => {
         alternate_no : facultyInputController.alternate_no == '--' ? '' : facultyInputController.alternate_no
       }
     })
+  }
+
+  async function handleFacultyDelete(){
+    setIsLoadingOnSubmit(true);
+
+    try{
+      const res = await deleteFaculty(staff_id);
+      setIsLoadingOnSubmit(false);
+
+      if (res.data.success == true) {
+        Toaster('success', res.data.message);
+        navigate('/faculty')
+      }
+    } 
+    catch (error) {
+      setIsLoadingOnSubmit(false);
+      if (error instanceof AxiosError) {
+        Toaster('error', error.response.data.message);
+      }
+      else {
+        Toaster('error', error.message);
+      }
+
+    }
+
   }
 
   // --------------------------------
@@ -557,9 +583,18 @@ const Profilefaculty = () => {
                   <div className="flex justify-center items-center">
                     <div className="btn mt-5 flex justify-center w-60 ml-5">
                       {!toggle ? (
-                        <button type="button" onClick={handleedit} className="py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center">
-                          <FaUserEdit className="text-xl" />Edit
+                        <>
+                          <button type="button" onClick={handleedit} className="py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center">
+                            <FaUserEdit className="text-xl" />Edit
+                          </button>
+                           <button type="button" 
+                           disabled={isLoadingOnSubmit}
+                           onClick={handleFacultyDelete} 
+                           className={`${isLoadingOnSubmit ? 'opacity-40' : 'opacity-100'} ml-2 py-2 px-8 gap-2 bg-darkblue-500  hover:bg-white border-2 hover:border-darkblue-500 text-white hover:text-darkblue-500 font-medium rounded-md tracking-wider flex justify-center items-center`}>
+                          <MdDelete className="text-xl" />
+                          {isLoadingOnSubmit ? 'Deleting...' : 'Delete'}
                         </button>
+                        </>
                       ) :
                         null}
                       {toggle ? (
@@ -644,18 +679,4 @@ const Profilefaculty = () => {
 };
 
 export default Profilefaculty;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

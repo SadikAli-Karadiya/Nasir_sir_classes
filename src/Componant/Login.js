@@ -6,7 +6,7 @@ import {  setToken } from "../AuthProvider";
 import { NasirContext } from "../NasirContext";
 
 const Login = () => {
-  const { login, changeBranch } = React.useContext(NasirContext);
+  const { login, changeBranch, branch } = React.useContext(NasirContext);
   const requestLogin = useLoginAdmmin();
 
   const {
@@ -40,7 +40,8 @@ const Login = () => {
         <div className="login">
           <div className="mb-10">
             <h2 className="text-3xl text-[#0F0673] font-bold text-center tracking-wider">
-              Admin Login
+              Admin Login 
+              <span className="text-[#FE7062] ml-2">({branch == 'ajitmill' ? 'NSC 1': 'NSC 2'})</span>
             </h2>
           </div>
           <form
